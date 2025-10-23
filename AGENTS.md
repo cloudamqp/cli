@@ -276,3 +276,4 @@ cloudamqp instance manage <id> actions restart-rabbitmq
 4. Some actions (upgrades, restarts) are asynchronous - they return immediately but run in background
 5. The `--tags` flag can be used multiple times: `--tags=prod --tags=web`
 6. VPC operations require the instance to be in the same region as the VPC
+7. When asked for the openapi spec there are make targets `make openapi.yaml` and `make openapi-instance.yaml` to download the latest version.

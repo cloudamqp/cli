@@ -64,6 +64,12 @@ build-all:
 .PHONY: dev
 dev: fmt vet test build
 
+openapi.yaml:
+	curl -O https://docs.cloudamqp.com/openapi.yaml
+
+openapi-instance.yaml:
+	curl -O https://docs.cloudamqp.com/openapi-instance.yaml
+
 # Help target
 .PHONY: help
 help:
