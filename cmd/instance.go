@@ -17,5 +17,10 @@ func init() {
 	instanceCmd.AddCommand(instanceUpdateCmd)
 	instanceCmd.AddCommand(instanceDeleteCmd)
 	instanceCmd.AddCommand(instanceResizeCmd)
+	instanceCmd.AddCommand(instanceConfigCmd)
+	instanceCmd.AddCommand(instanceNodesCmd)
+	instanceCmd.AddCommand(instanceActionsCmd)
+	instanceCmd.AddCommand(instanceAccountCmd)
+	instanceCmd.AddCommand(instancePluginsCmd)
 	instanceCmd.AddCommand(instanceManageCmd)
 }

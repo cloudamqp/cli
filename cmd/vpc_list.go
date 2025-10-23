@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"cloudamqp-cli/client"
@@ -33,12 +32,18 @@ var vpcListCmd = &cobra.Command{
 			return nil
 		}
 
-		output, err := json.MarshalIndent(vpcs, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format response: %v", err)
+		// Print table header
+		fmt.Printf("%-20s %-18s %-30s\n", "NAME", "SUBNET", "REGION")
+		fmt.Printf("%-20s %-18s %-30s\n", "----", "------", "------")
+
+		// Print VPC data
+		for _, vpc := range vpcs {
+			fmt.Printf("%-20s %-18s %-30s\n", 
+				vpc.Name, 
+				vpc.Subnet, 
+				vpc.Region)
 		}
 
-		fmt.Printf("VPCs:\n%s\n", string(output))
 		return nil
 	},
 }

@@ -13,35 +13,39 @@ var instanceActionsCmd = &cobra.Command{
 	Use:   "actions",
 	Short: "Perform instance actions",
 	Long:  `Restart, stop, start, reboot, and upgrade instance components.`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cmd.Help()
+		return fmt.Errorf("subcommand required")
+	},
 }
 
 // Restart commands
 var restartRabbitMQCmd = &cobra.Command{
-	Use:   "restart-rabbitmq",
+	Use:   "restart-rabbitmq --id <instance_id>",
 	Short: "Restart RabbitMQ",
 	Long:  `Restart RabbitMQ on specified nodes or all nodes.`,
-	Example: `  cloudamqp instance manage 1234 actions restart-rabbitmq
-  cloudamqp instance manage 1234 actions restart-rabbitmq --nodes=node1,node2`,
+	Example: `  cloudamqp instance actions restart-rabbitmq --id 1234
+  cloudamqp instance actions restart-rabbitmq --id 1234 --nodes=node1,node2`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performNodeAction(cmd, "restart-rabbitmq")
 	},
 }
 
 var restartClusterCmd = &cobra.Command{
-	Use:     "restart-cluster",
+	Use:     "restart-cluster --id <instance_id>",
 	Short:   "Restart cluster",
 	Long:    `Restart the entire cluster.`,
-	Example: `  cloudamqp instance manage 1234 actions restart-cluster`,
+	Example: `  cloudamqp instance actions restart-cluster --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performClusterAction(cmd, "restart-cluster")
 	},
 }
 
 var restartManagementCmd = &cobra.Command{
-	Use:     "restart-management",
+	Use:     "restart-management --id <instance_id>",
 	Short:   "Restart management interface",
 	Long:    `Restart the RabbitMQ management interface.`,
-	Example: `  cloudamqp instance manage 1234 actions restart-management`,
+	Example: `  cloudamqp instance actions restart-management --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performNodeAction(cmd, "restart-management")
 	},
@@ -49,30 +53,30 @@ var restartManagementCmd = &cobra.Command{
 
 // Stop/Start commands
 var stopCmd = &cobra.Command{
-	Use:     "stop",
+	Use:     "stop --id <instance_id>",
 	Short:   "Stop instance",
 	Long:    `Stop specified nodes or all nodes.`,
-	Example: `  cloudamqp instance manage 1234 actions stop`,
+	Example: `  cloudamqp instance actions stop --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performNodeAction(cmd, "stop")
 	},
 }
 
 var startCmd = &cobra.Command{
-	Use:     "start",
+	Use:     "start --id <instance_id>",
 	Short:   "Start instance",
 	Long:    `Start specified nodes or all nodes.`,
-	Example: `  cloudamqp instance manage 1234 actions start`,
+	Example: `  cloudamqp instance actions start --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performNodeAction(cmd, "start")
 	},
 }
 
 var rebootCmd = &cobra.Command{
-	Use:     "reboot",
+	Use:     "reboot --id <instance_id>",
 	Short:   "Reboot instance",
 	Long:    `Reboot specified nodes or all nodes.`,
-	Example: `  cloudamqp instance manage 1234 actions reboot`,
+	Example: `  cloudamqp instance actions reboot --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performNodeAction(cmd, "reboot")
 	},
@@ -80,20 +84,20 @@ var rebootCmd = &cobra.Command{
 
 // Cluster commands
 var stopClusterCmd = &cobra.Command{
-	Use:     "stop-cluster",
+	Use:     "stop-cluster --id <instance_id>",
 	Short:   "Stop cluster",
 	Long:    `Stop the entire cluster.`,
-	Example: `  cloudamqp instance manage 1234 actions stop-cluster`,
+	Example: `  cloudamqp instance actions stop-cluster --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performClusterAction(cmd, "stop-cluster")
 	},
 }
 
 var startClusterCmd = &cobra.Command{
-	Use:     "start-cluster",
+	Use:     "start-cluster --id <instance_id>",
 	Short:   "Start cluster",
 	Long:    `Start the entire cluster.`,
-	Example: `  cloudamqp instance manage 1234 actions start-cluster`,
+	Example: `  cloudamqp instance actions start-cluster --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performClusterAction(cmd, "start-cluster")
 	},
@@ -101,24 +105,24 @@ var startClusterCmd = &cobra.Command{
 
 // Upgrade commands
 var upgradeErlangCmd = &cobra.Command{
-	Use:   "upgrade-erlang",
+	Use:   "upgrade-erlang --id <instance_id>",
 	Short: "Upgrade Erlang",
 	Long: `Always updates to latest compatible version.
 
 Note: This action is asynchronous. The request will return immediately, the process runs in the background.`,
-	Example: `  cloudamqp instance manage 1234 actions upgrade-erlang`,
+	Example: `  cloudamqp instance actions upgrade-erlang --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performUpgradeAction(cmd, "upgrade-erlang", "")
 	},
 }
 
 var upgradeRabbitMQCmd = &cobra.Command{
-	Use:   "upgrade-rabbitmq",
+	Use:   "upgrade-rabbitmq --id <instance_id>",
 	Short: "Upgrade RabbitMQ",
 	Long: `Upgrade RabbitMQ to specified version.
 
 Note: This action is asynchronous. The request will return immediately, the process runs in the background.`,
-	Example: `  cloudamqp instance manage 1234 actions upgrade-rabbitmq --version=3.10.7`,
+	Example: `  cloudamqp instance actions upgrade-rabbitmq --id 1234 --version=3.10.7`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		version, _ := cmd.Flags().GetString("version")
 		if version == "" {
@@ -129,12 +133,12 @@ Note: This action is asynchronous. The request will return immediately, the proc
 }
 
 var upgradeRabbitMQErlangCmd = &cobra.Command{
-	Use:   "upgrade-all",
+	Use:   "upgrade-all --id <instance_id>",
 	Short: "Upgrade RabbitMQ and Erlang",
 	Long: `Always updates to latest possible version of both RabbitMQ and Erlang.
 
 Note: This action is asynchronous. The request will return immediately, the process runs in the background.`,
-	Example: `  cloudamqp instance manage 1234 actions upgrade-all`,
+	Example: `  cloudamqp instance actions upgrade-all --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performUpgradeAction(cmd, "upgrade-all", "")
 	},
@@ -142,41 +146,45 @@ Note: This action is asynchronous. The request will return immediately, the proc
 
 // HiPE and Firehose commands
 var toggleHiPECmd = &cobra.Command{
-	Use:     "toggle-hipe",
+	Use:     "toggle-hipe --id <instance_id>",
 	Short:   "Enable/disable HiPE",
 	Long:    `Enable or disable HiPE (High Performance Erlang) compilation.`,
-	Example: `  cloudamqp instance manage 1234 actions toggle-hipe --enable=true`,
+	Example: `  cloudamqp instance actions toggle-hipe --id 1234 --enable=true`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performToggleAction(cmd, "hipe")
 	},
 }
 
 var toggleFirehoseCmd = &cobra.Command{
-	Use:     "toggle-firehose",
+	Use:     "toggle-firehose --id <instance_id>",
 	Short:   "Enable/disable Firehose",
 	Long:    `Enable or disable RabbitMQ Firehose tracing (not recommended in production).`,
-	Example: `  cloudamqp instance manage 1234 actions toggle-firehose --enable=true --vhost=/`,
+	Example: `  cloudamqp instance actions toggle-firehose --id 1234 --enable=true --vhost=/`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performToggleAction(cmd, "firehose")
 	},
 }
 
 var upgradeVersionsCmd = &cobra.Command{
-	Use:     "upgrade-versions",
+	Use:     "upgrade-versions --id <instance_id>",
 	Short:   "Fetch upgrade versions",
 	Long:    `Returns what version of Erlang and RabbitMQ the cluster will update to.`,
-	Example: `  cloudamqp instance manage 1234 actions upgrade-versions`,
+	Example: `  cloudamqp instance actions upgrade-versions --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		instanceID := currentInstanceID
-
-		instanceAPIKey, err := getInstanceAPIKey(instanceID)
-		if err != nil {
-			return fmt.Errorf("failed to get instance API key: %w", err)
+		idFlag, _ := cmd.Flags().GetString("id")
+		if idFlag == "" {
+			return fmt.Errorf("instance ID is required. Use --id flag")
 		}
 
-		c := client.NewInstanceAPI(instanceAPIKey)
+		var err error
+		apiKey, err := getAPIKey()
+		if err != nil {
+			return fmt.Errorf("failed to get API key: %w", err)
+		}
 
-		versions, err := c.GetUpgradeVersions()
+		c := client.New(apiKey)
+
+		versions, err := c.GetUpgradeVersions(idFlag)
 		if err != nil {
 			fmt.Printf("Error getting upgrade versions: %v\n", err)
 			return err
@@ -194,14 +202,18 @@ var upgradeVersionsCmd = &cobra.Command{
 
 // Helper functions
 func performNodeAction(cmd *cobra.Command, action string) error {
-	instanceID := currentInstanceID
-
-	instanceAPIKey, err := getInstanceAPIKey(instanceID)
-	if err != nil {
-		return fmt.Errorf("failed to get instance API key: %w", err)
+	idFlag, _ := cmd.Flags().GetString("id")
+	if idFlag == "" {
+		return fmt.Errorf("instance ID is required. Use --id flag")
 	}
 
-	c := client.NewInstanceAPI(instanceAPIKey)
+	var err error
+	apiKey, err := getAPIKey()
+	if err != nil {
+		return fmt.Errorf("failed to get API key: %w", err)
+	}
+
+	c := client.New(apiKey)
 
 	nodesStr, _ := cmd.Flags().GetString("nodes")
 	var nodes []string
@@ -211,15 +223,15 @@ func performNodeAction(cmd *cobra.Command, action string) error {
 
 	switch action {
 	case "restart-rabbitmq":
-		err = c.RestartRabbitMQ(nodes)
+		err = c.RestartRabbitMQ(idFlag, nodes)
 	case "restart-management":
-		err = c.RestartManagement(nodes)
+		err = c.RestartManagement(idFlag, nodes)
 	case "stop":
-		err = c.StopInstance(nodes)
+		err = c.StopInstance(idFlag, nodes)
 	case "start":
-		err = c.StartInstance(nodes)
+		err = c.StartInstance(idFlag, nodes)
 	case "reboot":
-		err = c.RebootInstance(nodes)
+		err = c.RebootInstance(idFlag, nodes)
 	default:
 		return fmt.Errorf("unknown action: %s", action)
 	}
@@ -234,22 +246,26 @@ func performNodeAction(cmd *cobra.Command, action string) error {
 }
 
 func performClusterAction(cmd *cobra.Command, action string) error {
-	instanceID := currentInstanceID
-
-	instanceAPIKey, err := getInstanceAPIKey(instanceID)
-	if err != nil {
-		return fmt.Errorf("failed to get instance API key: %w", err)
+	idFlag, _ := cmd.Flags().GetString("id")
+	if idFlag == "" {
+		return fmt.Errorf("instance ID is required. Use --id flag")
 	}
 
-	c := client.NewInstanceAPI(instanceAPIKey)
+	var err error
+	apiKey, err := getAPIKey()
+	if err != nil {
+		return fmt.Errorf("failed to get API key: %w", err)
+	}
+
+	c := client.New(apiKey)
 
 	switch action {
 	case "restart-cluster":
-		err = c.RestartCluster()
+		err = c.RestartCluster(idFlag)
 	case "stop-cluster":
-		err = c.StopCluster()
+		err = c.StopCluster(idFlag)
 	case "start-cluster":
-		err = c.StartCluster()
+		err = c.StartCluster(idFlag)
 	default:
 		return fmt.Errorf("unknown action: %s", action)
 	}
@@ -264,22 +280,26 @@ func performClusterAction(cmd *cobra.Command, action string) error {
 }
 
 func performUpgradeAction(cmd *cobra.Command, action, version string) error {
-	instanceID := currentInstanceID
-
-	instanceAPIKey, err := getInstanceAPIKey(instanceID)
-	if err != nil {
-		return fmt.Errorf("failed to get instance API key: %w", err)
+	idFlag, _ := cmd.Flags().GetString("id")
+	if idFlag == "" {
+		return fmt.Errorf("instance ID is required. Use --id flag")
 	}
 
-	c := client.NewInstanceAPI(instanceAPIKey)
+	var err error
+	apiKey, err := getAPIKey()
+	if err != nil {
+		return fmt.Errorf("failed to get API key: %w", err)
+	}
+
+	c := client.New(apiKey)
 
 	switch action {
 	case "upgrade-erlang":
-		err = c.UpgradeErlang()
+		err = c.UpgradeErlang(idFlag)
 	case "upgrade-rabbitmq":
-		err = c.UpgradeRabbitMQ(version)
+		err = c.UpgradeRabbitMQ(idFlag, version)
 	case "upgrade-all":
-		err = c.UpgradeRabbitMQErlang()
+		err = c.UpgradeRabbitMQErlang(idFlag)
 	default:
 		return fmt.Errorf("unknown action: %s", action)
 	}
@@ -294,14 +314,18 @@ func performUpgradeAction(cmd *cobra.Command, action, version string) error {
 }
 
 func performToggleAction(cmd *cobra.Command, action string) error {
-	instanceID := currentInstanceID
-
-	instanceAPIKey, err := getInstanceAPIKey(instanceID)
-	if err != nil {
-		return fmt.Errorf("failed to get instance API key: %w", err)
+	idFlag, _ := cmd.Flags().GetString("id")
+	if idFlag == "" {
+		return fmt.Errorf("instance ID is required. Use --id flag")
 	}
 
-	c := client.NewInstanceAPI(instanceAPIKey)
+	var err error
+	apiKey, err := getAPIKey()
+	if err != nil {
+		return fmt.Errorf("failed to get API key: %w", err)
+	}
+
+	c := client.New(apiKey)
 
 	enable, _ := cmd.Flags().GetBool("enable")
 
@@ -317,7 +341,7 @@ func performToggleAction(cmd *cobra.Command, action string) error {
 			Enable: enable,
 			Nodes:  nodes,
 		}
-		err = c.ToggleHiPE(req)
+		err = c.ToggleHiPE(idFlag, req)
 
 	case "firehose":
 		vhost, _ := cmd.Flags().GetString("vhost")
@@ -329,7 +353,7 @@ func performToggleAction(cmd *cobra.Command, action string) error {
 			Enable: enable,
 			VHost:  vhost,
 		}
-		err = c.ToggleFirehose(req)
+		err = c.ToggleFirehose(idFlag, req)
 
 	default:
 		return fmt.Errorf("unknown action: %s", action)
@@ -349,6 +373,20 @@ func performToggleAction(cmd *cobra.Command, action string) error {
 }
 
 func init() {
+	// Add --id flag to all action commands
+	commands := []*cobra.Command{
+		restartRabbitMQCmd, restartClusterCmd, restartManagementCmd,
+		stopCmd, startCmd, rebootCmd,
+		stopClusterCmd, startClusterCmd,
+		upgradeErlangCmd, upgradeRabbitMQCmd, upgradeRabbitMQErlangCmd,
+		toggleHiPECmd, toggleFirehoseCmd, upgradeVersionsCmd,
+	}
+	
+	for _, cmd := range commands {
+		cmd.Flags().StringP("id", "", "", "Instance ID (required)")
+		cmd.MarkFlagRequired("id")
+	}
+	
 	// Add node flags where applicable
 	restartRabbitMQCmd.Flags().String("nodes", "", "Comma-separated list of node names")
 	restartManagementCmd.Flags().String("nodes", "", "Comma-separated list of node names")

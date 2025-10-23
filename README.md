@@ -4,9 +4,9 @@ A command line interface for the CloudAMQP API that provides complete management
 
 ## Features
 
-- **Complete API Coverage**: Supports all endpoints from both the main CloudAMQP API and Instance API
-- **Smart Key Management**: Automatically handles both main API keys and instance-specific API keys
-- **JSON Configuration**: Structured configuration with automatic legacy migration
+- **Unified API**: Single API key manages all operations through the customer API
+- **Simple Configuration**: Plain text API key storage in `~/.cloudamqprc`
+- **Flag-Based Commands**: Clean command structure with `--id` flags for instance operations
 - **User-Friendly**: Clear help messages, examples, and safety confirmations
 - **Error Handling**: Proper API error extraction and display
 
@@ -32,35 +32,26 @@ go build -o cloudamqp
 The CLI looks for your API key in the following order:
 
 1. `CLOUDAMQP_APIKEY` environment variable
-2. `~/.cloudamqprc` file (JSON format)
+2. `~/.cloudamqprc` file (plain text format)
 3. If neither exists, you will be prompted to enter it
-
-Instance API keys are automatically saved when using the `instance get` command.
 
 ### Config File Format
 
-The configuration file `~/.cloudamqprc` uses JSON format:
+The configuration file `~/.cloudamqprc` contains only your API key in plain text:
 
-```json
-{
-  "main_api_key": "your-main-api-key-here",
-  "instance_keys": {
-    "1234": "instance-1234-api-key",
-    "5678": "instance-5678-api-key"
-  }
-}
+```
+your-api-key-here
 ```
 
 ### Environment Variables
 
-- `CLOUDAMQP_APIKEY` - Main API key
-- `CLOUDAMQP_INSTANCE_<id>_APIKEY` - Instance-specific API key (e.g., `CLOUDAMQP_INSTANCE_1234_APIKEY`)
+- `CLOUDAMQP_APIKEY` - Your CloudAMQP API key
 
 ## Commands
 
 ### Instance Management
 
-Manage CloudAMQP instances using the main API key.
+Manage CloudAMQP instances using your main API key.
 
 ```bash
 # Create a new instance
@@ -69,17 +60,17 @@ cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-
 # List all instances
 cloudamqp instance list
 
-# Get instance details (automatically saves instance API key)
-cloudamqp instance get 1234
+# Get instance details
+cloudamqp instance get --id 1234
 
 # Update instance properties
-cloudamqp instance update 1234 --name=new-name --plan=rabbit-1
+cloudamqp instance update --id 1234 --name=new-name --plan=rabbit-1
 
 # Resize instance disk
-cloudamqp instance resize 1234 --disk-size=100 --allow-downtime
+cloudamqp instance resize --id 1234 --disk-size=100 --allow-downtime
 
 # Delete instance (with confirmation)
-cloudamqp instance delete 1234
+cloudamqp instance delete --id 1234
 ```
 
 ### VPC Management
@@ -94,77 +85,90 @@ cloudamqp vpc create --name=my-vpc --region=amazon-web-services::us-east-1 --sub
 cloudamqp vpc list
 
 # Get VPC details
-cloudamqp vpc get 5678
+cloudamqp vpc get --id 5678
 
 # Update VPC
-cloudamqp vpc update 5678 --name=new-vpc-name
+cloudamqp vpc update --id 5678 --name=new-vpc-name
 
 # Delete VPC (with confirmation)
-cloudamqp vpc delete 5678
+cloudamqp vpc delete --id 5678
 ```
 
 ### Instance-Specific Management
 
-Manage specific instances using instance API keys. These commands use the Instance API.
+Manage specific instances using the unified API. All commands use `--id` flag to specify the instance.
 
 #### Node Management
 
 ```bash
 # List nodes in an instance
-cloudamqp instance manage 1234 nodes list
+cloudamqp instance nodes list --id 1234
 
 # Get available versions for upgrade
-cloudamqp instance manage 1234 nodes versions
+cloudamqp instance nodes versions --id 1234
 ```
 
 #### Plugin Management
 
 ```bash
 # List available RabbitMQ plugins
-cloudamqp instance manage 1234 plugins list
+cloudamqp instance plugins list --id 1234
+```
+
+#### RabbitMQ Configuration
+
+```bash
+# List all configuration settings
+cloudamqp instance config list --id 1234
+
+# Get specific configuration setting
+cloudamqp instance config get --id 1234 --key tcp_listen_options
+
+# Set configuration setting
+cloudamqp instance config set --id 1234 --key tcp_listen_options --value '[{"port": 5672}]'
 ```
 
 #### Instance Actions
 
 ```bash
 # Restart RabbitMQ
-cloudamqp instance manage 1234 actions restart-rabbitmq
-cloudamqp instance manage 1234 actions restart-rabbitmq --nodes=node1,node2
+cloudamqp instance actions restart-rabbitmq --id 1234
+cloudamqp instance actions restart-rabbitmq --id 1234 --nodes=node1,node2
 
 # Cluster operations
-cloudamqp instance manage 1234 actions restart-cluster
-cloudamqp instance manage 1234 actions stop-cluster
-cloudamqp instance manage 1234 actions start-cluster
+cloudamqp instance actions restart-cluster --id 1234
+cloudamqp instance actions stop-cluster --id 1234
+cloudamqp instance actions start-cluster --id 1234
 
 # Instance lifecycle
-cloudamqp instance manage 1234 actions stop
-cloudamqp instance manage 1234 actions start
-cloudamqp instance manage 1234 actions reboot
+cloudamqp instance actions stop --id 1234
+cloudamqp instance actions start --id 1234
+cloudamqp instance actions reboot --id 1234
 
 # Management interface
-cloudamqp instance manage 1234 actions restart-management
+cloudamqp instance actions restart-management --id 1234
 
 # Upgrades (asynchronous operations)
-cloudamqp instance manage 1234 actions upgrade-erlang
-cloudamqp instance manage 1234 actions upgrade-rabbitmq --version=3.10.7
-cloudamqp instance manage 1234 actions upgrade-all
+cloudamqp instance actions upgrade-erlang --id 1234
+cloudamqp instance actions upgrade-rabbitmq --id 1234 --version=3.10.7
+cloudamqp instance actions upgrade-all --id 1234
 
 # Get target upgrade versions
-cloudamqp instance manage 1234 actions upgrade-versions
+cloudamqp instance actions upgrade-versions --id 1234
 
 # Toggle features
-cloudamqp instance manage 1234 actions toggle-hipe --enable=true
-cloudamqp instance manage 1234 actions toggle-firehose --enable=true --vhost=/
+cloudamqp instance actions toggle-hipe --id 1234 --enable=true
+cloudamqp instance actions toggle-firehose --id 1234 --enable=true --vhost=/
 ```
 
 #### Account Operations
 
 ```bash
 # Rotate instance password
-cloudamqp instance manage 1234 account rotate-password
+cloudamqp instance account rotate-password --id 1234
 
 # Rotate instance API key
-cloudamqp instance manage 1234 account rotate-apikey
+cloudamqp instance account rotate-apikey --id 1234
 ```
 
 ### Informational Commands
@@ -178,7 +182,6 @@ cloudamqp regions --provider=amazon-web-services
 cloudamqp plans
 cloudamqp plans --backend=rabbitmq
 ```
-
 
 ### Team Management
 
@@ -215,20 +218,23 @@ cloudamqp rotate-key
 # 1. Create an instance
 cloudamqp instance create --name=production --plan=bunny-1 --region=amazon-web-services::us-east-1
 
-# 2. Get instance details (saves instance API key)
-cloudamqp instance get 1234
+# 2. Get instance details
+cloudamqp instance get --id 1234
 
 # 3. Check instance nodes
-cloudamqp instance manage 1234 nodes list
+cloudamqp instance nodes list --id 1234
 
-# 4. Install plugins (if needed)
-cloudamqp instance manage 1234 plugins list
+# 4. List RabbitMQ configuration
+cloudamqp instance config list --id 1234
 
-# 5. Restart RabbitMQ
-cloudamqp instance manage 1234 actions restart-rabbitmq
+# 5. Install plugins (if needed)
+cloudamqp instance plugins list --id 1234
 
-# 6. Upgrade when needed
-cloudamqp instance manage 1234 actions upgrade-all
+# 6. Restart RabbitMQ
+cloudamqp instance actions restart-rabbitmq --id 1234
+
+# 7. Upgrade when needed
+cloudamqp instance actions upgrade-all --id 1234
 ```
 
 ### Team Setup
@@ -264,22 +270,13 @@ The CLI provides clear error messages for common issues:
 - **404 Not Found**: Verify instance/VPC IDs are correct
 - **400 Bad Request**: Check required parameters and formats
 
-When instance API keys are missing, the CLI will guide you to retrieve them:
-
-```
-Error: instance API key not found for instance 1234. Use 'cloudamqp instance get 1234' to retrieve it
-```
-
 ## Advanced Usage
 
 ### Using Environment Variables
 
 ```bash
-# Set main API key
-export CLOUDAMQP_APIKEY="your-main-api-key"
-
-# Set instance-specific API key
-export CLOUDAMQP_INSTANCE_1234_APIKEY="instance-specific-key"
+# Set API key
+export CLOUDAMQP_APIKEY="your-api-key"
 
 # Use the CLI without prompts
 cloudamqp instance list
@@ -301,14 +298,14 @@ The CLI is designed for scripting with:
 RESULT=$(cloudamqp instance create --name=temp-instance --plan=lemming --region=amazon-web-services::us-east-1)
 INSTANCE_ID=$(echo "$RESULT" | jq -r '.id')
 
-# Get instance details to save API key
-cloudamqp instance get "$INSTANCE_ID"
+# Get instance details
+cloudamqp instance get --id "$INSTANCE_ID"
 
 # Perform operations
-cloudamqp instance manage "$INSTANCE_ID" actions restart-rabbitmq
+cloudamqp instance actions restart-rabbitmq --id "$INSTANCE_ID"
 
 # Cleanup
-cloudamqp instance delete "$INSTANCE_ID" --force
+cloudamqp instance delete --id "$INSTANCE_ID" --force
 ```
 
 ## Contributing
@@ -334,6 +331,5 @@ For issues and questions:
 
 ## API Documentation
 
-- [Main CloudAMQP API](https://docs.cloudamqp.com/api.html)
-- [Instance API](https://docs.cloudamqp.com/instance-api.html)
+- [CloudAMQP API](https://docs.cloudamqp.com/api.html)
 - [Terraform Provider](https://registry.terraform.io/providers/cloudamqp/cloudamqp/latest/docs)

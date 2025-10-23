@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"cloudamqp-cli/client"
@@ -12,24 +11,32 @@ var instanceNodesCmd = &cobra.Command{
 	Use:   "nodes",
 	Short: "Manage instance nodes",
 	Long:  `List nodes and get available versions for the instance.`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cmd.Help()
+		return fmt.Errorf("subcommand required")
+	},
 }
 
 var instanceNodesListCmd = &cobra.Command{
-	Use:     "list",
+	Use:     "list --id <instance_id>",
 	Short:   "List nodes in the instance",
 	Long:    `Retrieves all nodes in the instance.`,
-	Example: `  cloudamqp instance manage 1234 nodes list`,
+	Example: `  cloudamqp instance nodes list --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		instanceID := currentInstanceID
-
-		instanceAPIKey, err := getInstanceAPIKey(instanceID)
-		if err != nil {
-			return fmt.Errorf("failed to get instance API key: %w", err)
+		idFlag, _ := cmd.Flags().GetString("id")
+		if idFlag == "" {
+			return fmt.Errorf("instance ID is required. Use --id flag")
 		}
 
-		c := client.NewInstanceAPI(instanceAPIKey)
+		var err error
+		apiKey, err := getAPIKey()
+		if err != nil {
+			return fmt.Errorf("failed to get API key: %w", err)
+		}
 
-		nodes, err := c.ListNodes()
+		c := client.New(apiKey)
+
+		nodes, err := c.ListNodes(idFlag)
 		if err != nil {
 			fmt.Printf("Error listing nodes: %v\n", err)
 			return err
@@ -40,48 +47,73 @@ var instanceNodesListCmd = &cobra.Command{
 			return nil
 		}
 
-		output, err := json.MarshalIndent(nodes, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format response: %v", err)
+		// Print table header
+		fmt.Printf("%-20s %-12s %-10s %-10s %-15s\n", "NAME", "CONFIGURED", "RUNNING", "DISK_SIZE", "RABBITMQ_VERSION")
+		fmt.Printf("%-20s %-12s %-10s %-10s %-15s\n", "----", "----------", "-------", "---------", "----------------")
+
+		// Print node data
+		for _, node := range nodes {
+			configured := "No"
+			if node.Configured {
+				configured = "Yes"
+			}
+			running := "No"
+			if node.Running {
+				running = "Yes"
+			}
+			totalDisk := node.DiskSize + node.AdditionalDiskSize
+			fmt.Printf("%-20s %-12s %-10s %-10dGB %-15s\n", 
+				node.Name, 
+				configured, 
+				running, 
+				totalDisk, 
+				node.RabbitMQVersion)
 		}
 
-		fmt.Printf("Nodes:\n%s\n", string(output))
 		return nil
 	},
 }
 
 var instanceNodesVersionsCmd = &cobra.Command{
-	Use:     "versions",
+	Use:     "versions --id <instance_id>",
 	Short:   "Get available versions",
 	Long:    `Lists RabbitMQ and Erlang versions to which the instance can be upgraded.`,
-	Example: `  cloudamqp instance manage 1234 nodes versions`,
+	Example: `  cloudamqp instance nodes versions --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		instanceID := currentInstanceID
-
-		instanceAPIKey, err := getInstanceAPIKey(instanceID)
-		if err != nil {
-			return fmt.Errorf("failed to get instance API key: %w", err)
+		idFlag, _ := cmd.Flags().GetString("id")
+		if idFlag == "" {
+			return fmt.Errorf("instance ID is required. Use --id flag")
 		}
 
-		c := client.NewInstanceAPI(instanceAPIKey)
+		var err error
+		apiKey, err := getAPIKey()
+		if err != nil {
+			return fmt.Errorf("failed to get API key: %w", err)
+		}
 
-		versions, err := c.GetAvailableVersions()
+		c := client.New(apiKey)
+
+		versions, err := c.GetAvailableVersions(idFlag)
 		if err != nil {
 			fmt.Printf("Error getting available versions: %v\n", err)
 			return err
 		}
 
-		output, err := json.MarshalIndent(versions, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format response: %v", err)
-		}
-
-		fmt.Printf("Available versions:\n%s\n", string(output))
+		fmt.Printf("Available versions:\n")
+		fmt.Printf("RabbitMQ versions: %v\n", versions.RabbitMQVersions)
+		fmt.Printf("Erlang versions: %v\n", versions.ErlangVersions)
 		return nil
 	},
 }
 
 func init() {
+	// Add --id flag to all subcommands
+	instanceNodesListCmd.Flags().StringP("id", "", "", "Instance ID (required)")
+	instanceNodesListCmd.MarkFlagRequired("id")
+	
+	instanceNodesVersionsCmd.Flags().StringP("id", "", "", "Instance ID (required)")
+	instanceNodesVersionsCmd.MarkFlagRequired("id")
+	
 	instanceNodesCmd.AddCommand(instanceNodesListCmd)
 	instanceNodesCmd.AddCommand(instanceNodesVersionsCmd)
 }

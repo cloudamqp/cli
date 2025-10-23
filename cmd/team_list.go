@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"cloudamqp-cli/client"
@@ -33,12 +32,15 @@ var teamListCmd = &cobra.Command{
 			return nil
 		}
 
-		output, err := json.MarshalIndent(members, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format response: %v", err)
+		// Print table header
+		fmt.Printf("%-40s\n", "EMAIL")
+		fmt.Printf("%-40s\n", "-----")
+
+		// Print team member data
+		for _, member := range members {
+			fmt.Printf("%-40s\n", member.Email)
 		}
 
-		fmt.Printf("Team members:\n%s\n", string(output))
 		return nil
 	},
 }

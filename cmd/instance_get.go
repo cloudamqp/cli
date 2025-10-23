@@ -1,28 +1,32 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"cloudamqp-cli/client"
 	"github.com/spf13/cobra"
 )
 
 var instanceGetCmd = &cobra.Command{
-	Use:     "get <id>",
+	Use:     "get --id <id>",
 	Short:   "Get details of a specific CloudAMQP instance",
 	Long:    `Retrieves and displays detailed information about a specific CloudAMQP instance.`,
-	Example: `  cloudamqp instance get 1234`,
-	Args:    cobra.ExactArgs(1),
+	Example: `  cloudamqp instance get --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		idFlag, _ := cmd.Flags().GetString("id")
+		if idFlag == "" {
+			return fmt.Errorf("instance ID is required. Use --id flag")
+		}
+
 		var err error
 		apiKey, err = getAPIKey()
 		if err != nil {
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		instanceID, err := strconv.Atoi(args[0])
+		instanceID, err := strconv.Atoi(idFlag)
 		if err != nil {
 			return fmt.Errorf("invalid instance ID: %v", err)
 		}
@@ -35,21 +39,24 @@ var instanceGetCmd = &cobra.Command{
 			return err
 		}
 
-		// Save instance API key to config if it exists
-		if instance.APIKey != "" {
-			if err := saveInstanceAPIKey(strconv.Itoa(instanceID), instance.APIKey); err != nil {
-				fmt.Printf("Warning: failed to save instance API key to config: %v\n", err)
-			} else {
-				fmt.Printf("Instance API key saved for instance %d\n", instanceID)
-			}
-		}
 
-		output, err := json.MarshalIndent(instance, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format response: %v", err)
+		// Format output as "Name = Value"
+		fmt.Printf("Name = %s\n", instance.Name)
+		fmt.Printf("Plan = %s\n", instance.Plan)
+		fmt.Printf("Region = %s\n", instance.Region)
+		fmt.Printf("Tags = %s\n", strings.Join(instance.Tags, ","))
+		fmt.Printf("Hostname = %s\n", instance.HostnameExternal)
+		ready := "No"
+		if instance.Ready {
+			ready = "Yes"
 		}
-
-		fmt.Printf("Instance details:\n%s\n", string(output))
+		fmt.Printf("Ready = %s\n", ready)
+		
 		return nil
 	},
+}
+
+func init() {
+	instanceGetCmd.Flags().StringP("id", "", "", "Instance ID (required)")
+	instanceGetCmd.MarkFlagRequired("id")
 }
