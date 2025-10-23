@@ -90,3 +90,8 @@ func readPassword() (string, error) {
 		return strings.TrimSpace(password), nil
 	}
 }
+
+// saveMainAPIKey is an alias for saveAPIKey for compatibility with tests
+func saveMainAPIKey(apiKey string) error {
+	return saveAPIKey(apiKey)
+}
