@@ -10,11 +10,11 @@ import (
 )
 
 var instanceGetCmd = &cobra.Command{
-	Use:   "get <id>",
-	Short: "Get details of a specific CloudAMQP instance",
-	Long:  `Retrieves and displays detailed information about a specific CloudAMQP instance.`,
+	Use:     "get <id>",
+	Short:   "Get details of a specific CloudAMQP instance",
+	Long:    `Retrieves and displays detailed information about a specific CloudAMQP instance.`,
 	Example: `  cloudamqp instance get 1234`,
-	Args:  cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		apiKey, err = getAPIKey()

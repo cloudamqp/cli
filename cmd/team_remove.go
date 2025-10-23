@@ -11,9 +11,9 @@ import (
 var removeEmail string
 
 var teamRemoveCmd = &cobra.Command{
-	Use:   "remove",
-	Short: "Remove a user from the team",
-	Long:  `Removes a user from the team.`,
+	Use:     "remove",
+	Short:   "Remove a user from the team",
+	Long:    `Removes a user from the team.`,
 	Example: `  cloudamqp team remove --email=user@example.com`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error

@@ -14,13 +14,13 @@ var instanceAccountCmd = &cobra.Command{
 }
 
 var rotatePasswordCmd = &cobra.Command{
-	Use:   "rotate-password",
-	Short: "Rotate password",
-	Long:  `Initiate rotation of the user password on your instance.`,
+	Use:     "rotate-password",
+	Short:   "Rotate password",
+	Long:    `Initiate rotation of the user password on your instance.`,
 	Example: `  cloudamqp instance manage 1234 account rotate-password`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		instanceID := currentInstanceID
-		
+
 		instanceAPIKey, err := getInstanceAPIKey(instanceID)
 		if err != nil {
 			return fmt.Errorf("failed to get instance API key: %w", err)
@@ -40,13 +40,13 @@ var rotatePasswordCmd = &cobra.Command{
 }
 
 var rotateInstanceAPIKeyCmd = &cobra.Command{
-	Use:   "rotate-apikey",
-	Short: "Rotate Instance API key",
-	Long:  `Rotate the Instance API key.`,
+	Use:     "rotate-apikey",
+	Short:   "Rotate Instance API key",
+	Long:    `Rotate the Instance API key.`,
 	Example: `  cloudamqp instance manage 1234 account rotate-apikey`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		instanceID := currentInstanceID
-		
+
 		instanceAPIKey, err := getInstanceAPIKey(instanceID)
 		if err != nil {
 			return fmt.Errorf("failed to get instance API key: %w", err)

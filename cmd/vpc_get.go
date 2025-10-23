@@ -10,11 +10,11 @@ import (
 )
 
 var vpcGetCmd = &cobra.Command{
-	Use:   "get <id>",
-	Short: "Get details of a specific CloudAMQP VPC",
-	Long:  `Retrieves and displays detailed information about a specific CloudAMQP VPC.`,
+	Use:     "get <id>",
+	Short:   "Get details of a specific CloudAMQP VPC",
+	Long:    `Retrieves and displays detailed information about a specific CloudAMQP VPC.`,
 	Example: `  cloudamqp vpc get 5678`,
-	Args:  cobra.ExactArgs(1),
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		apiKey, err = getAPIKey()

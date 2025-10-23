@@ -15,13 +15,13 @@ var instanceNodesCmd = &cobra.Command{
 }
 
 var instanceNodesListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List nodes in the instance",
-	Long:  `Retrieves all nodes in the instance.`,
+	Use:     "list",
+	Short:   "List nodes in the instance",
+	Long:    `Retrieves all nodes in the instance.`,
 	Example: `  cloudamqp instance manage 1234 nodes list`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		instanceID := currentInstanceID
-		
+
 		instanceAPIKey, err := getInstanceAPIKey(instanceID)
 		if err != nil {
 			return fmt.Errorf("failed to get instance API key: %w", err)
@@ -51,13 +51,13 @@ var instanceNodesListCmd = &cobra.Command{
 }
 
 var instanceNodesVersionsCmd = &cobra.Command{
-	Use:   "versions",
-	Short: "Get available versions",
-	Long:  `Lists RabbitMQ and Erlang versions to which the instance can be upgraded.`,
+	Use:     "versions",
+	Short:   "Get available versions",
+	Long:    `Lists RabbitMQ and Erlang versions to which the instance can be upgraded.`,
 	Example: `  cloudamqp instance manage 1234 nodes versions`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		instanceID := currentInstanceID
-		
+
 		instanceAPIKey, err := getInstanceAPIKey(instanceID)
 		if err != nil {
 			return fmt.Errorf("failed to get instance API key: %w", err)

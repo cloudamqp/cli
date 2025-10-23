@@ -7,19 +7,19 @@ import (
 )
 
 type Instance struct {
-	ID                 int    `json:"id"`
-	Plan               string `json:"plan"`
-	Region             string `json:"region"`
-	Name               string `json:"name"`
-	Tags               []string `json:"tags"`
-	ProviderID         string `json:"providerid"`
-	VPCID              *int   `json:"vpc_id"`
-	URL                string `json:"url"`
-	APIKey             string `json:"apikey"`
-	Ready              bool   `json:"ready"`
-	RMQVersion         string `json:"rmq_version"`
-	HostnameExternal   string `json:"hostname_external"`
-	HostnameInternal   string `json:"hostname_internal"`
+	ID               int      `json:"id"`
+	Plan             string   `json:"plan"`
+	Region           string   `json:"region"`
+	Name             string   `json:"name"`
+	Tags             []string `json:"tags"`
+	ProviderID       string   `json:"providerid"`
+	VPCID            *int     `json:"vpc_id"`
+	URL              string   `json:"url"`
+	APIKey           string   `json:"apikey"`
+	Ready            bool     `json:"ready"`
+	RMQVersion       string   `json:"rmq_version"`
+	HostnameExternal string   `json:"hostname_external"`
+	HostnameInternal string   `json:"hostname_internal"`
 }
 
 type InstanceCreateRequest struct {
@@ -77,17 +77,17 @@ func (c *Client) CreateInstance(req *InstanceCreateRequest) (*InstanceCreateResp
 	formData.Set("name", req.Name)
 	formData.Set("plan", req.Plan)
 	formData.Set("region", req.Region)
-	
+
 	if len(req.Tags) > 0 {
 		for _, tag := range req.Tags {
 			formData.Add("tags[]", tag)
 		}
 	}
-	
+
 	if req.VPCSubnet != "" {
 		formData.Set("vpc_subnet", req.VPCSubnet)
 	}
-	
+
 	if req.VPCID != nil {
 		formData.Set("vpc_id", strconv.Itoa(*req.VPCID))
 	}
@@ -107,7 +107,7 @@ func (c *Client) CreateInstance(req *InstanceCreateRequest) (*InstanceCreateResp
 
 func (c *Client) UpdateInstance(id int, req *InstanceUpdateRequest) error {
 	endpoint := "/instances/" + strconv.Itoa(id)
-	
+
 	formData := url.Values{}
 	if req.Name != "" {
 		formData.Set("name", req.Name)
@@ -138,7 +138,7 @@ type DiskResizeRequest struct {
 
 func (c *Client) ResizeInstanceDisk(id int, req *DiskResizeRequest) error {
 	endpoint := "/instances/" + strconv.Itoa(id) + "/disk"
-	
+
 	formData := url.Values{}
 	formData.Set("extra_disk_size", strconv.Itoa(req.ExtraDiskSize))
 	if req.AllowDowntime {

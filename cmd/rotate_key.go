@@ -9,9 +9,9 @@ import (
 )
 
 var rotateKeyCmd = &cobra.Command{
-	Use:   "rotate-key",
-	Short: "Rotate API key",
-	Long:  `Removes the current API key and creates a new one with matching permissions.`,
+	Use:     "rotate-key",
+	Short:   "Rotate API key",
+	Long:    `Removes the current API key and creates a new one with matching permissions.`,
 	Example: `  cloudamqp rotate-key`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
@@ -34,14 +34,14 @@ var rotateKeyCmd = &cobra.Command{
 		}
 
 		fmt.Printf("API key rotated successfully:\n%s\n", string(output))
-		
+
 		// Update local config file with new key
 		if err := saveMainAPIKey(resp.APIKey); err != nil {
 			fmt.Printf("Warning: Could not update local config file: %v\n", err)
 		} else {
 			fmt.Printf("Local config file updated with new API key.\n")
 		}
-		
+
 		return nil
 	},
 }

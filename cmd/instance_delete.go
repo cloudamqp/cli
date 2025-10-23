@@ -41,7 +41,7 @@ WARNING: This action cannot be undone. All data will be lost.`,
 			if err != nil {
 				return fmt.Errorf("failed to read confirmation: %v", err)
 			}
-			
+
 			response = strings.TrimSpace(strings.ToLower(response))
 			if response != "y" && response != "yes" {
 				fmt.Println("Delete operation cancelled.")

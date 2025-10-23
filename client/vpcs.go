@@ -68,7 +68,7 @@ func (c *Client) CreateVPC(req *VPCCreateRequest) (*VPCCreateResponse, error) {
 	formData.Set("name", req.Name)
 	formData.Set("region", req.Region)
 	formData.Set("subnet", req.Subnet)
-	
+
 	if len(req.Tags) > 0 {
 		for _, tag := range req.Tags {
 			formData.Add("tags[]", tag)
@@ -90,7 +90,7 @@ func (c *Client) CreateVPC(req *VPCCreateRequest) (*VPCCreateResponse, error) {
 
 func (c *Client) UpdateVPC(id int, req *VPCUpdateRequest) error {
 	endpoint := "/vpcs/" + strconv.Itoa(id)
-	
+
 	formData := url.Values{}
 	if req.Name != "" {
 		formData.Set("name", req.Name)

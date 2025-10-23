@@ -9,9 +9,9 @@ import (
 )
 
 var teamListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List team members",
-	Long:  `Retrieves all team members.`,
+	Use:     "list",
+	Short:   "List team members",
+	Long:    `Retrieves all team members.`,
 	Example: `  cloudamqp team list`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error

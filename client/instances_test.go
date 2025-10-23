@@ -24,7 +24,7 @@ func TestListInstances(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/instances", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedInstances)
 	}))
@@ -37,7 +37,7 @@ func TestListInstances(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	instances, err := client.ListInstances()
-	
+
 	assert.NoError(t, err)
 	assert.Len(t, instances, 1)
 	assert.Equal(t, expectedInstances[0].ID, instances[0].ID)
@@ -58,7 +58,7 @@ func TestGetInstance(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/instances/1234", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedInstance)
 	}))
@@ -71,7 +71,7 @@ func TestGetInstance(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	instance, err := client.GetInstance(1234)
-	
+
 	assert.NoError(t, err)
 	assert.Equal(t, expectedInstance.ID, instance.ID)
 	assert.Equal(t, expectedInstance.APIKey, instance.APIKey)
@@ -89,14 +89,14 @@ func TestCreateInstance(t *testing.T) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/instances", r.URL.Path)
 		assert.Equal(t, "application/x-www-form-urlencoded", r.Header.Get("Content-Type"))
-		
+
 		// Parse form data
 		err := r.ParseForm()
 		assert.NoError(t, err)
 		assert.Equal(t, "test-instance", r.FormValue("name"))
 		assert.Equal(t, "bunny-1", r.FormValue("plan"))
 		assert.Equal(t, "amazon-web-services::us-east-1", r.FormValue("region"))
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedResponse)
 	}))
@@ -115,7 +115,7 @@ func TestCreateInstance(t *testing.T) {
 	}
 
 	response, err := client.CreateInstance(req)
-	
+
 	assert.NoError(t, err)
 	assert.Equal(t, expectedResponse.ID, response.ID)
 	assert.Equal(t, expectedResponse.APIKey, response.APIKey)
@@ -125,13 +125,13 @@ func TestCreateInstance_WithTags(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		assert.NoError(t, err)
-		
+
 		// Check that tags are properly encoded as array
 		tags := r.Form["tags[]"]
 		assert.Len(t, tags, 2)
 		assert.Contains(t, tags, "production")
 		assert.Contains(t, tags, "web-app")
-		
+
 		response := InstanceCreateResponse{ID: 1234}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -157,10 +157,10 @@ func TestCreateInstance_WithVPC(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		assert.NoError(t, err)
-		
+
 		assert.Equal(t, "10.0.0.0/24", r.FormValue("vpc_subnet"))
 		assert.Equal(t, "5678", r.FormValue("vpc_id"))
-		
+
 		response := InstanceCreateResponse{ID: 1234}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -188,12 +188,12 @@ func TestUpdateInstance(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/instances/1234", r.URL.Path)
-		
+
 		err := r.ParseForm()
 		assert.NoError(t, err)
 		assert.Equal(t, "updated-name", r.FormValue("name"))
 		assert.Equal(t, "rabbit-1", r.FormValue("plan"))
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -216,7 +216,7 @@ func TestDeleteInstance(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "DELETE", r.Method)
 		assert.Equal(t, "/instances/1234", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -234,12 +234,12 @@ func TestResizeInstanceDisk(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/instances/1234/disk", r.URL.Path)
-		
+
 		err := r.ParseForm()
 		assert.NoError(t, err)
 		assert.Equal(t, "100", r.FormValue("extra_disk_size"))
 		assert.Equal(t, "true", r.FormValue("allow_downtime"))
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -265,7 +265,7 @@ func TestResizeInstanceDisk_NoDowntime(t *testing.T) {
 		assert.Equal(t, "50", r.FormValue("extra_disk_size"))
 		// allow_downtime should not be set when false
 		assert.Empty(t, r.FormValue("allow_downtime"))
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()

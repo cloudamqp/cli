@@ -28,9 +28,9 @@ var restartRabbitMQCmd = &cobra.Command{
 }
 
 var restartClusterCmd = &cobra.Command{
-	Use:   "restart-cluster",
-	Short: "Restart cluster",
-	Long:  `Restart the entire cluster.`,
+	Use:     "restart-cluster",
+	Short:   "Restart cluster",
+	Long:    `Restart the entire cluster.`,
 	Example: `  cloudamqp instance manage 1234 actions restart-cluster`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performClusterAction(cmd, "restart-cluster")
@@ -38,9 +38,9 @@ var restartClusterCmd = &cobra.Command{
 }
 
 var restartManagementCmd = &cobra.Command{
-	Use:   "restart-management",
-	Short: "Restart management interface",
-	Long:  `Restart the RabbitMQ management interface.`,
+	Use:     "restart-management",
+	Short:   "Restart management interface",
+	Long:    `Restart the RabbitMQ management interface.`,
 	Example: `  cloudamqp instance manage 1234 actions restart-management`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performNodeAction(cmd, "restart-management")
@@ -49,9 +49,9 @@ var restartManagementCmd = &cobra.Command{
 
 // Stop/Start commands
 var stopCmd = &cobra.Command{
-	Use:   "stop",
-	Short: "Stop instance",
-	Long:  `Stop specified nodes or all nodes.`,
+	Use:     "stop",
+	Short:   "Stop instance",
+	Long:    `Stop specified nodes or all nodes.`,
 	Example: `  cloudamqp instance manage 1234 actions stop`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performNodeAction(cmd, "stop")
@@ -59,9 +59,9 @@ var stopCmd = &cobra.Command{
 }
 
 var startCmd = &cobra.Command{
-	Use:   "start",
-	Short: "Start instance",
-	Long:  `Start specified nodes or all nodes.`,
+	Use:     "start",
+	Short:   "Start instance",
+	Long:    `Start specified nodes or all nodes.`,
 	Example: `  cloudamqp instance manage 1234 actions start`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performNodeAction(cmd, "start")
@@ -69,9 +69,9 @@ var startCmd = &cobra.Command{
 }
 
 var rebootCmd = &cobra.Command{
-	Use:   "reboot",
-	Short: "Reboot instance",
-	Long:  `Reboot specified nodes or all nodes.`,
+	Use:     "reboot",
+	Short:   "Reboot instance",
+	Long:    `Reboot specified nodes or all nodes.`,
 	Example: `  cloudamqp instance manage 1234 actions reboot`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performNodeAction(cmd, "reboot")
@@ -80,9 +80,9 @@ var rebootCmd = &cobra.Command{
 
 // Cluster commands
 var stopClusterCmd = &cobra.Command{
-	Use:   "stop-cluster",
-	Short: "Stop cluster",
-	Long:  `Stop the entire cluster.`,
+	Use:     "stop-cluster",
+	Short:   "Stop cluster",
+	Long:    `Stop the entire cluster.`,
 	Example: `  cloudamqp instance manage 1234 actions stop-cluster`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performClusterAction(cmd, "stop-cluster")
@@ -90,9 +90,9 @@ var stopClusterCmd = &cobra.Command{
 }
 
 var startClusterCmd = &cobra.Command{
-	Use:   "start-cluster",
-	Short: "Start cluster",
-	Long:  `Start the entire cluster.`,
+	Use:     "start-cluster",
+	Short:   "Start cluster",
+	Long:    `Start the entire cluster.`,
 	Example: `  cloudamqp instance manage 1234 actions start-cluster`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performClusterAction(cmd, "start-cluster")
@@ -104,7 +104,7 @@ var upgradeErlangCmd = &cobra.Command{
 	Use:   "upgrade-erlang",
 	Short: "Upgrade Erlang",
 	Long: `Always updates to latest compatible version.
-	
+
 Note: This action is asynchronous. The request will return immediately, the process runs in the background.`,
 	Example: `  cloudamqp instance manage 1234 actions upgrade-erlang`,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -116,7 +116,7 @@ var upgradeRabbitMQCmd = &cobra.Command{
 	Use:   "upgrade-rabbitmq",
 	Short: "Upgrade RabbitMQ",
 	Long: `Upgrade RabbitMQ to specified version.
-	
+
 Note: This action is asynchronous. The request will return immediately, the process runs in the background.`,
 	Example: `  cloudamqp instance manage 1234 actions upgrade-rabbitmq --version=3.10.7`,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -132,7 +132,7 @@ var upgradeRabbitMQErlangCmd = &cobra.Command{
 	Use:   "upgrade-all",
 	Short: "Upgrade RabbitMQ and Erlang",
 	Long: `Always updates to latest possible version of both RabbitMQ and Erlang.
-	
+
 Note: This action is asynchronous. The request will return immediately, the process runs in the background.`,
 	Example: `  cloudamqp instance manage 1234 actions upgrade-all`,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -142,9 +142,9 @@ Note: This action is asynchronous. The request will return immediately, the proc
 
 // HiPE and Firehose commands
 var toggleHiPECmd = &cobra.Command{
-	Use:   "toggle-hipe",
-	Short: "Enable/disable HiPE",
-	Long:  `Enable or disable HiPE (High Performance Erlang) compilation.`,
+	Use:     "toggle-hipe",
+	Short:   "Enable/disable HiPE",
+	Long:    `Enable or disable HiPE (High Performance Erlang) compilation.`,
 	Example: `  cloudamqp instance manage 1234 actions toggle-hipe --enable=true`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performToggleAction(cmd, "hipe")
@@ -152,9 +152,9 @@ var toggleHiPECmd = &cobra.Command{
 }
 
 var toggleFirehoseCmd = &cobra.Command{
-	Use:   "toggle-firehose",
-	Short: "Enable/disable Firehose",
-	Long:  `Enable or disable RabbitMQ Firehose tracing (not recommended in production).`,
+	Use:     "toggle-firehose",
+	Short:   "Enable/disable Firehose",
+	Long:    `Enable or disable RabbitMQ Firehose tracing (not recommended in production).`,
 	Example: `  cloudamqp instance manage 1234 actions toggle-firehose --enable=true --vhost=/`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return performToggleAction(cmd, "firehose")
@@ -162,13 +162,13 @@ var toggleFirehoseCmd = &cobra.Command{
 }
 
 var upgradeVersionsCmd = &cobra.Command{
-	Use:   "upgrade-versions",
-	Short: "Fetch upgrade versions",
-	Long:  `Returns what version of Erlang and RabbitMQ the cluster will update to.`,
+	Use:     "upgrade-versions",
+	Short:   "Fetch upgrade versions",
+	Long:    `Returns what version of Erlang and RabbitMQ the cluster will update to.`,
 	Example: `  cloudamqp instance manage 1234 actions upgrade-versions`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		instanceID := currentInstanceID
-		
+
 		instanceAPIKey, err := getInstanceAPIKey(instanceID)
 		if err != nil {
 			return fmt.Errorf("failed to get instance API key: %w", err)
@@ -195,7 +195,7 @@ var upgradeVersionsCmd = &cobra.Command{
 // Helper functions
 func performNodeAction(cmd *cobra.Command, action string) error {
 	instanceID := currentInstanceID
-	
+
 	instanceAPIKey, err := getInstanceAPIKey(instanceID)
 	if err != nil {
 		return fmt.Errorf("failed to get instance API key: %w", err)
@@ -235,7 +235,7 @@ func performNodeAction(cmd *cobra.Command, action string) error {
 
 func performClusterAction(cmd *cobra.Command, action string) error {
 	instanceID := currentInstanceID
-	
+
 	instanceAPIKey, err := getInstanceAPIKey(instanceID)
 	if err != nil {
 		return fmt.Errorf("failed to get instance API key: %w", err)
@@ -265,7 +265,7 @@ func performClusterAction(cmd *cobra.Command, action string) error {
 
 func performUpgradeAction(cmd *cobra.Command, action, version string) error {
 	instanceID := currentInstanceID
-	
+
 	instanceAPIKey, err := getInstanceAPIKey(instanceID)
 	if err != nil {
 		return fmt.Errorf("failed to get instance API key: %w", err)
@@ -295,7 +295,7 @@ func performUpgradeAction(cmd *cobra.Command, action, version string) error {
 
 func performToggleAction(cmd *cobra.Command, action string) error {
 	instanceID := currentInstanceID
-	
+
 	instanceAPIKey, err := getInstanceAPIKey(instanceID)
 	if err != nil {
 		return fmt.Errorf("failed to get instance API key: %w", err)
@@ -312,25 +312,25 @@ func performToggleAction(cmd *cobra.Command, action string) error {
 		if nodesStr != "" {
 			nodes = strings.Split(nodesStr, ",")
 		}
-		
+
 		req := &client.HiPERequest{
 			Enable: enable,
 			Nodes:  nodes,
 		}
 		err = c.ToggleHiPE(req)
-		
+
 	case "firehose":
 		vhost, _ := cmd.Flags().GetString("vhost")
 		if vhost == "" {
 			return fmt.Errorf("vhost flag is required for firehose")
 		}
-		
+
 		req := &client.FirehoseRequest{
 			Enable: enable,
 			VHost:  vhost,
 		}
 		err = c.ToggleFirehose(req)
-		
+
 	default:
 		return fmt.Errorf("unknown action: %s", action)
 	}

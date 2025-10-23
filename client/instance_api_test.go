@@ -12,7 +12,7 @@ import (
 func TestNewInstanceAPI(t *testing.T) {
 	apiKey := "test-instance-api-key"
 	client := NewInstanceAPI(apiKey)
-	
+
 	assert.NotNil(t, client)
 	assert.Equal(t, apiKey, client.apiKey)
 	assert.NotNil(t, client.httpClient)
@@ -33,7 +33,7 @@ func TestInstanceAPI_ListNodes(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/nodes", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedNodes)
 	}))
@@ -46,7 +46,7 @@ func TestInstanceAPI_ListNodes(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	nodes, err := client.ListNodes()
-	
+
 	assert.NoError(t, err)
 	assert.Len(t, nodes, 1)
 	assert.Equal(t, expectedNodes[0].Name, nodes[0].Name)
@@ -67,7 +67,7 @@ func TestInstanceAPI_ListPlugins(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/plugins", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedPlugins)
 	}))
@@ -80,7 +80,7 @@ func TestInstanceAPI_ListPlugins(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	plugins, err := client.ListPlugins()
-	
+
 	assert.NoError(t, err)
 	assert.Len(t, plugins, 1)
 	assert.Equal(t, expectedPlugins[0].Name, plugins[0].Name)
@@ -91,7 +91,7 @@ func TestInstanceAPI_RotatePassword(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/account/rotate-password", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -109,7 +109,7 @@ func TestInstanceAPI_RotateInstanceAPIKey(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/account/rotate-apikey", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -128,11 +128,11 @@ func TestInstanceAPI_RestartRabbitMQ(t *testing.T) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/actions/restart", r.URL.Path)
 		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
-		
+
 		var req ActionRequest
 		json.NewDecoder(r.Body).Decode(&req)
 		assert.Equal(t, []string{"node1", "node2"}, req.Nodes)
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -150,7 +150,7 @@ func TestInstanceAPI_RestartCluster(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/actions/cluster-restart", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -169,12 +169,12 @@ func TestInstanceAPI_ToggleHiPE(t *testing.T) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/actions/hipe", r.URL.Path)
 		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
-		
+
 		var req HiPERequest
 		json.NewDecoder(r.Body).Decode(&req)
 		assert.True(t, req.Enable)
 		assert.Equal(t, []string{"node1"}, req.Nodes)
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -198,12 +198,12 @@ func TestInstanceAPI_ToggleFirehose(t *testing.T) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/actions/firehose", r.URL.Path)
 		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
-		
+
 		var req FirehoseRequest
 		json.NewDecoder(r.Body).Decode(&req)
 		assert.True(t, req.Enable)
 		assert.Equal(t, "/", req.VHost)
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -226,11 +226,11 @@ func TestInstanceAPI_UpgradeRabbitMQ(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/actions/upgrade-rabbitmq", r.URL.Path)
-		
+
 		var req UpgradeRequest
 		json.NewDecoder(r.Body).Decode(&req)
 		assert.Equal(t, "3.10.7", req.Version)
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -253,7 +253,7 @@ func TestInstanceAPI_GetAvailableVersions(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/nodes/available-versions", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedVersions)
 	}))
@@ -265,7 +265,7 @@ func TestInstanceAPI_GetAvailableVersions(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	versions, err := client.GetAvailableVersions()
-	
+
 	assert.NoError(t, err)
 	assert.Equal(t, expectedVersions.RabbitMQVersions, versions.RabbitMQVersions)
 	assert.Equal(t, expectedVersions.ErlangVersions, versions.ErlangVersions)
@@ -280,7 +280,7 @@ func TestInstanceAPI_GetUpgradeVersions(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/actions/new-rabbitmq-erlang-versions", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedVersions)
 	}))
@@ -292,7 +292,7 @@ func TestInstanceAPI_GetUpgradeVersions(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	versions, err := client.GetUpgradeVersions()
-	
+
 	assert.NoError(t, err)
 	assert.Equal(t, expectedVersions, versions)
 }
@@ -344,7 +344,7 @@ func TestInstanceAPI_ErrorHandling(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	err := client.UpgradeErlang()
-	
+
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "API error (400): Upgrade already in progress")
 }

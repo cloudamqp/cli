@@ -42,7 +42,7 @@ Optional flags:
 		}
 
 		c := client.New(apiKey)
-		
+
 		req := &client.InstanceCreateRequest{
 			Name:   instanceName,
 			Plan:   instancePlan,
@@ -85,7 +85,7 @@ func init() {
 	instanceCreateCmd.Flags().StringSliceVar(&instanceTags, "tags", []string{}, "Instance tags")
 	instanceCreateCmd.Flags().StringVar(&instanceVPCSubnet, "vpc-subnet", "", "VPC subnet")
 	instanceCreateCmd.Flags().StringVar(&instanceVPCID, "vpc-id", "", "VPC ID")
-	
+
 	instanceCreateCmd.MarkFlagRequired("name")
 	instanceCreateCmd.MarkFlagRequired("plan")
 	instanceCreateCmd.MarkFlagRequired("region")

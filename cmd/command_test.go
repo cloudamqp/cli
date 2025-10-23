@@ -10,7 +10,7 @@ import (
 
 func TestRootCommand(t *testing.T) {
 	cmd := rootCmd
-	
+
 	assert.Equal(t, "cloudamqp", cmd.Use)
 	assert.Contains(t, cmd.Long, "CloudAMQP API")
 	assert.Contains(t, cmd.Long, "CLOUDAMQP_APIKEY environment variable")
@@ -19,17 +19,17 @@ func TestRootCommand(t *testing.T) {
 
 func TestInstanceCommand(t *testing.T) {
 	cmd := instanceCmd
-	
+
 	assert.Equal(t, "instance", cmd.Use)
 	assert.Equal(t, "Manage CloudAMQP instances", cmd.Short)
-	
+
 	// Check subcommands are present
 	subcommands := cmd.Commands()
 	commandNames := make([]string, len(subcommands))
 	for i, subcmd := range subcommands {
 		commandNames[i] = subcmd.Use
 	}
-	
+
 	assert.Contains(t, commandNames, "create")
 	assert.Contains(t, commandNames, "list")
 	assert.Contains(t, commandNames, "get <id>")
@@ -41,17 +41,17 @@ func TestInstanceCommand(t *testing.T) {
 
 func TestVPCCommand(t *testing.T) {
 	cmd := vpcCmd
-	
+
 	assert.Equal(t, "vpc", cmd.Use)
 	assert.Equal(t, "Manage CloudAMQP VPCs", cmd.Short)
-	
+
 	// Check subcommands are present
 	subcommands := cmd.Commands()
 	commandNames := make([]string, len(subcommands))
 	for i, subcmd := range subcommands {
 		commandNames[i] = subcmd.Use
 	}
-	
+
 	assert.Contains(t, commandNames, "create")
 	assert.Contains(t, commandNames, "list")
 	assert.Contains(t, commandNames, "get <id>")
@@ -61,14 +61,14 @@ func TestVPCCommand(t *testing.T) {
 
 func TestInstanceCreateCommand_Validation(t *testing.T) {
 	cmd := instanceCreateCmd
-	
+
 	// Test required flags
 	requiredFlags := []string{"name", "plan", "region"}
 	for _, flagName := range requiredFlags {
 		flag := cmd.Flag(flagName)
 		assert.NotNil(t, flag, "Flag %s should exist", flagName)
 	}
-	
+
 	// Test optional flags
 	optionalFlags := []string{"tags", "vpc-subnet", "vpc-id"}
 	for _, flagName := range optionalFlags {
@@ -79,11 +79,11 @@ func TestInstanceCreateCommand_Validation(t *testing.T) {
 
 func TestInstanceResizeCommand_Validation(t *testing.T) {
 	cmd := instanceResizeCmd
-	
+
 	// Test required flags
 	diskSizeFlag := cmd.Flag("disk-size")
 	assert.NotNil(t, diskSizeFlag)
-	
+
 	// Test optional flags
 	downtimeFlag := cmd.Flag("allow-downtime")
 	assert.NotNil(t, downtimeFlag)
@@ -91,14 +91,14 @@ func TestInstanceResizeCommand_Validation(t *testing.T) {
 
 func TestVPCCreateCommand_Validation(t *testing.T) {
 	cmd := vpcCreateCmd
-	
+
 	// Test required flags
 	requiredFlags := []string{"name", "region", "subnet"}
 	for _, flagName := range requiredFlags {
 		flag := cmd.Flag(flagName)
 		assert.NotNil(t, flag, "Flag %s should exist", flagName)
 	}
-	
+
 	// Test optional flags
 	tagsFlag := cmd.Flag("tags")
 	assert.NotNil(t, tagsFlag)
@@ -106,15 +106,15 @@ func TestVPCCreateCommand_Validation(t *testing.T) {
 
 func TestTeamInviteCommand_Validation(t *testing.T) {
 	cmd := teamInviteCmd
-	
+
 	// Test required flags
 	emailFlag := cmd.Flag("email")
 	assert.NotNil(t, emailFlag)
-	
+
 	// Test optional flags
 	roleFlag := cmd.Flag("role")
 	assert.NotNil(t, roleFlag)
-	
+
 	tagsFlag := cmd.Flag("tags")
 	assert.NotNil(t, tagsFlag)
 }
@@ -126,13 +126,13 @@ func TestCommandHelp(t *testing.T) {
 	}{
 		{"root", rootCmd},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Test that help text is accessible
 			assert.NotEmpty(t, tt.cmd.Use)
 			assert.NotEmpty(t, tt.cmd.Short)
-			
+
 			// For root command, test the long description
 			if tt.name == "root" {
 				assert.Contains(t, tt.cmd.Long, "CloudAMQP API")
@@ -168,21 +168,21 @@ func TestEnvironmentVariablePrecedence(t *testing.T) {
 
 func TestInstanceManageCommand(t *testing.T) {
 	cmd := instanceManageCmd
-	
+
 	assert.Equal(t, "manage <instance_id>", cmd.Use)
 	assert.Contains(t, cmd.Long, "instance-specific API")
 	assert.Contains(t, cmd.Long, "Instance API keys are automatically saved")
-	
+
 	// Check that it has args requirement (we can't directly compare functions)
 	assert.NotNil(t, cmd.Args)
-	
+
 	// Check subcommands
 	subcommands := cmd.Commands()
 	commandNames := make([]string, len(subcommands))
 	for i, subcmd := range subcommands {
 		commandNames[i] = subcmd.Use
 	}
-	
+
 	assert.Contains(t, commandNames, "nodes")
 	assert.Contains(t, commandNames, "plugins")
 	assert.Contains(t, commandNames, "actions")
@@ -191,17 +191,17 @@ func TestInstanceManageCommand(t *testing.T) {
 
 func TestInstanceActionsCommand(t *testing.T) {
 	cmd := instanceActionsCmd
-	
+
 	// Check that actions command has all expected subcommands
 	subcommands := cmd.Commands()
 	commandNames := make([]string, len(subcommands))
 	for i, subcmd := range subcommands {
 		commandNames[i] = subcmd.Use
 	}
-	
+
 	expectedActions := []string{
 		"restart-rabbitmq",
-		"restart-cluster", 
+		"restart-cluster",
 		"restart-management",
 		"stop",
 		"start",
@@ -215,7 +215,7 @@ func TestInstanceActionsCommand(t *testing.T) {
 		"toggle-firehose",
 		"upgrade-versions",
 	}
-	
+
 	for _, action := range expectedActions {
 		assert.Contains(t, commandNames, action, "Action %s should be available", action)
 	}
@@ -223,11 +223,11 @@ func TestInstanceActionsCommand(t *testing.T) {
 
 func TestUpgradeRabbitMQCommand_RequiredFlag(t *testing.T) {
 	cmd := upgradeRabbitMQCmd
-	
+
 	// Check that version flag is required
 	versionFlag := cmd.Flag("version")
 	assert.NotNil(t, versionFlag)
-	
+
 	// This would normally be tested with actual command execution,
 	// but that requires complex mocking of the API client
 }
@@ -237,15 +237,15 @@ func TestToggleCommands_RequiredFlags(t *testing.T) {
 	hipeCmd := toggleHiPECmd
 	enableFlag := hipeCmd.Flag("enable")
 	assert.NotNil(t, enableFlag)
-	
+
 	nodesFlag := hipeCmd.Flag("nodes")
 	assert.NotNil(t, nodesFlag)
-	
+
 	// Test Firehose toggle command
 	firehoseCmd := toggleFirehoseCmd
 	enableFlag = firehoseCmd.Flag("enable")
 	assert.NotNil(t, enableFlag)
-	
+
 	vhostFlag := firehoseCmd.Flag("vhost")
 	assert.NotNil(t, vhostFlag)
 }
@@ -259,7 +259,7 @@ func TestCommandExamples(t *testing.T) {
 		{"vpc-create", vpcCreateCmd},
 		{"team-invite", teamInviteCmd},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.NotEmpty(t, tt.cmd.Example, "Command %s should have examples", tt.name)

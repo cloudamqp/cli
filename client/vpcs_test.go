@@ -25,7 +25,7 @@ func TestListVPCs(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/vpcs", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedVPCs)
 	}))
@@ -38,7 +38,7 @@ func TestListVPCs(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	vpcs, err := client.ListVPCs()
-	
+
 	assert.NoError(t, err)
 	assert.Len(t, vpcs, 1)
 	assert.Equal(t, expectedVPCs[0].ID, vpcs[0].ID)
@@ -61,7 +61,7 @@ func TestGetVPC(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/vpcs/5678", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedVPC)
 	}))
@@ -74,7 +74,7 @@ func TestGetVPC(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	vpc, err := client.GetVPC(5678)
-	
+
 	assert.NoError(t, err)
 	assert.Equal(t, expectedVPC.ID, vpc.ID)
 	assert.Equal(t, expectedVPC.Subnet, vpc.Subnet)
@@ -92,14 +92,14 @@ func TestCreateVPC(t *testing.T) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/vpcs", r.URL.Path)
 		assert.Equal(t, "application/x-www-form-urlencoded", r.Header.Get("Content-Type"))
-		
+
 		// Parse form data
 		err := r.ParseForm()
 		assert.NoError(t, err)
 		assert.Equal(t, "test-vpc", r.FormValue("name"))
 		assert.Equal(t, "amazon-web-services::us-east-1", r.FormValue("region"))
 		assert.Equal(t, "10.0.0.0/24", r.FormValue("subnet"))
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedResponse)
 	}))
@@ -118,7 +118,7 @@ func TestCreateVPC(t *testing.T) {
 	}
 
 	response, err := client.CreateVPC(req)
-	
+
 	assert.NoError(t, err)
 	assert.Equal(t, expectedResponse.ID, response.ID)
 	assert.Equal(t, expectedResponse.APIKey, response.APIKey)
@@ -128,13 +128,13 @@ func TestCreateVPC_WithTags(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		assert.NoError(t, err)
-		
+
 		// Check that tags are properly encoded as array
 		tags := r.Form["tags[]"]
 		assert.Len(t, tags, 2)
 		assert.Contains(t, tags, "production")
 		assert.Contains(t, tags, "network")
-		
+
 		response := VPCCreateResponse{ID: 5678}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -160,16 +160,16 @@ func TestUpdateVPC(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/vpcs/5678", r.URL.Path)
-		
+
 		err := r.ParseForm()
 		assert.NoError(t, err)
 		assert.Equal(t, "updated-vpc-name", r.FormValue("name"))
-		
+
 		// Check tags
 		tags := r.Form["tags[]"]
 		assert.Len(t, tags, 1)
 		assert.Contains(t, tags, "updated")
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -192,7 +192,7 @@ func TestDeleteVPC(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "DELETE", r.Method)
 		assert.Equal(t, "/vpcs/5678", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
@@ -219,7 +219,7 @@ func TestVPCError_NotFound(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	_, err := client.GetVPC(9999)
-	
+
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "API error (404): VPC not found")
 }

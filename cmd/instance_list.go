@@ -9,9 +9,9 @@ import (
 )
 
 var instanceListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List all CloudAMQP instances",
-	Long:  `Retrieves and displays all CloudAMQP instances in your account.`,
+	Use:     "list",
+	Short:   "List all CloudAMQP instances",
+	Long:    `Retrieves and displays all CloudAMQP instances in your account.`,
 	Example: `  cloudamqp instance list`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error

@@ -28,7 +28,7 @@ func TestListRegions(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/regions", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedRegions)
 	}))
@@ -40,7 +40,7 @@ func TestListRegions(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	regions, err := client.ListRegions("")
-	
+
 	assert.NoError(t, err)
 	assert.Len(t, regions, 2)
 	assert.Equal(t, expectedRegions[0].Provider, regions[0].Provider)
@@ -52,7 +52,7 @@ func TestListRegions_WithProvider(t *testing.T) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/regions", r.URL.Path)
 		assert.Equal(t, "amazon-web-services", r.URL.Query().Get("provider"))
-		
+
 		regions := []Region{
 			{
 				Provider: "amazon-web-services",
@@ -60,7 +60,7 @@ func TestListRegions_WithProvider(t *testing.T) {
 				Name:     "US East (N. Virginia)",
 			},
 		}
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(regions)
 	}))
@@ -72,7 +72,7 @@ func TestListRegions_WithProvider(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	regions, err := client.ListRegions("amazon-web-services")
-	
+
 	assert.NoError(t, err)
 	assert.Len(t, regions, 1)
 	assert.Equal(t, "amazon-web-services", regions[0].Provider)
@@ -97,7 +97,7 @@ func TestListPlans(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/plans", r.URL.Path)
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(expectedPlans)
 	}))
@@ -109,7 +109,7 @@ func TestListPlans(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	plans, err := client.ListPlans("")
-	
+
 	assert.NoError(t, err)
 	assert.Len(t, plans, 2)
 	assert.Equal(t, expectedPlans[0].Name, plans[0].Name)
@@ -121,14 +121,14 @@ func TestListPlans_WithBackend(t *testing.T) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/plans", r.URL.Path)
 		assert.Equal(t, "rabbitmq", r.URL.Query().Get("backend"))
-		
+
 		plans := []Plan{
 			{
 				Name:    "bunny-1",
 				Backend: "rabbitmq",
 			},
 		}
-		
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(plans)
 	}))
@@ -140,7 +140,7 @@ func TestListPlans_WithBackend(t *testing.T) {
 	defer func() { BaseURL = originalBaseURL }()
 
 	plans, err := client.ListPlans("rabbitmq")
-	
+
 	assert.NoError(t, err)
 	assert.Len(t, plans, 1)
 	assert.Equal(t, "rabbitmq", plans[0].Backend)

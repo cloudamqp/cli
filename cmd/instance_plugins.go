@@ -15,13 +15,13 @@ var instancePluginsCmd = &cobra.Command{
 }
 
 var instancePluginsListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List plugins",
-	Long:  `Retrieves all available RabbitMQ plugins.`,
+	Use:     "list",
+	Short:   "List plugins",
+	Long:    `Retrieves all available RabbitMQ plugins.`,
 	Example: `  cloudamqp instance manage 1234 plugins list`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		instanceID := currentInstanceID
-		
+
 		instanceAPIKey, err := getInstanceAPIKey(instanceID)
 		if err != nil {
 			return fmt.Errorf("failed to get instance API key: %w", err)

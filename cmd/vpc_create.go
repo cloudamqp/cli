@@ -37,7 +37,7 @@ Optional flags:
 		}
 
 		c := client.New(apiKey)
-		
+
 		req := &client.VPCCreateRequest{
 			Name:   vpcName,
 			Region: vpcRegion,
@@ -66,7 +66,7 @@ func init() {
 	vpcCreateCmd.Flags().StringVar(&vpcRegion, "region", "", "Region identifier (required)")
 	vpcCreateCmd.Flags().StringVar(&vpcSubnet, "subnet", "", "VPC subnet (required)")
 	vpcCreateCmd.Flags().StringSliceVar(&vpcTags, "tags", []string{}, "VPC tags")
-	
+
 	vpcCreateCmd.MarkFlagRequired("name")
 	vpcCreateCmd.MarkFlagRequired("region")
 	vpcCreateCmd.MarkFlagRequired("subnet")

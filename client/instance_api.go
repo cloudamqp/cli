@@ -78,17 +78,17 @@ func (c *InstanceAPIClient) makeRequest(method, endpoint string, body interface{
 
 // Node management
 type Node struct {
-	Name              string `json:"name"`
-	Hostname          string `json:"hostname"`
-	Configured        bool   `json:"configured"`
-	HiPE              bool   `json:"hipe"`
-	RabbitMQVersion   string `json:"rabbitmq_version"`
-	ErlangVersion     string `json:"erlang_version"`
-	Running           bool   `json:"running"`
-	DiskSize          int    `json:"disk_size"`
-	AdditionalDiskSize int   `json:"additional_disk_size"`
-	AvailabilityZone  string `json:"availability_zone"`
-	HostnameInternal  string `json:"hostname_internal"`
+	Name               string `json:"name"`
+	Hostname           string `json:"hostname"`
+	Configured         bool   `json:"configured"`
+	HiPE               bool   `json:"hipe"`
+	RabbitMQVersion    string `json:"rabbitmq_version"`
+	ErlangVersion      string `json:"erlang_version"`
+	Running            bool   `json:"running"`
+	DiskSize           int    `json:"disk_size"`
+	AdditionalDiskSize int    `json:"additional_disk_size"`
+	AvailabilityZone   string `json:"availability_zone"`
+	HostnameInternal   string `json:"hostname_internal"`
 }
 
 func (c *InstanceAPIClient) ListNodes() ([]Node, error) {
@@ -105,7 +105,7 @@ func (c *InstanceAPIClient) ListNodes() ([]Node, error) {
 	return nodes, nil
 }
 
-// Plugin management  
+// Plugin management
 type Plugin struct {
 	Name        string `json:"name"`
 	Version     string `json:"version"`

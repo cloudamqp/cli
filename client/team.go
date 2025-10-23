@@ -89,7 +89,7 @@ func (c *Client) RemoveTeamMember(email string) (*TeamResponse, error) {
 
 func (c *Client) UpdateTeamMember(userID string, req *TeamUpdateRequest) (*TeamResponse, error) {
 	endpoint := "/team/" + userID
-	
+
 	formData := url.Values{}
 	if req.Role != "" {
 		formData.Set("role", req.Role)

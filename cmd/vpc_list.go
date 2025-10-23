@@ -9,9 +9,9 @@ import (
 )
 
 var vpcListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List all CloudAMQP VPCs",
-	Long:  `Retrieves and displays all CloudAMQP VPCs in your account.`,
+	Use:     "list",
+	Short:   "List all CloudAMQP VPCs",
+	Long:    `Retrieves and displays all CloudAMQP VPCs in your account.`,
 	Example: `  cloudamqp vpc list`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
