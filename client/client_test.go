@@ -38,10 +38,7 @@ func TestMakeRequest_GET_Success(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	// Test request
 	resp, err := client.makeRequest("GET", "/test", nil)
@@ -69,10 +66,7 @@ func TestMakeRequest_POST_FormData(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	// Test request with form data
 	formData := url.Values{}
@@ -103,10 +97,7 @@ func TestMakeRequest_POST_JSON(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	// Test request with JSON data
 	jsonData := map[string]string{"test": "value"}
@@ -126,10 +117,7 @@ func TestMakeRequest_APIError_JSON(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	// Test request
 	_, err := client.makeRequest("GET", "/test", nil)
@@ -147,10 +135,7 @@ func TestMakeRequest_APIError_Plain(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	// Test request
 	_, err := client.makeRequest("GET", "/test", nil)
@@ -161,10 +146,7 @@ func TestMakeRequest_APIError_Plain(t *testing.T) {
 
 func TestMakeRequest_NetworkError(t *testing.T) {
 	// Create client with invalid URL
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = "http://invalid-url-that-does-not-exist"
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", "http://invalid-url-that-does-not-exist")
 
 	// Test request
 	_, err := client.makeRequest("GET", "/test", nil)

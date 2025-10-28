@@ -32,10 +32,7 @@ func TestListVPCs(t *testing.T) {
 	defer server.Close()
 
 	// Test
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	vpcs, err := client.ListVPCs()
 
@@ -68,10 +65,7 @@ func TestGetVPC(t *testing.T) {
 	defer server.Close()
 
 	// Test
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	vpc, err := client.GetVPC(5678)
 
@@ -106,10 +100,7 @@ func TestCreateVPC(t *testing.T) {
 	defer server.Close()
 
 	// Test
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	req := &VPCCreateRequest{
 		Name:   "test-vpc",
@@ -140,10 +131,7 @@ func TestCreateVPC_WithTags(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	req := &VPCCreateRequest{
 		Name:   "test-vpc",
@@ -174,10 +162,7 @@ func TestUpdateVPC(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	req := &VPCUpdateRequest{
 		Name: "updated-vpc-name",
@@ -197,10 +182,7 @@ func TestDeleteVPC(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	err := client.DeleteVPC(5678)
 	assert.NoError(t, err)
@@ -213,10 +195,7 @@ func TestVPCError_NotFound(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	_, err := client.GetVPC(9999)
 

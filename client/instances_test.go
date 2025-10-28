@@ -31,10 +31,7 @@ func TestListInstances(t *testing.T) {
 	defer server.Close()
 
 	// Test
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	instances, err := client.ListInstances()
 
@@ -65,10 +62,7 @@ func TestGetInstance(t *testing.T) {
 	defer server.Close()
 
 	// Test
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	instance, err := client.GetInstance(1234)
 
@@ -103,10 +97,7 @@ func TestCreateInstance(t *testing.T) {
 	defer server.Close()
 
 	// Test
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	req := &InstanceCreateRequest{
 		Name:   "test-instance",
@@ -137,10 +128,7 @@ func TestCreateInstance_WithTags(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	req := &InstanceCreateRequest{
 		Name:   "test-instance",
@@ -166,10 +154,7 @@ func TestCreateInstance_WithVPC(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	vpcID := 5678
 	req := &InstanceCreateRequest{
@@ -198,10 +183,7 @@ func TestUpdateInstance(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	req := &InstanceUpdateRequest{
 		Name: "updated-name",
@@ -221,10 +203,7 @@ func TestDeleteInstance(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	err := client.DeleteInstance(1234)
 	assert.NoError(t, err)
@@ -244,10 +223,7 @@ func TestResizeInstanceDisk(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	req := &DiskResizeRequest{
 		ExtraDiskSize: 100,
@@ -270,10 +246,7 @@ func TestResizeInstanceDisk_NoDowntime(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	req := &DiskResizeRequest{
 		ExtraDiskSize: 50,

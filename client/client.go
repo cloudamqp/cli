@@ -14,12 +14,22 @@ var BaseURL = "https://customer.cloudamqp.com/api"
 
 type Client struct {
 	apiKey     string
+	baseURL    string
 	httpClient *http.Client
 }
 
 func New(apiKey string) *Client {
 	return &Client{
 		apiKey:     apiKey,
+		baseURL:    "https://customer.cloudamqp.com/api",
+		httpClient: &http.Client{},
+	}
+}
+
+func NewWithBaseURL(apiKey, baseURL string) *Client {
+	return &Client{
+		apiKey:     apiKey,
+		baseURL:    baseURL,
 		httpClient: &http.Client{},
 	}
 }
@@ -43,7 +53,7 @@ func (c *Client) makeRequest(method, endpoint string, body any) ([]byte, error) 
 		}
 	}
 
-	req, err := http.NewRequest(method, BaseURL+endpoint, reqBody)
+	req, err := http.NewRequest(method, c.baseURL+endpoint, reqBody)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

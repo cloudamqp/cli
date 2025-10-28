@@ -34,10 +34,7 @@ func TestListRegions(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	regions, err := client.ListRegions("")
 
@@ -66,10 +63,7 @@ func TestListRegions_WithProvider(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	regions, err := client.ListRegions("amazon-web-services")
 
@@ -103,10 +97,7 @@ func TestListPlans(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	plans, err := client.ListPlans("")
 
@@ -134,10 +125,7 @@ func TestListPlans_WithBackend(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := New("test-api-key")
-	originalBaseURL := BaseURL
-	BaseURL = server.URL
-	defer func() { BaseURL = originalBaseURL }()
+	client := NewWithBaseURL("test-api-key", server.URL)
 
 	plans, err := client.ListPlans("rabbitmq")
 
