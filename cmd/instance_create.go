@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"time"
 
 	"cloudamqp-cli/client"
 	"github.com/spf13/cobra"
@@ -18,6 +19,8 @@ var (
 	instanceVPCID        string
 	instanceCopyFromID   string
 	instanceCopySettings []string
+	instanceWait         bool
+	instanceWaitTimeout  string
 )
 
 var instanceCreateCmd = &cobra.Command{
@@ -35,10 +38,13 @@ Optional flags:
   --vpc-subnet: VPC subnet for dedicated VPC
   --vpc-id: ID of existing VPC to add instance to
   --copy-from-id: Instance ID to copy settings from (dedicated instances only)
-  --copy-settings: Settings to copy (alarms, metrics, logs, firewall, config)`,
+  --copy-settings: Settings to copy (alarms, metrics, logs, firewall, config)
+  --wait: Wait for instance to be ready before returning
+  --wait-timeout: Timeout for waiting (default: 15m)`,
 	Example: `  cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1
   cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1 --tags=production --tags=web-app
-  cloudamqp instance create --name=my-copy --plan=bunny-1 --region=amazon-web-services::us-east-1 --copy-from-id=12345 --copy-settings=metrics,firewall`,
+  cloudamqp instance create --name=my-copy --plan=bunny-1 --region=amazon-web-services::us-east-1 --copy-from-id=12345 --copy-settings=metrics,firewall
+  cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1 --wait`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		apiKey, err = getAPIKey()
@@ -84,6 +90,20 @@ Optional flags:
 			return err
 		}
 
+		if instanceWait {
+			timeout, err := time.ParseDuration(instanceWaitTimeout)
+			if err != nil {
+				return fmt.Errorf("invalid wait-timeout value: %v", err)
+			}
+
+			if err := waitForInstanceReady(c, resp.ID, timeout); err != nil {
+				// Instance was created but failed to become ready
+				output, _ := json.MarshalIndent(resp, "", "  ")
+				fmt.Printf("Instance created but not ready:\n%s\n", string(output))
+				return fmt.Errorf("wait failed: %w", err)
+			}
+		}
+
 		output, err := json.MarshalIndent(resp, "", "  ")
 		if err != nil {
 			return fmt.Errorf("failed to format response: %v", err)
@@ -103,6 +123,8 @@ func init() {
 	instanceCreateCmd.Flags().StringVar(&instanceVPCID, "vpc-id", "", "VPC ID")
 	instanceCreateCmd.Flags().StringVar(&instanceCopyFromID, "copy-from-id", "", "Instance ID to copy settings from")
 	instanceCreateCmd.Flags().StringSliceVar(&instanceCopySettings, "copy-settings", []string{}, "Settings to copy (alarms, metrics, logs, firewall, config)")
+	instanceCreateCmd.Flags().BoolVar(&instanceWait, "wait", false, "Wait for instance to be ready")
+	instanceCreateCmd.Flags().StringVar(&instanceWaitTimeout, "wait-timeout", "15m", "Timeout for waiting (e.g., 15m, 30m)")
 
 	instanceCreateCmd.MarkFlagRequired("name")
 	instanceCreateCmd.MarkFlagRequired("plan")

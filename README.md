@@ -8,6 +8,7 @@ A command line interface for the CloudAMQP API that provides complete management
 - **Simple Configuration**: Plain text API key storage in `~/.cloudamqprc`
 - **Flag-Based Commands**: Clean command structure with `--id` flags for instance operations
 - **Copy Settings**: Clone configuration from existing instances (metrics, firewall, alarms, etc.)
+- **Wait for Ready**: Optional `--wait` flag for long-running operations (create, resize, upgrades)
 - **User-Friendly**: Clear help messages, examples, and safety confirmations
 - **Error Handling**: Proper API error extraction and display
 
@@ -61,6 +62,12 @@ cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-
 # Create instance with copy_settings (dedicated instances only)
 cloudamqp instance create --name=my-copy --plan=bunny-1 --region=amazon-web-services::us-east-1 \
   --copy-from-id=1234 --copy-settings=metrics,firewall,config
+
+# Create instance and wait for it to be ready (default timeout: 15m)
+cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1 --wait
+
+# Create instance with custom wait timeout
+cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1 --wait --wait-timeout=20m
 
 # List all instances
 cloudamqp instance list
@@ -204,8 +211,8 @@ cloudamqp audit --timestamp=2024-01
 ### Complete Workflow
 
 ```bash
-# 1. Create an instance
-cloudamqp instance create --name=production --plan=bunny-1 --region=amazon-web-services::us-east-1
+# 1. Create an instance and wait for it to be ready
+cloudamqp instance create --name=production --plan=bunny-1 --region=amazon-web-services::us-east-1 --wait
 
 # 2. Get instance details
 cloudamqp instance get --id 1234
@@ -231,15 +238,15 @@ cloudamqp instance upgrade-all --id 1234
 Copy configuration from an existing dedicated instance to a new one:
 
 ```bash
-# 1. Create original instance
-cloudamqp instance create --name=production --plan=bunny-1 --region=amazon-web-services::us-east-1
+# 1. Create original instance and wait for it to be ready
+cloudamqp instance create --name=production --plan=bunny-1 --region=amazon-web-services::us-east-1 --wait
 
 # 2. Configure the original instance (alarms, metrics, firewall, etc.)
 # ... perform your configuration ...
 
-# 3. Create a new instance copying specific settings
+# 3. Create a new instance copying specific settings and wait for it to be ready
 cloudamqp instance create --name=staging --plan=bunny-1 --region=amazon-web-services::us-east-1 \
-  --copy-from-id=1234 --copy-settings=metrics,firewall,config
+  --copy-from-id=1234 --copy-settings=metrics,firewall,config --wait
 
 # Available settings to copy:
 # - alarms: Copy alarm configurations and recipients
