@@ -22,13 +22,19 @@ type Instance struct {
 	HostnameInternal string   `json:"hostname_internal"`
 }
 
+type CopySettings struct {
+	SubscriptionID int      `json:"subscription_id"`
+	Settings       []string `json:"settings"`
+}
+
 type InstanceCreateRequest struct {
-	Name      string   `json:"name"`
-	Plan      string   `json:"plan"`
-	Region    string   `json:"region"`
-	Tags      []string `json:"tags,omitempty"`
-	VPCSubnet string   `json:"vpc_subnet,omitempty"`
-	VPCID     *int     `json:"vpc_id,omitempty"`
+	Name         string        `json:"name"`
+	Plan         string        `json:"plan"`
+	Region       string        `json:"region"`
+	Tags         []string      `json:"tags,omitempty"`
+	VPCSubnet    string        `json:"vpc_subnet,omitempty"`
+	VPCID        *int          `json:"vpc_id,omitempty"`
+	CopySettings *CopySettings `json:"copy_settings,omitempty"`
 }
 
 type InstanceCreateResponse struct {
@@ -73,26 +79,36 @@ func (c *Client) GetInstance(id int) (*Instance, error) {
 }
 
 func (c *Client) CreateInstance(req *InstanceCreateRequest) (*InstanceCreateResponse, error) {
-	formData := url.Values{}
-	formData.Set("name", req.Name)
-	formData.Set("plan", req.Plan)
-	formData.Set("region", req.Region)
+	var body any
 
-	if len(req.Tags) > 0 {
-		for _, tag := range req.Tags {
-			formData.Add("tags[]", tag)
+	// Use JSON format when copy_settings is present (required by API)
+	if req.CopySettings != nil {
+		body = req
+	} else {
+		// Use form encoding for backward compatibility
+		formData := url.Values{}
+		formData.Set("name", req.Name)
+		formData.Set("plan", req.Plan)
+		formData.Set("region", req.Region)
+
+		if len(req.Tags) > 0 {
+			for _, tag := range req.Tags {
+				formData.Add("tags[]", tag)
+			}
 		}
+
+		if req.VPCSubnet != "" {
+			formData.Set("vpc_subnet", req.VPCSubnet)
+		}
+
+		if req.VPCID != nil {
+			formData.Set("vpc_id", strconv.Itoa(*req.VPCID))
+		}
+
+		body = formData
 	}
 
-	if req.VPCSubnet != "" {
-		formData.Set("vpc_subnet", req.VPCSubnet)
-	}
-
-	if req.VPCID != nil {
-		formData.Set("vpc_id", strconv.Itoa(*req.VPCID))
-	}
-
-	respBody, err := c.makeRequest("POST", "/instances", formData)
+	respBody, err := c.makeRequest("POST", "/instances", body)
 	if err != nil {
 		return nil, err
 	}
