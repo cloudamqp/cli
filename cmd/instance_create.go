@@ -10,12 +10,14 @@ import (
 )
 
 var (
-	instanceName      string
-	instancePlan      string
-	instanceRegion    string
-	instanceTags      []string
-	instanceVPCSubnet string
-	instanceVPCID     string
+	instanceName         string
+	instancePlan         string
+	instanceRegion       string
+	instanceTags         []string
+	instanceVPCSubnet    string
+	instanceVPCID        string
+	instanceCopyFromID   string
+	instanceCopySettings []string
 )
 
 var instanceCreateCmd = &cobra.Command{
@@ -31,9 +33,12 @@ Required flags:
 Optional flags:
   --tags: Instance tags (can be specified multiple times)
   --vpc-subnet: VPC subnet for dedicated VPC
-  --vpc-id: ID of existing VPC to add instance to`,
+  --vpc-id: ID of existing VPC to add instance to
+  --copy-from-id: Instance ID to copy settings from (dedicated instances only)
+  --copy-settings: Settings to copy (alarms, metrics, logs, firewall, config)`,
 	Example: `  cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1
-  cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1 --tags=production --tags=web-app`,
+  cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1 --tags=production --tags=web-app
+  cloudamqp instance create --name=my-copy --plan=bunny-1 --region=amazon-web-services::us-east-1 --copy-from-id=12345 --copy-settings=metrics,firewall`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		apiKey, err = getAPIKey()
@@ -62,6 +67,17 @@ Optional flags:
 			req.VPCID = &vpcID
 		}
 
+		if instanceCopyFromID != "" {
+			copyFromID, err := strconv.Atoi(instanceCopyFromID)
+			if err != nil {
+				return fmt.Errorf("invalid copy-from-id: %v", err)
+			}
+			req.CopySettings = &client.CopySettings{
+				SubscriptionID: copyFromID,
+				Settings:       instanceCopySettings,
+			}
+		}
+
 		resp, err := c.CreateInstance(req)
 		if err != nil {
 			fmt.Printf("Error creating instance: %v\n", err)
@@ -85,6 +101,8 @@ func init() {
 	instanceCreateCmd.Flags().StringSliceVar(&instanceTags, "tags", []string{}, "Instance tags")
 	instanceCreateCmd.Flags().StringVar(&instanceVPCSubnet, "vpc-subnet", "", "VPC subnet")
 	instanceCreateCmd.Flags().StringVar(&instanceVPCID, "vpc-id", "", "VPC ID")
+	instanceCreateCmd.Flags().StringVar(&instanceCopyFromID, "copy-from-id", "", "Instance ID to copy settings from")
+	instanceCreateCmd.Flags().StringSliceVar(&instanceCopySettings, "copy-settings", []string{}, "Settings to copy (alarms, metrics, logs, firewall, config)")
 
 	instanceCreateCmd.MarkFlagRequired("name")
 	instanceCreateCmd.MarkFlagRequired("plan")

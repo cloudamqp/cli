@@ -7,6 +7,7 @@ A command line interface for the CloudAMQP API that provides complete management
 - **Unified API**: Single API key manages all operations through the customer API
 - **Simple Configuration**: Plain text API key storage in `~/.cloudamqprc`
 - **Flag-Based Commands**: Clean command structure with `--id` flags for instance operations
+- **Copy Settings**: Clone configuration from existing instances (metrics, firewall, alarms, etc.)
 - **User-Friendly**: Clear help messages, examples, and safety confirmations
 - **Error Handling**: Proper API error extraction and display
 
@@ -56,6 +57,10 @@ Manage CloudAMQP instances using your main API key.
 ```bash
 # Create a new instance
 cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1
+
+# Create instance with copy_settings (dedicated instances only)
+cloudamqp instance create --name=my-copy --plan=bunny-1 --region=amazon-web-services::us-east-1 \
+  --copy-from-id=1234 --copy-settings=metrics,firewall,config
 
 # List all instances
 cloudamqp instance list
@@ -219,6 +224,33 @@ cloudamqp instance restart-rabbitmq --id 1234
 
 # 7. Upgrade when needed
 cloudamqp instance upgrade-all --id 1234
+```
+
+### Copy Settings Between Instances
+
+Copy configuration from an existing dedicated instance to a new one:
+
+```bash
+# 1. Create original instance
+cloudamqp instance create --name=production --plan=bunny-1 --region=amazon-web-services::us-east-1
+
+# 2. Configure the original instance (alarms, metrics, firewall, etc.)
+# ... perform your configuration ...
+
+# 3. Create a new instance copying specific settings
+cloudamqp instance create --name=staging --plan=bunny-1 --region=amazon-web-services::us-east-1 \
+  --copy-from-id=1234 --copy-settings=metrics,firewall,config
+
+# Available settings to copy:
+# - alarms: Copy alarm configurations and recipients
+# - metrics: Copy metrics configuration
+# - logs: Copy log settings
+# - firewall: Copy firewall rules
+# - config: Copy RabbitMQ configuration
+# - definitions: Copy RabbitMQ definitions (queues, exchanges, etc.)
+# - plugins: Copy plugin configurations
+
+# Note: Only works between dedicated instances (not shared plans)
 ```
 
 ### Team Setup
