@@ -11,18 +11,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var forceDeleteVPC bool
+var (
+	deleteVPCID    string
+	forceDeleteVPC bool
+)
 
 var vpcDeleteCmd = &cobra.Command{
-	Use:   "delete <id>",
+	Use:   "delete --id <id>",
 	Short: "Delete a CloudAMQP VPC",
 	Long: `Delete a CloudAMQP VPC permanently.
 
 WARNING: This action cannot be undone. All instances in the VPC must be deleted first.`,
-	Example: `  cloudamqp vpc delete 5678
-  cloudamqp vpc delete 5678 --force`,
-	Args:              cobra.ExactArgs(1),
-	ValidArgsFunction: completeVPCArgs,
+	Example: `  cloudamqp vpc delete --id 5678
+  cloudamqp vpc delete --id 5678 --force`,
+	Args: cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		apiKey, err = getAPIKey()
@@ -30,7 +32,11 @@ WARNING: This action cannot be undone. All instances in the VPC must be deleted 
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		vpcID, err := strconv.Atoi(args[0])
+		if deleteVPCID == "" {
+			return fmt.Errorf("--id is required")
+		}
+
+		vpcID, err := strconv.Atoi(deleteVPCID)
 		if err != nil {
 			return fmt.Errorf("invalid VPC ID: %v", err)
 		}
@@ -64,5 +70,8 @@ WARNING: This action cannot be undone. All instances in the VPC must be deleted 
 }
 
 func init() {
+	vpcDeleteCmd.Flags().StringVar(&deleteVPCID, "id", "", "VPC ID (required)")
 	vpcDeleteCmd.Flags().BoolVar(&forceDeleteVPC, "force", false, "Skip confirmation prompt")
+	vpcDeleteCmd.MarkFlagRequired("id")
+	vpcDeleteCmd.RegisterFlagCompletionFunc("id", completeVPCArgs)
 }

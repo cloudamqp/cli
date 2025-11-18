@@ -9,13 +9,14 @@ import (
 )
 
 var (
+	updateInstanceID   string
 	updateInstanceName string
 	updateInstancePlan string
 	updateInstanceTags []string
 )
 
 var instanceUpdateCmd = &cobra.Command{
-	Use:   "update <id>",
+	Use:   "update --id <id>",
 	Short: "Update a CloudAMQP instance",
 	Long: `Update an existing CloudAMQP instance with new configuration.
 
@@ -23,11 +24,10 @@ You can update the following fields:
   --name: Instance name
   --plan: Subscription plan
   --tags: Instance tags (replaces existing tags)`,
-	Example: `  cloudamqp instance update 1234 --name=new-name
-  cloudamqp instance update 1234 --plan=rabbit-1
-  cloudamqp instance update 1234 --tags=production --tags=updated`,
-	Args:              cobra.ExactArgs(1),
-	ValidArgsFunction: completeInstances,
+	Example: `  cloudamqp instance update --id 1234 --name=new-name
+  cloudamqp instance update --id 1234 --plan=rabbit-1
+  cloudamqp instance update --id 1234 --tags=production --tags=updated`,
+	Args: cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		apiKey, err = getAPIKey()
@@ -35,7 +35,11 @@ You can update the following fields:
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		instanceID, err := strconv.Atoi(args[0])
+		if updateInstanceID == "" {
+			return fmt.Errorf("--id is required")
+		}
+
+		instanceID, err := strconv.Atoi(updateInstanceID)
 		if err != nil {
 			return fmt.Errorf("invalid instance ID: %v", err)
 		}
@@ -64,8 +68,11 @@ You can update the following fields:
 }
 
 func init() {
+	instanceUpdateCmd.Flags().StringVar(&updateInstanceID, "id", "", "Instance ID (required)")
 	instanceUpdateCmd.Flags().StringVar(&updateInstanceName, "name", "", "New instance name")
 	instanceUpdateCmd.Flags().StringVar(&updateInstancePlan, "plan", "", "New subscription plan")
 	instanceUpdateCmd.Flags().StringSliceVar(&updateInstanceTags, "tags", []string{}, "New instance tags")
+	instanceUpdateCmd.MarkFlagRequired("id")
+	instanceUpdateCmd.RegisterFlagCompletionFunc("id", completeInstances)
 	instanceUpdateCmd.RegisterFlagCompletionFunc("plan", completePlans)
 }

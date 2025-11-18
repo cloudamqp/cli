@@ -33,9 +33,9 @@ func TestInstanceCommand(t *testing.T) {
 	assert.Contains(t, commandNames, "create")
 	assert.Contains(t, commandNames, "list")
 	assert.Contains(t, commandNames, "get --id <id>")
-	assert.Contains(t, commandNames, "update <id>")
-	assert.Contains(t, commandNames, "delete <id>")
-	assert.Contains(t, commandNames, "resize <id>")
+	assert.Contains(t, commandNames, "update --id <id>")
+	assert.Contains(t, commandNames, "delete --id <id>")
+	assert.Contains(t, commandNames, "resize --id <id>")
 }
 
 func TestVPCCommand(t *testing.T) {
@@ -54,8 +54,8 @@ func TestVPCCommand(t *testing.T) {
 	assert.Contains(t, commandNames, "create")
 	assert.Contains(t, commandNames, "list")
 	assert.Contains(t, commandNames, "get --id <id>")
-	assert.Contains(t, commandNames, "update <id>")
-	assert.Contains(t, commandNames, "delete <id>")
+	assert.Contains(t, commandNames, "update --id <id>")
+	assert.Contains(t, commandNames, "delete --id <id>")
 }
 
 func TestInstanceCreateCommand_Validation(t *testing.T) {
