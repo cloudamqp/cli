@@ -14,6 +14,10 @@ A command line interface for the CloudAMQP API that provides complete management
 
 ## Installation
 
+### Pre-built binaries
+
+Pre-built binaries are available for each release here: https://github.com/cloudamqp/cli/releases
+
 ### Build from Source
 
 ```bash
