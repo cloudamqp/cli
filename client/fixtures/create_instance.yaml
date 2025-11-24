@@ -1,0 +1,54 @@
+---
+version: 1
+interactions:
+    - request:
+        body: name=vcr-test-instance&plan=lemur&region=amazon-web-services%3A%3Aus-east-1&tags%5B%5D=test&tags%5B%5D=vcr
+        form:
+            name:
+                - vcr-test-instance
+            plan:
+                - lemur
+            region:
+                - amazon-web-services::us-east-1
+            tags[]:
+                - test
+                - vcr
+        headers:
+            Content-Type:
+                - application/x-www-form-urlencoded
+        url: https://customer.cloudamqp.com/api/instances
+        method: POST
+      response:
+        body: '{"apikey":"REDACTED","id":359284,"message":"Instance created","url":"amqps://REDACTED:REDACTED@moose.rmq.cloudamqp.com/hsdwidqw"}'
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Length:
+                - "181"
+            Content-Type:
+                - application/json
+            Date:
+                - Mon, 24 Nov 2025 14:36:52 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=RDjfCeD%2BPlcj1P2XQ%2FqHj0OhWUs6jzEYRe2cJXxlx3c%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1763995012"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=RDjfCeD%2BPlcj1P2XQ%2FqHj0OhWUs6jzEYRe2cJXxlx3c%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1763995012"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 1f71feb3-6cdb-9a54-8c30-e67c7289eb42
+        status: 200 OK
+        code: 200
+        duration: 817.896402ms

@@ -34,6 +34,16 @@ func NewWithBaseURL(apiKey, baseURL string) *Client {
 	}
 }
 
+// NewWithHTTPClient creates a new client with a custom HTTP client.
+// This is useful for testing with tools like go-vcr.
+func NewWithHTTPClient(apiKey, baseURL string, httpClient *http.Client) *Client {
+	return &Client{
+		apiKey:     apiKey,
+		baseURL:    baseURL,
+		httpClient: httpClient,
+	}
+}
+
 func (c *Client) makeRequest(method, endpoint string, body any) ([]byte, error) {
 	var reqBody io.Reader
 	var contentType string

@@ -1,0 +1,127 @@
+---
+version: 1
+interactions:
+    - request:
+        body: ""
+        form: {}
+        headers: {}
+        url: https://customer.cloudamqp.com/api/instances/359292
+        method: GET
+      response:
+        body: '{"apikey":"REDACTED","backend":"rabbitmq","hostname_external":"test-bossy-gold-duckbill.rmq6.cloudamqp.com","hostname_internal":"test-bossy-gold-duckbill.in.rmq6.cloudamqp.com","id":359292,"name":"bunny-rerecord","nodes":1,"plan":"hare-1","providerid":"71466532-b9d8-4b85-8dc1-d3861a995195","ready":true,"region":"amazon-web-services::us-east-1","rmq_version":"4.1.4","tags":["test"],"url":"amqps://REDACTED:REDACTED@test-bossy-gold-duckbill.rmq6.cloudamqp.com/nedxentn","urls":{"external":"amqps://REDACTED:REDACTED@test-bossy-gold-duckbill.rmq6.cloudamqp.com/nedxentn","internal":"amqp://REDACTED:REDACTED@test-bossy-gold-duckbill.in.rmq6.cloudamqp.com/nedxentn"}}'
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Length:
+                - "766"
+            Content-Type:
+                - application/json
+            Date:
+                - Mon, 24 Nov 2025 15:05:26 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=VyV5VqbIrHXLsH7rsYycrft9yz8Z3XP%2FbiY5MqOKkGE%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1763996725"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=VyV5VqbIrHXLsH7rsYycrft9yz8Z3XP%2FbiY5MqOKkGE%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1763996725"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 8bd18f34-30f7-6ffe-46d1-21dab5b40009
+        status: 200 OK
+        code: 200
+        duration: 538.043464ms
+    - request:
+        body: plan=hare-1
+        form:
+            plan:
+                - hare-1
+        headers:
+            Content-Type:
+                - application/x-www-form-urlencoded
+        url: https://customer.cloudamqp.com/api/instances/359292
+        method: PUT
+      response:
+        body: '{"message":"No changes"}'
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Length:
+                - "24"
+            Content-Type:
+                - application/json
+            Date:
+                - Mon, 24 Nov 2025 15:05:26 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=EZE2OqSjeQHH5AtQYk0aKCuqiEtRrXTVW2NZpOKpjuw%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1763996726"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=EZE2OqSjeQHH5AtQYk0aKCuqiEtRrXTVW2NZpOKpjuw%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1763996726"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 7fd2cb40-98ba-441e-0268-dfbed6b4d271
+        status: 200 OK
+        code: 200
+        duration: 240.079397ms
+    - request:
+        body: ""
+        form: {}
+        headers: {}
+        url: https://customer.cloudamqp.com/api/instances/359292
+        method: GET
+      response:
+        body: '{"apikey":"REDACTED","backend":"rabbitmq","hostname_external":"test-bossy-gold-duckbill.rmq6.cloudamqp.com","hostname_internal":"test-bossy-gold-duckbill.in.rmq6.cloudamqp.com","id":359292,"name":"bunny-rerecord","nodes":1,"plan":"hare-1","providerid":"71466532-b9d8-4b85-8dc1-d3861a995195","ready":true,"region":"amazon-web-services::us-east-1","rmq_version":"4.1.4","tags":["test"],"url":"amqps://REDACTED:REDACTED@test-bossy-gold-duckbill.rmq6.cloudamqp.com/nedxentn","urls":{"external":"amqps://REDACTED:REDACTED@test-bossy-gold-duckbill.rmq6.cloudamqp.com/nedxentn","internal":"amqp://REDACTED:REDACTED@test-bossy-gold-duckbill.in.rmq6.cloudamqp.com/nedxentn"}}'
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Length:
+                - "766"
+            Content-Type:
+                - application/json
+            Date:
+                - Mon, 24 Nov 2025 15:05:27 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=ymetZTP28vJZLuXaAioLIq5RjcaNuGJKCGDXrdG81uE%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1763996727"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=ymetZTP28vJZLuXaAioLIq5RjcaNuGJKCGDXrdG81uE%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1763996727"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 8df95117-e150-bb31-ab83-d8dc3706d77c
+        status: 200 OK
+        code: 200
+        duration: 260.023305ms
