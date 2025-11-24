@@ -60,7 +60,7 @@ cloudamqp instance delete --id <id>
 
 #### Resize Instance Disk
 ```bash
-cloudamqp instance resize --id <id> --disk-size=<gb> [--allow-downtime]
+cloudamqp instance resize-disk --id <id> --disk-size=<gb> [--allow-downtime]
 ```
 - Required: disk-size (in GB)
 - Optional: allow-downtime flag

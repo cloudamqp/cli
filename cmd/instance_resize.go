@@ -15,7 +15,7 @@ var (
 )
 
 var instanceResizeCmd = &cobra.Command{
-	Use:   "resize --id <id>",
+	Use:   "resize-disk --id <id>",
 	Short: "Resize instance disk",
 	Long: `Resize the disk size of an instance. Default behavior is to expand the disk without any downtime.
 Currently limited to instances in Amazon Web Services (AWS) and Google Compute Engine (GCE).
@@ -25,8 +25,8 @@ Note: This action is asynchronous. The request will return almost immediately. T
 Note: Due to restrictions from cloud providers, it's only possible to resize the disk every 8 hours unless --allow-downtime is set.
 
 Available disk sizes: 0, 25, 50, 100, 250, 500, 1000, 2000 GB`,
-	Example: `  cloudamqp instance resize --id 1234 --disk-size=100
-  cloudamqp instance resize --id 1234 --disk-size=250 --allow-downtime`,
+	Example: `  cloudamqp instance resize-disk --id 1234 --disk-size=100
+  cloudamqp instance resize-disk --id 1234 --disk-size=250 --allow-downtime`,
 	Args: cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error

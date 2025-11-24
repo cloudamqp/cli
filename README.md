@@ -8,7 +8,7 @@ A command line interface for the CloudAMQP API that provides complete management
 - **Simple Configuration**: Plain text API key storage in `~/.cloudamqprc`
 - **Flag-Based Commands**: Clean command structure with `--id` flags for instance operations
 - **Copy Settings**: Clone configuration from existing instances (metrics, firewall, alarms, etc.)
-- **Wait for Ready**: Optional `--wait` flag for long-running operations (create, resize, upgrades)
+- **Wait for Ready**: Optional `--wait` flag for long-running operations (create, resize-disk, upgrades)
 - **User-Friendly**: Clear help messages, examples, and safety confirmations
 - **Error Handling**: Proper API error extraction and display
 
@@ -118,7 +118,7 @@ cloudamqp instance get --id 1234
 cloudamqp instance update --id 1234 --name=new-name --plan=rabbit-1
 
 # Resize instance disk
-cloudamqp instance resize --id 1234 --disk-size=100 --allow-downtime
+cloudamqp instance resize-disk --id 1234 --disk-size=100 --allow-downtime
 
 # Delete instance (with confirmation)
 cloudamqp instance delete --id 1234

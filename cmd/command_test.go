@@ -35,7 +35,7 @@ func TestInstanceCommand(t *testing.T) {
 	assert.Contains(t, commandNames, "get --id <id>")
 	assert.Contains(t, commandNames, "update --id <id>")
 	assert.Contains(t, commandNames, "delete --id <id>")
-	assert.Contains(t, commandNames, "resize --id <id>")
+	assert.Contains(t, commandNames, "resize-disk --id <id>")
 }
 
 func TestVPCCommand(t *testing.T) {
