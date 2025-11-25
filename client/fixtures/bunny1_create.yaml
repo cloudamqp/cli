@@ -1,0 +1,54 @@
+---
+version: 1
+interactions:
+    - request:
+        body: name=bunny1-test&plan=bunny-1&region=amazon-web-services%3A%3Aus-east-1&tags%5B%5D=test&tags%5B%5D=bunny1
+        form:
+            name:
+                - bunny1-test
+            plan:
+                - bunny-1
+            region:
+                - amazon-web-services::us-east-1
+            tags[]:
+                - test
+                - bunny1
+        headers:
+            Content-Type:
+                - application/x-www-form-urlencoded
+        url: https://customer.cloudamqp.com/api/instances
+        method: POST
+      response:
+        body: '{"apikey":"REDACTED","id":359564,"message":"Your dedicated instance will be available within a couple of minutes","url":"amqps://REDACTED:REDACTED@test-fast-plum-quail.rmq7.cloudamqp.com/udhldnlq"}'
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Length:
+                - "249"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 25 Nov 2025 20:13:15 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=CtumpQyVXDpMYq2G1aI%2BN87AkNEWkQQRtNtC%2BZ%2BPmhA%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1764101595"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=CtumpQyVXDpMYq2G1aI%2BN87AkNEWkQQRtNtC%2BZ%2BPmhA%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1764101595"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 5118a2cd-9728-5577-61d6-6659e4cc769c
+        status: 200 OK
+        code: 200
+        duration: 972.057374ms
