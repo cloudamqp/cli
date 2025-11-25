@@ -19,26 +19,26 @@ interactions:
         url: https://customer.cloudamqp.com/api/instances
         method: POST
       response:
-        body: '{"apikey":"REDACTED","id":359284,"message":"Instance created","url":"amqps://REDACTED:REDACTED@moose.rmq.cloudamqp.com/hsdwidqw"}'
+        body: '{"apikey":"REDACTED","id":359563,"message":"Instance created","url":"amqps://REDACTED:REDACTED@chimpanzee.rmq.cloudamqp.com/fbojnesu"}'
         headers:
             Cache-Control:
                 - no-cache
             Content-Length:
-                - "181"
+                - "186"
             Content-Type:
                 - application/json
             Date:
-                - Mon, 24 Nov 2025 14:36:52 GMT
+                - Tue, 25 Nov 2025 20:13:13 GMT
             Nel:
                 - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
                 - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
             Referrer-Policy:
                 - strict-origin-when-cross-origin
             Report-To:
-                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=RDjfCeD%2BPlcj1P2XQ%2FqHj0OhWUs6jzEYRe2cJXxlx3c%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1763995012"}],"max_age":3600}'
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=LZU5madntxgPF9xmSssx1sMPrGQxB7oaUN0jzqYvea8%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1764101593"}],"max_age":3600}'
                 - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
             Reporting-Endpoints:
-                - heroku-nel="https://nel.heroku.com/reports?s=RDjfCeD%2BPlcj1P2XQ%2FqHj0OhWUs6jzEYRe2cJXxlx3c%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1763995012"
+                - heroku-nel="https://nel.heroku.com/reports?s=LZU5madntxgPF9xmSssx1sMPrGQxB7oaUN0jzqYvea8%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1764101593"
             Server:
                 - Heroku
             Strict-Transport-Security:
@@ -48,7 +48,7 @@ interactions:
             X-Content-Type-Options:
                 - nosniff
             X-Request-Id:
-                - 1f71feb3-6cdb-9a54-8c30-e67c7289eb42
+                - 64cf6bec-e964-bafe-c9a6-9306fa74f657
         status: 200 OK
         code: 200
-        duration: 817.896402ms
+        duration: 818.233145ms

@@ -88,7 +88,7 @@ func TestUpdateInstanceBunny1ToHare1(t *testing.T) {
 
 	// Use a real instance ID from a bunny-1 instance
 	// This should be an instance that is already created and fully configured
-	instanceID := 359292
+	instanceID := 359559
 
 	// Get instance before update
 	beforeUpdate, err := client.GetInstance(instanceID)
@@ -141,7 +141,7 @@ func TestDeleteInstanceBunny1(t *testing.T) {
 	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
 
 	// Use an instance ID that exists (from a previous test or manual creation)
-	instanceID := 359292
+	instanceID := 359559
 
 	// Delete the instance
 	err = client.DeleteInstance(instanceID)

@@ -67,7 +67,7 @@ func TestGetInstanceVCR(t *testing.T) {
 	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
 
 	// Use an existing instance ID (should match cassette)
-	instanceID := 359560
+	instanceID := 359563
 
 	instance, err := client.GetInstance(instanceID)
 
