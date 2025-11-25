@@ -71,7 +71,7 @@ func (p *Printer) Print() {
 	separators := make([]interface{}, len(p.columns))
 	for i, col := range p.columns {
 		headers[i] = col.Header
-		separators[i] = strings.Repeat("-", len(col.Header))
+		separators[i] = strings.Repeat("-", col.Width)
 	}
 	fmt.Fprintf(p.writer, format, headers...)
 	fmt.Fprintf(p.writer, format, separators...)
