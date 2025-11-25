@@ -72,10 +72,11 @@ func TestCreateInstanceVCR(t *testing.T) {
 		return nil
 	})
 
-	// Get API key from environment
+	// Get API key - only required if cassette doesn't exist (recording mode)
 	apiKey := os.Getenv("CLOUDAMQP_APIKEY")
-	if apiKey == "" && r.Mode() != recorder.ModeReplaying {
-		t.Skip("CLOUDAMQP_APIKEY environment variable not set, skipping test")
+	// If no API key, use dummy (cassette will be used if it exists)
+	if apiKey == "" {
+		apiKey = "vcr-replay-mode"
 	}
 
 	// Create HTTP client with VCR recorder as transport

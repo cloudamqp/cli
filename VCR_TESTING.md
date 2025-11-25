@@ -78,7 +78,7 @@ The `sanitizeResponseBody()` function in `instances_vcr_test.go:15` handles:
 
 ## Available Tests
 
-### Instance Lifecycle Tests
+### Instance Operations
 
 #### TestCreateInstanceBunny1
 - **File**: `client/instances_bunny_vcr_test.go`
@@ -108,6 +108,52 @@ The `sanitizeResponseBody()` function in `instances_vcr_test.go:15` handles:
 - **Cassette**: `client/fixtures/create_instance.yaml` (2.3KB)
 - **Operation**: Creates a lemur instance (basic test)
 
+#### TestListInstancesVCR
+- **File**: `client/common_operations_vcr_test.go`
+- **Cassette**: `client/fixtures/list_instances.yaml` (2.2KB)
+- **Operation**: Lists all instances
+- **Duration**: ~1.0s (recording), ~0.5s (replay)
+
+#### TestGetInstanceVCR
+- **File**: `client/common_operations_vcr_test.go`
+- **Cassette**: `client/fixtures/get_instance.yaml` (4.1KB)
+- **Operation**: Gets a specific instance by ID
+- **Duration**: ~1.1s (recording), ~0.6s (replay)
+
+### Resource Discovery
+
+#### TestListRegionsVCR
+- **File**: `client/common_operations_vcr_test.go`
+- **Cassette**: `client/fixtures/list_regions.yaml` (18KB)
+- **Operation**: Lists all available regions (128 regions)
+- **Duration**: ~0.9s (recording), ~0.4s (replay)
+
+#### TestListPlansVCR
+- **File**: `client/common_operations_vcr_test.go`
+- **Cassette**: `client/fixtures/list_plans.yaml` (5.2KB)
+- **Operation**: Lists all available plans (52 plans including bunny-1)
+- **Duration**: ~0.8s (recording), ~0.4s (replay)
+
+### VPC Operations
+
+#### TestListVPCsVCR
+- **File**: `client/vpc_vcr_test.go`
+- **Cassette**: `client/fixtures/list_vpcs.yaml` (1.8KB)
+- **Operation**: Lists all VPCs
+- **Duration**: ~0.9s (recording), ~0.5s (replay)
+
+#### TestVPCLifecycleVCR
+- **File**: `client/vpc_vcr_test.go`
+- **Cassette**: `client/fixtures/vpc_lifecycle.yaml` (9.6KB)
+- **Operation**: Complete VPC lifecycle (create, get, update, delete)
+- **Recording**:
+  - POST to create VPC
+  - GET to retrieve VPC details
+  - PUT to update VPC name
+  - GET to verify update
+  - DELETE to remove VPC
+- **Duration**: ~3.3s (recording), ~1.7s (replay)
+
 ### Cassette Files
 
 Located in `client/fixtures/`:
@@ -115,9 +161,15 @@ Located in `client/fixtures/`:
 | Cassette | Size | Description |
 |----------|------|-------------|
 | `bunny1_create.yaml` | 2.4KB | Create instance with bunny-1 plan |
-| `bunny1_to_hare1_update.yaml` | 6.7KB | Update instance from bunny-1 to hare-1 (includes GET before/after) |
+| `bunny1_to_hare1_update.yaml` | 6.7KB | Update instance from bunny-1 to hare-1 |
 | `bunny1_delete.yaml` | 1.7KB | Delete instance |
-| `create_instance.yaml` | 2.3KB | Create lemur instance (original test) |
+| `create_instance.yaml` | 2.3KB | Create lemur instance |
+| `list_instances.yaml` | 2.2KB | List all instances |
+| `get_instance.yaml` | 4.1KB | Get specific instance details |
+| `list_regions.yaml` | 18KB | List all available regions |
+| `list_plans.yaml` | 5.2KB | List all available plans |
+| `list_vpcs.yaml` | 1.8KB | List all VPCs |
+| `vpc_lifecycle.yaml` | 9.6KB | Complete VPC lifecycle (create/get/update/delete) |
 
 Each cassette contains:
 - Request details (URL, method, headers, body)
