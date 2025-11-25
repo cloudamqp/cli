@@ -1,0 +1,214 @@
+---
+version: 1
+interactions:
+    - request:
+        body: name=vcr-test-vpc&region=amazon-web-services%3A%3Aus-east-1&subnet=10.56.72.0%2F24&tags%5B%5D=test&tags%5B%5D=vcr
+        form:
+            name:
+                - vcr-test-vpc
+            region:
+                - amazon-web-services::us-east-1
+            subnet:
+                - 10.56.72.0/24
+            tags[]:
+                - test
+                - vcr
+        headers:
+            Content-Type:
+                - application/x-www-form-urlencoded
+        url: https://customer.cloudamqp.com/api/vpcs
+        method: POST
+      response:
+        body: '{"apikey":"REDACTED","id":359566,"message":"VPC created"}'
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Length:
+                - "85"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 25 Nov 2025 20:21:40 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=3te6Rg6uRnnQj90TCGC8SF6EfiPh%2BFVqXkxrOp1qxz8%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1764102100"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=3te6Rg6uRnnQj90TCGC8SF6EfiPh%2BFVqXkxrOp1qxz8%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1764102100"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 4d0de6ee-712a-c415-d018-66c8d069a2ee
+        status: 200 OK
+        code: 200
+        duration: 679.336045ms
+    - request:
+        body: ""
+        form: {}
+        headers: {}
+        url: https://customer.cloudamqp.com/api/vpcs/359566
+        method: GET
+      response:
+        body: '{"id":359566,"instances":[],"name":"vcr-test-vpc","plan":"vpc","providerid":"e54c5767-bbbe-4b82-933b-cf099f83fa23","region":"amazon-web-services::us-east-1","subnet":"10.56.72.0/24","tags":["test","vcr"]}'
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Length:
+                - "204"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 25 Nov 2025 20:21:41 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=jhUQQW6tasu%2FkNtrVjymojbt78w4uT0QzADNxd3%2BKXY%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1764102101"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=jhUQQW6tasu%2FkNtrVjymojbt78w4uT0QzADNxd3%2BKXY%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1764102101"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - b7482f48-b8e4-5039-166c-99a23ec7af14
+        status: 200 OK
+        code: 200
+        duration: 208.162973ms
+    - request:
+        body: name=vcr-test-vpc-updated
+        form:
+            name:
+                - vcr-test-vpc-updated
+        headers:
+            Content-Type:
+                - application/x-www-form-urlencoded
+        url: https://customer.cloudamqp.com/api/vpcs/359566
+        method: PUT
+      response:
+        body: '{"message":"Changes saved"}'
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Length:
+                - "27"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 25 Nov 2025 20:21:42 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=KMdMbPU0rYTdLTu2NzYqAVitX0cQYbLOxDrMaMJ7%2B28%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1764102102"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=KMdMbPU0rYTdLTu2NzYqAVitX0cQYbLOxDrMaMJ7%2B28%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1764102102"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - b589785c-223c-b9be-211c-02333a964bdd
+        status: 200 OK
+        code: 200
+        duration: 197.510565ms
+    - request:
+        body: ""
+        form: {}
+        headers: {}
+        url: https://customer.cloudamqp.com/api/vpcs/359566
+        method: GET
+      response:
+        body: '{"id":359566,"instances":[],"name":"vcr-test-vpc-updated","plan":"vpc","providerid":"e54c5767-bbbe-4b82-933b-cf099f83fa23","region":"amazon-web-services::us-east-1","subnet":"10.56.72.0/24","tags":[]}'
+        headers:
+            Cache-Control:
+                - no-cache
+            Content-Length:
+                - "200"
+            Content-Type:
+                - application/json
+            Date:
+                - Tue, 25 Nov 2025 20:21:42 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=KMdMbPU0rYTdLTu2NzYqAVitX0cQYbLOxDrMaMJ7%2B28%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1764102102"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=KMdMbPU0rYTdLTu2NzYqAVitX0cQYbLOxDrMaMJ7%2B28%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1764102102"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - d1bf5309-89f5-4064-9376-7b5a7932e07c
+        status: 200 OK
+        code: 200
+        duration: 212.068024ms
+    - request:
+        body: ""
+        form: {}
+        headers: {}
+        url: https://customer.cloudamqp.com/api/vpcs/359566
+        method: DELETE
+      response:
+        body: ""
+        headers:
+            Cache-Control:
+                - no-cache
+            Date:
+                - Tue, 25 Nov 2025 20:21:43 GMT
+            Nel:
+                - '{"report_to":"heroku-nel","response_headers":["Via"],"max_age":3600,"success_fraction":0.01,"failure_fraction":0.1}'
+                - '{"report_to":"default","max_age":31536000,"include_subdomains":true}'
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
+            Report-To:
+                - '{"group":"heroku-nel","endpoints":[{"url":"https://nel.heroku.com/reports?s=ESfReqZM9TjW4Wvhi2D%2Bsi3GpXK9nwUgOYWesw3o1pc%3D\u0026sid=af571f24-03ee-46d1-9f90-ab9030c2c74c\u0026ts=1764102103"}],"max_age":3600}'
+                - '{"group":"default","max_age":31536000,"endpoints":[{"url":"https://84codes.report-uri.com/a/t/g"}],"include_subdomains":true}'
+            Reporting-Endpoints:
+                - heroku-nel="https://nel.heroku.com/reports?s=ESfReqZM9TjW4Wvhi2D%2Bsi3GpXK9nwUgOYWesw3o1pc%3D&sid=af571f24-03ee-46d1-9f90-ab9030c2c74c&ts=1764102103"
+            Server:
+                - Heroku
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Via:
+                - 2.0 heroku-router
+            X-Content-Type-Options:
+                - nosniff
+            X-Request-Id:
+                - 2a304ea2-d04c-2e65-edfd-c99f663adc36
+        status: 204 No Content
+        code: 204
+        duration: 516.789911ms
