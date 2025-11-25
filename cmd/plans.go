@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
+	"os"
 
 	"cloudamqp-cli/client"
+	"cloudamqp-cli/internal/table"
 	"github.com/spf13/cobra"
 )
 
@@ -36,12 +37,25 @@ var plansCmd = &cobra.Command{
 			return nil
 		}
 
-		output, err := json.MarshalIndent(plans, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format response: %v", err)
+		// Create table and populate data
+		t := table.New(os.Stdout, "NAME", "PRICE", "BACKEND", "SHARED")
+		for _, plan := range plans {
+			shared := "No"
+			if plan.Shared {
+				shared = "Yes"
+			}
+			price := fmt.Sprintf("$%.2f", plan.Price)
+			if plan.Price == 0 {
+				price = "Free"
+			}
+			t.AddRow(
+				plan.Name,
+				price,
+				plan.Backend,
+				shared,
+			)
 		}
-
-		fmt.Printf("Available plans:\n%s\n", string(output))
+		t.Print()
 		return nil
 	},
 }
