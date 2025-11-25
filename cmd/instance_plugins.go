@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"cloudamqp-cli/client"
+	"cloudamqp-cli/internal/table"
 	"github.com/spf13/cobra"
 )
 
@@ -47,18 +49,16 @@ var instancePluginsListCmd = &cobra.Command{
 			return nil
 		}
 
-		// Print table header
-		fmt.Printf("%-30s %-10s\n", "NAME", "ENABLED")
-		fmt.Printf("%-30s %-10s\n", "----", "-------")
-
-		// Print plugin data
+		// Create table and populate data
+		t := table.New(os.Stdout, "NAME", "ENABLED")
 		for _, plugin := range plugins {
 			enabled := "No"
 			if plugin.Enabled {
 				enabled = "Yes"
 			}
-			fmt.Printf("%-30s %-10s\n", plugin.Name, enabled)
+			t.AddRow(plugin.Name, enabled)
 		}
+		t.Print()
 
 		return nil
 	},
