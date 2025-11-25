@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,6 +17,31 @@ func TestNew(t *testing.T) {
 	assert.NotNil(t, client)
 	assert.Equal(t, apiKey, client.apiKey)
 	assert.NotNil(t, client.httpClient)
+}
+
+func TestNew_WithEnvironmentVariable(t *testing.T) {
+	// Save original environment variable
+	originalURL := os.Getenv("CLOUDAMQP_URL")
+	defer os.Setenv("CLOUDAMQP_URL", originalURL)
+
+	// Test with custom base URL from environment variable
+	customURL := "https://custom.example.com/api"
+	os.Setenv("CLOUDAMQP_URL", customURL)
+
+	apiKey := "test-api-key"
+	client := New(apiKey)
+
+	assert.NotNil(t, client)
+	assert.Equal(t, apiKey, client.apiKey)
+	assert.Equal(t, customURL, client.baseURL)
+	assert.NotNil(t, client.httpClient)
+
+	// Test with empty environment variable (should use default)
+	os.Setenv("CLOUDAMQP_URL", "")
+	client = New(apiKey)
+
+	assert.NotNil(t, client)
+	assert.Equal(t, "https://customer.cloudamqp.com/api", client.baseURL)
 }
 
 func TestMakeRequest_GET_Success(t *testing.T) {

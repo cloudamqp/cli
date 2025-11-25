@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 )
 
@@ -19,9 +20,13 @@ type Client struct {
 }
 
 func New(apiKey string) *Client {
+	baseURL := "https://customer.cloudamqp.com/api"
+	if envURL := os.Getenv("CLOUDAMQP_URL"); envURL != "" {
+		baseURL = envURL
+	}
 	return &Client{
 		apiKey:     apiKey,
-		baseURL:    "https://customer.cloudamqp.com/api",
+		baseURL:    baseURL,
 		httpClient: &http.Client{},
 	}
 }
