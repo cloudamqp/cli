@@ -15,6 +15,7 @@ var instancePluginsCmd = &cobra.Command{
 	Long:  `List, enable, and disable RabbitMQ plugins for the instance.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.Help()
+		cmd.SilenceUsage = true
 		return fmt.Errorf("subcommand required")
 	},
 }

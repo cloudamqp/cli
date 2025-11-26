@@ -13,6 +13,7 @@ var instanceAccountCmd = &cobra.Command{
 	Long:  `Rotate password and API key for the instance.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.Help()
+		cmd.SilenceUsage = true
 		return fmt.Errorf("subcommand required")
 	},
 }

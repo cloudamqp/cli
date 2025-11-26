@@ -19,11 +19,13 @@ Instance API keys are automatically saved when you run 'cloudamqp instance get <
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			cmd.Help()
+			cmd.SilenceUsage = true
 			return fmt.Errorf("instance ID is required")
 		}
 
 		if len(args) == 1 {
 			cmd.Help()
+			cmd.SilenceUsage = true
 			return fmt.Errorf("subcommand is required")
 		}
 
@@ -63,6 +65,7 @@ Instance API keys are automatically saved when you run 'cloudamqp instance get <
 				// If no RunE, show help for the subcommand
 				if len(subCmd.Commands()) > 0 {
 					subCmd.Help()
+					cmd.SilenceUsage = true
 					return fmt.Errorf("subcommand required for %s", subcommandName)
 				}
 
@@ -71,6 +74,7 @@ Instance API keys are automatically saved when you run 'cloudamqp instance get <
 		}
 
 		cmd.Help()
+		cmd.SilenceUsage = true
 		return fmt.Errorf("unknown subcommand: %s", subcommandName)
 	},
 }

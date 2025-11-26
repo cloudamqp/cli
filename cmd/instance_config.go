@@ -15,6 +15,7 @@ var instanceConfigCmd = &cobra.Command{
 	Long:  `Get and update RabbitMQ configuration settings for the instance.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.Help()
+		cmd.SilenceUsage = true
 		return fmt.Errorf("subcommand required")
 	},
 }
