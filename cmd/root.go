@@ -1,10 +1,22 @@
 package cmd
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/spf13/cobra"
 )
 
 var apiKey string
+
+func getVersionString() string {
+	if Version == "dev" {
+		return fmt.Sprintf("%s (development build)", Version)
+	}
+	// Strip leading 'v' if present to avoid double 'v' in URL
+	versionTag := strings.TrimPrefix(Version, "v")
+	return fmt.Sprintf("%s (%s)\nhttps://github.com/cloudamqp/cli/releases/tag/v%s", Version, BuildDate, versionTag)
+}
 
 var rootCmd = &cobra.Command{
 	Use:   "cloudamqp",
@@ -19,6 +31,7 @@ The CLI will look for your API key in the following order:
 3. If neither exists, you will be prompted to enter it
 
 Instance API keys are automatically saved when using 'instance get' command.`,
+	Version: getVersionString(),
 }
 
 func Execute() error {
@@ -26,6 +39,9 @@ func Execute() error {
 }
 
 func init() {
+	// Set custom version template to match gh style
+	rootCmd.SetVersionTemplate("cloudamqp version {{.Version}}\n")
+
 	rootCmd.AddCommand(instanceCmd)
 	rootCmd.AddCommand(vpcCmd)
 	rootCmd.AddCommand(regionsCmd)

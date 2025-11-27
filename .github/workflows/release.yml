@@ -55,13 +55,42 @@ jobs:
     - name: Download dependencies
       run: go mod download
 
+    - name: Extract version information
+      id: version
+      run: |
+        # Extract version from tag (remove 'v' prefix if present)
+        if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+          VERSION="${GITHUB_REF#refs/tags/}"
+        else
+          VERSION=$(git describe --tags --always --dirty 2>/dev/null || echo "dev")
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+        # Get build date in UTC
+        BUILD_DATE=$(date -u +"%Y-%m-%d")
+        echo "build_date=$BUILD_DATE" >> $GITHUB_OUTPUT
+
+        # Get short commit hash
+        GIT_COMMIT=$(git rev-parse --short HEAD)
+        echo "git_commit=$GIT_COMMIT" >> $GITHUB_OUTPUT
+
+        echo "Building version: $VERSION (commit: $GIT_COMMIT, date: $BUILD_DATE)"
+
     - name: Build binary
       env:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}
         CGO_ENABLED: 0
       run: |
-        go build -a -installsuffix cgo -ldflags="-w -s" -o cloudamqp-${{ matrix.name }}${{ matrix.ext }} .
+        go build -a -installsuffix cgo \
+          -ldflags="-w -s -X cloudamqp-cli/cmd.Version=${{ steps.version.outputs.version }} -X cloudamqp-cli/cmd.BuildDate=${{ steps.version.outputs.build_date }} -X cloudamqp-cli/cmd.GitCommit=${{ steps.version.outputs.git_commit }}" \
+          -o cloudamqp-${{ matrix.name }}${{ matrix.ext }} .
+
+    - name: Verify version (Linux/macOS only)
+      if: matrix.goos != 'windows'
+      run: |
+        chmod +x cloudamqp-${{ matrix.name }}${{ matrix.ext }}
+        ./cloudamqp-${{ matrix.name }}${{ matrix.ext }} version || echo "Version verification skipped for cross-compiled binary"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4

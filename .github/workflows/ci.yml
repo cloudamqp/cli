@@ -53,8 +53,24 @@ jobs:
       with:
         file: ./coverage.out
 
+    - name: Extract version information
+      id: version
+      run: |
+        VERSION=$(git describe --tags --always --dirty 2>/dev/null || echo "dev")
+        BUILD_DATE=$(date -u +"%Y-%m-%d")
+        GIT_COMMIT=$(git rev-parse --short HEAD)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "build_date=$BUILD_DATE" >> $GITHUB_OUTPUT
+        echo "git_commit=$GIT_COMMIT" >> $GITHUB_OUTPUT
+        echo "Building with version: $VERSION (commit: $GIT_COMMIT, date: $BUILD_DATE)"
+
     - name: Build
-      run: go build -v -o cloudamqp .
+      run: |
+        go build -v \
+          -ldflags="-X cloudamqp-cli/cmd.Version=${{ steps.version.outputs.version }} -X cloudamqp-cli/cmd.BuildDate=${{ steps.version.outputs.build_date }} -X cloudamqp-cli/cmd.GitCommit=${{ steps.version.outputs.git_commit }}" \
+          -o cloudamqp .
 
     - name: Test binary
-      run: ./cloudamqp --help
+      run: |
+        ./cloudamqp --help
+        ./cloudamqp version
