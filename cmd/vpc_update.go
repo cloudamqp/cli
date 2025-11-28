@@ -52,14 +52,7 @@ You can update the following fields:
 			return fmt.Errorf("at least one field must be specified for update")
 		}
 
-		err = c.UpdateVPC(vpcID, req)
-		if err != nil {
-			fmt.Printf("Error updating VPC: %v\n", err)
-			return err
-		}
-
-		fmt.Printf("VPC %d updated successfully.\n", vpcID)
-		return nil
+		return c.UpdateVPC(vpcID, req)
 	},
 }
 

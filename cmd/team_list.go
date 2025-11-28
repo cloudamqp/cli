@@ -26,7 +26,6 @@ var teamListCmd = &cobra.Command{
 
 		members, err := c.ListTeamMembers()
 		if err != nil {
-			fmt.Printf("Error listing team members: %v\n", err)
 			return err
 		}
 

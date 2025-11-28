@@ -86,7 +86,6 @@ Optional flags:
 
 		resp, err := c.CreateInstance(req)
 		if err != nil {
-			fmt.Printf("Error creating instance: %v\n", err)
 			return err
 		}
 
@@ -97,9 +96,8 @@ Optional flags:
 			}
 
 			if err := waitForInstanceReady(c, resp.ID, timeout); err != nil {
-				// Instance was created but failed to become ready
 				output, _ := json.MarshalIndent(resp, "", "  ")
-				fmt.Printf("Instance created but not ready:\n%s\n", string(output))
+				fmt.Println(string(output))
 				return fmt.Errorf("wait failed: %w", err)
 			}
 		}
@@ -109,7 +107,7 @@ Optional flags:
 			return fmt.Errorf("failed to format response: %v", err)
 		}
 
-		fmt.Printf("Instance created successfully:\n%s\n", string(output))
+		fmt.Println(string(output))
 		return nil
 	},
 }

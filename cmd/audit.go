@@ -26,7 +26,6 @@ var auditCmd = &cobra.Command{
 
 		csv, err := c.GetAuditLogCSV(auditTimestamp)
 		if err != nil {
-			fmt.Printf("Error getting audit log: %v\n", err)
 			return err
 		}
 

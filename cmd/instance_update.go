@@ -56,14 +56,7 @@ You can update the following fields:
 			return fmt.Errorf("at least one field must be specified for update")
 		}
 
-		err = c.UpdateInstance(instanceID, req)
-		if err != nil {
-			fmt.Printf("Error updating instance: %v\n", err)
-			return err
-		}
-
-		fmt.Printf("Instance %d updated successfully.\n", instanceID)
-		return nil
+		return c.UpdateInstance(instanceID, req)
 	},
 }
 

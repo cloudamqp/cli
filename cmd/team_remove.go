@@ -26,7 +26,6 @@ var teamRemoveCmd = &cobra.Command{
 
 		resp, err := c.RemoveTeamMember(removeEmail)
 		if err != nil {
-			fmt.Printf("Error removing team member: %v\n", err)
 			return err
 		}
 
@@ -35,7 +34,7 @@ var teamRemoveCmd = &cobra.Command{
 			return fmt.Errorf("failed to format response: %v", err)
 		}
 
-		fmt.Printf("Team member removed:\n%s\n", string(output))
+		fmt.Println(string(output))
 		return nil
 	},
 }

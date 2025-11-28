@@ -40,7 +40,6 @@ Default role: member`,
 
 		resp, err := c.InviteTeamMember(req)
 		if err != nil {
-			fmt.Printf("Error inviting team member: %v\n", err)
 			return err
 		}
 
@@ -49,7 +48,7 @@ Default role: member`,
 			return fmt.Errorf("failed to format response: %v", err)
 		}
 
-		fmt.Printf("Team member invited:\n%s\n", string(output))
+		fmt.Println(string(output))
 		return nil
 	},
 }

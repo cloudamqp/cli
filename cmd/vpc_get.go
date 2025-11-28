@@ -35,7 +35,6 @@ var vpcGetCmd = &cobra.Command{
 
 		vpc, err := c.GetVPC(vpcID)
 		if err != nil {
-			fmt.Printf("Error getting VPC: %v\n", err)
 			return err
 		}
 
@@ -44,7 +43,7 @@ var vpcGetCmd = &cobra.Command{
 			return fmt.Errorf("failed to format response: %v", err)
 		}
 
-		fmt.Printf("VPC details:\n%s\n", string(output))
+		fmt.Println(string(output))
 		return nil
 	},
 }

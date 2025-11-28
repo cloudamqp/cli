@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"cloudamqp-cli/client"
 	"github.com/spf13/cobra"
@@ -35,22 +35,15 @@ var instanceGetCmd = &cobra.Command{
 
 		instance, err := c.GetInstance(instanceID)
 		if err != nil {
-			fmt.Printf("Error getting instance: %v\n", err)
 			return err
 		}
 
-		// Format output as "Name = Value"
-		fmt.Printf("Name = %s\n", instance.Name)
-		fmt.Printf("Plan = %s\n", instance.Plan)
-		fmt.Printf("Region = %s\n", instance.Region)
-		fmt.Printf("Tags = %s\n", strings.Join(instance.Tags, ","))
-		fmt.Printf("Hostname = %s\n", instance.HostnameExternal)
-		ready := "No"
-		if instance.Ready {
-			ready = "Yes"
+		output, err := json.MarshalIndent(instance, "", "  ")
+		if err != nil {
+			return fmt.Errorf("failed to format response: %v", err)
 		}
-		fmt.Printf("Ready = %s\n", ready)
 
+		fmt.Println(string(output))
 		return nil
 	},
 }

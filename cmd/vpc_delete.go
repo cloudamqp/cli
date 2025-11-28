@@ -58,14 +58,7 @@ WARNING: This action cannot be undone. All instances in the VPC must be deleted 
 
 		c := client.New(apiKey)
 
-		err = c.DeleteVPC(vpcID)
-		if err != nil {
-			fmt.Printf("Error deleting VPC: %v\n", err)
-			return err
-		}
-
-		fmt.Printf("VPC %d deleted successfully.\n", vpcID)
-		return nil
+		return c.DeleteVPC(vpcID)
 	},
 }
 

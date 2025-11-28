@@ -27,7 +27,6 @@ var regionsCmd = &cobra.Command{
 
 		regions, err := c.ListRegions(providerFilter)
 		if err != nil {
-			fmt.Printf("Error listing regions: %v\n", err)
 			return err
 		}
 

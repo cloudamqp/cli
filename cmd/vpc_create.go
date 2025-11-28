@@ -47,7 +47,6 @@ Optional flags:
 
 		resp, err := c.CreateVPC(req)
 		if err != nil {
-			fmt.Printf("Error creating VPC: %v\n", err)
 			return err
 		}
 
@@ -56,7 +55,7 @@ Optional flags:
 			return fmt.Errorf("failed to format response: %v", err)
 		}
 
-		fmt.Printf("VPC created successfully:\n%s\n", string(output))
+		fmt.Println(string(output))
 		return nil
 	},
 }

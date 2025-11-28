@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -41,28 +42,15 @@ var instanceConfigListCmd = &cobra.Command{
 
 		config, err := c.GetRabbitMQConfig(idFlag)
 		if err != nil {
-			fmt.Printf("Error getting configuration: %v\n", err)
 			return err
 		}
 
-		if len(config) == 0 {
-			fmt.Println("No configuration found.")
-			return nil
+		output, err := json.MarshalIndent(config, "", "  ")
+		if err != nil {
+			return fmt.Errorf("failed to format response: %v", err)
 		}
 
-		// Print table header
-		fmt.Printf("%-40s %-30s\n", "KEY", "VALUE")
-		fmt.Printf("%-40s %-30s\n", "---", "-----")
-
-		// Print configuration data
-		for key, value := range config {
-			valueStr := fmt.Sprintf("%v", value)
-			if len(valueStr) > 30 {
-				valueStr = valueStr[:27] + "..."
-			}
-			fmt.Printf("%-40s %-30s\n", key, valueStr)
-		}
-
+		fmt.Println(string(output))
 		return nil
 	},
 }
@@ -91,14 +79,17 @@ var instanceConfigGetCmd = &cobra.Command{
 
 		config, err := c.GetRabbitMQConfig(idFlag)
 		if err != nil {
-			fmt.Printf("Error getting configuration: %v\n", err)
 			return err
 		}
 
 		if value, exists := config[settingName]; exists {
-			fmt.Printf("%s: %v\n", settingName, value)
+			output, err := json.MarshalIndent(map[string]interface{}{settingName: value}, "", "  ")
+			if err != nil {
+				return fmt.Errorf("failed to format response: %v", err)
+			}
+			fmt.Println(string(output))
 		} else {
-			fmt.Printf("Setting '%s' not found\n", settingName)
+			return fmt.Errorf("setting '%s' not found", settingName)
 		}
 
 		return nil
@@ -149,14 +140,7 @@ var instanceConfigSetCmd = &cobra.Command{
 			settingName: value,
 		}
 
-		err = c.UpdateRabbitMQConfig(idFlag, config)
-		if err != nil {
-			fmt.Printf("Error updating configuration: %v\n", err)
-			return err
-		}
-
-		fmt.Printf("Configuration setting '%s' updated to: %v\n", settingName, value)
-		return nil
+		return c.UpdateRabbitMQConfig(idFlag, config)
 	},
 }
 
