@@ -26,7 +26,6 @@ var instanceListCmd = &cobra.Command{
 
 		instances, err := c.ListInstances()
 		if err != nil {
-			fmt.Printf("Error listing instances: %v\n", err)
 			return err
 		}
 

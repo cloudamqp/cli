@@ -26,7 +26,6 @@ var vpcListCmd = &cobra.Command{
 
 		vpcs, err := c.ListVPCs()
 		if err != nil {
-			fmt.Printf("Error listing VPCs: %v\n", err)
 			return err
 		}
 

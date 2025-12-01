@@ -64,17 +64,7 @@ Available disk sizes: 0, 25, 50, 100, 250, 500, 1000, 2000 GB`,
 			AllowDowntime: allowDowntime,
 		}
 
-		err = c.ResizeInstanceDisk(instanceID, req)
-		if err != nil {
-			fmt.Printf("Error resizing instance disk: %v\n", err)
-			return err
-		}
-
-		fmt.Printf("Disk resize initiated for instance %d. Additional disk size: %d GB\n", instanceID, diskSize)
-		if allowDowntime {
-			fmt.Println("Note: Downtime is allowed for this resize operation.")
-		}
-		return nil
+		return c.ResizeInstanceDisk(instanceID, req)
 	},
 }
 

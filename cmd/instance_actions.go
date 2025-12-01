@@ -187,7 +187,6 @@ var upgradeVersionsCmd = &cobra.Command{
 
 		versions, err := c.GetUpgradeVersions(idFlag)
 		if err != nil {
-			fmt.Printf("Error getting upgrade versions: %v\n", err)
 			return err
 		}
 
@@ -196,7 +195,7 @@ var upgradeVersionsCmd = &cobra.Command{
 			return fmt.Errorf("failed to format response: %v", err)
 		}
 
-		fmt.Printf("Upgrade versions:\n%s\n", string(output))
+		fmt.Println(string(output))
 		return nil
 	},
 }
@@ -237,13 +236,7 @@ func performNodeAction(cmd *cobra.Command, action string) error {
 		return fmt.Errorf("unknown action: %s", action)
 	}
 
-	if err != nil {
-		fmt.Printf("Error performing %s: %v\n", action, err)
-		return err
-	}
-
-	fmt.Printf("%s initiated successfully.\n", strings.Title(strings.ReplaceAll(action, "-", " ")))
-	return nil
+	return err
 }
 
 func performClusterAction(cmd *cobra.Command, action string) error {
@@ -271,13 +264,7 @@ func performClusterAction(cmd *cobra.Command, action string) error {
 		return fmt.Errorf("unknown action: %s", action)
 	}
 
-	if err != nil {
-		fmt.Printf("Error performing %s: %v\n", action, err)
-		return err
-	}
-
-	fmt.Printf("%s initiated successfully.\n", strings.Title(strings.ReplaceAll(action, "-", " ")))
-	return nil
+	return err
 }
 
 func performUpgradeAction(cmd *cobra.Command, action, version string) error {
@@ -305,13 +292,7 @@ func performUpgradeAction(cmd *cobra.Command, action, version string) error {
 		return fmt.Errorf("unknown action: %s", action)
 	}
 
-	if err != nil {
-		fmt.Printf("Error performing %s: %v\n", action, err)
-		return err
-	}
-
-	fmt.Printf("%s initiated successfully.\n", strings.Title(strings.ReplaceAll(action, "-", " ")))
-	return nil
+	return err
 }
 
 func performToggleAction(cmd *cobra.Command, action string) error {
@@ -360,17 +341,7 @@ func performToggleAction(cmd *cobra.Command, action string) error {
 		return fmt.Errorf("unknown action: %s", action)
 	}
 
-	if err != nil {
-		fmt.Printf("Error toggling %s: %v\n", action, err)
-		return err
-	}
-
-	status := "disabled"
-	if enable {
-		status = "enabled"
-	}
-	fmt.Printf("%s %s successfully.\n", strings.Title(action), status)
-	return nil
+	return err
 }
 
 func init() {

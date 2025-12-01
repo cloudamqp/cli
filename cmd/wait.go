@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
 	"cloudamqp-cli/client"
@@ -27,8 +26,6 @@ func waitForInstanceReady(c *client.Client, instanceID int, timeout time.Duratio
 		return nil
 	}
 
-	fmt.Fprintf(os.Stderr, "Waiting for instance %d to be ready...\n", instanceID)
-
 	for {
 		select {
 		case <-ctx.Done():
@@ -39,15 +36,9 @@ func waitForInstanceReady(c *client.Client, instanceID int, timeout time.Duratio
 			if err != nil {
 				return fmt.Errorf("failed to check instance status: %w", err)
 			}
-
 			if instance.Ready {
-				elapsed := time.Since(startTime)
-				fmt.Fprintf(os.Stderr, "Instance is ready! (took %s)\n", elapsed.Round(time.Second))
 				return nil
 			}
-
-			elapsed := time.Since(startTime)
-			fmt.Fprintf(os.Stderr, "Still waiting... (elapsed: %s)\n", elapsed.Round(time.Second))
 		}
 	}
 }

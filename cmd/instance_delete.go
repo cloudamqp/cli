@@ -58,14 +58,7 @@ WARNING: This action cannot be undone. All data will be lost.`,
 
 		c := client.New(apiKey)
 
-		err = c.DeleteInstance(instanceID)
-		if err != nil {
-			fmt.Printf("Error deleting instance: %v\n", err)
-			return err
-		}
-
-		fmt.Printf("Instance %d deleted successfully.\n", instanceID)
-		return nil
+		return c.DeleteInstance(instanceID)
 	},
 }
 

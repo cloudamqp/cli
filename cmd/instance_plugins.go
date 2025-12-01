@@ -41,7 +41,6 @@ var instancePluginsListCmd = &cobra.Command{
 
 		plugins, err := c.ListPlugins(idFlag)
 		if err != nil {
-			fmt.Printf("Error listing plugins: %v\n", err)
 			return err
 		}
 
@@ -86,14 +85,7 @@ var instancePluginsEnableCmd = &cobra.Command{
 
 		c := client.New(apiKey)
 
-		err = c.EnablePlugin(idFlag, pluginName)
-		if err != nil {
-			fmt.Printf("Error enabling plugin '%s': %v\n", pluginName, err)
-			return err
-		}
-
-		fmt.Printf("Plugin '%s' enabled successfully.\n", pluginName)
-		return nil
+		return c.EnablePlugin(idFlag, pluginName)
 	},
 }
 
@@ -118,14 +110,7 @@ var instancePluginsDisableCmd = &cobra.Command{
 
 		c := client.New(apiKey)
 
-		err = c.DisablePlugin(idFlag, pluginName)
-		if err != nil {
-			fmt.Printf("Error disabling plugin '%s': %v\n", pluginName, err)
-			return err
-		}
-
-		fmt.Printf("Plugin '%s' disabled successfully.\n", pluginName)
-		return nil
+		return c.DisablePlugin(idFlag, pluginName)
 	},
 }
 

@@ -37,14 +37,7 @@ var rotatePasswordCmd = &cobra.Command{
 
 		c := client.New(apiKey)
 
-		err = c.RotatePassword(idFlag)
-		if err != nil {
-			fmt.Printf("Error rotating password: %v\n", err)
-			return err
-		}
-
-		fmt.Println("Password rotation initiated successfully.")
-		return nil
+		return c.RotatePassword(idFlag)
 	},
 }
 
@@ -67,16 +60,7 @@ var rotateInstanceAPIKeyCmd = &cobra.Command{
 
 		c := client.New(apiKey)
 
-		err = c.RotateInstanceAPIKey(idFlag)
-		if err != nil {
-			fmt.Printf("Error rotating instance API key: %v\n", err)
-			return err
-		}
-
-		fmt.Println("Instance API key rotation initiated successfully.")
-		fmt.Printf("Warning: The local config for instance %s will need to be updated.\n", idFlag)
-		fmt.Printf("Run 'cloudamqp instance get --id %s' to retrieve and save the new API key.\n", idFlag)
-		return nil
+		return c.RotateInstanceAPIKey(idFlag)
 	},
 }
 

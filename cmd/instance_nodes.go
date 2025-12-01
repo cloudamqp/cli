@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -41,7 +42,6 @@ var instanceNodesListCmd = &cobra.Command{
 
 		nodes, err := c.ListNodes(idFlag)
 		if err != nil {
-			fmt.Printf("Error listing nodes: %v\n", err)
 			return err
 		}
 
@@ -97,13 +97,15 @@ var instanceNodesVersionsCmd = &cobra.Command{
 
 		versions, err := c.GetAvailableVersions(idFlag)
 		if err != nil {
-			fmt.Printf("Error getting available versions: %v\n", err)
 			return err
 		}
 
-		fmt.Printf("Available versions:\n")
-		fmt.Printf("RabbitMQ versions: %v\n", versions.RabbitMQVersions)
-		fmt.Printf("Erlang versions: %v\n", versions.ErlangVersions)
+		output, err := json.MarshalIndent(versions, "", "  ")
+		if err != nil {
+			return fmt.Errorf("failed to format response: %v", err)
+		}
+
+		fmt.Println(string(output))
 		return nil
 	},
 }

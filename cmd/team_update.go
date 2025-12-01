@@ -42,7 +42,6 @@ Available roles: admin, devops, member, monitor, billing manager`,
 
 		resp, err := c.UpdateTeamMember(updateUserID, req)
 		if err != nil {
-			fmt.Printf("Error updating team member: %v\n", err)
 			return err
 		}
 
@@ -51,7 +50,7 @@ Available roles: admin, devops, member, monitor, billing manager`,
 			return fmt.Errorf("failed to format response: %v", err)
 		}
 
-		fmt.Printf("Team member updated:\n%s\n", string(output))
+		fmt.Println(string(output))
 		return nil
 	},
 }

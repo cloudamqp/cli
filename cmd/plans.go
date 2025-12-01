@@ -28,7 +28,6 @@ var plansCmd = &cobra.Command{
 
 		plans, err := c.ListPlans(backendFilter)
 		if err != nil {
-			fmt.Printf("Error listing plans: %v\n", err)
 			return err
 		}
 

@@ -24,7 +24,6 @@ var rotateKeyCmd = &cobra.Command{
 
 		resp, err := c.RotateAPIKey()
 		if err != nil {
-			fmt.Printf("Error rotating API key: %v\n", err)
 			return err
 		}
 
@@ -33,14 +32,10 @@ var rotateKeyCmd = &cobra.Command{
 			return fmt.Errorf("failed to format response: %v", err)
 		}
 
-		fmt.Printf("API key rotated successfully:\n%s\n", string(output))
+		fmt.Println(string(output))
 
 		// Update local config file with new key
-		if err := saveAPIKey(resp.APIKey); err != nil {
-			fmt.Printf("Warning: Could not update local config file: %v\n", err)
-		} else {
-			fmt.Printf("Local config file updated with new API key.\n")
-		}
+		_ = saveAPIKey(resp.APIKey)
 
 		return nil
 	},
