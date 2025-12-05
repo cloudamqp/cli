@@ -79,7 +79,7 @@ var instanceNodesListCmd = &cobra.Command{
 var instanceNodesVersionsCmd = &cobra.Command{
 	Use:     "versions --id <instance_id>",
 	Short:   "Get available versions",
-	Long:    `Lists RabbitMQ and Erlang versions to which the instance can be upgraded.`,
+	Long:    `Lists available versions to which the instance can be upgraded. For RabbitMQ instances, shows RabbitMQ and Erlang versions. For LavinMQ instances, shows LavinMQ versions.`,
 	Example: `  cloudamqp instance nodes versions --id 1234`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		idFlag, _ := cmd.Flags().GetString("id")
@@ -102,8 +102,12 @@ var instanceNodesVersionsCmd = &cobra.Command{
 		}
 
 		fmt.Printf("Available versions:\n")
-		fmt.Printf("RabbitMQ versions: %v\n", versions.RabbitMQVersions)
-		fmt.Printf("Erlang versions: %v\n", versions.ErlangVersions)
+		if len(versions.LavinMQVersions) > 0 {
+			fmt.Printf("LavinMQ versions: %v\n", versions.LavinMQVersions)
+		} else {
+			fmt.Printf("RabbitMQ versions: %v\n", versions.RabbitMQVersions)
+			fmt.Printf("Erlang versions: %v\n", versions.ErlangVersions)
+		}
 		return nil
 	},
 }
