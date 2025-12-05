@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
+	"os"
 
 	"cloudamqp-cli/client"
+	"cloudamqp-cli/internal/table"
 	"github.com/spf13/cobra"
 )
 
@@ -36,12 +37,12 @@ var regionsCmd = &cobra.Command{
 			return nil
 		}
 
-		output, err := json.MarshalIndent(regions, "", "  ")
-		if err != nil {
-			return fmt.Errorf("failed to format response: %v", err)
+		t := table.New(os.Stdout, "PROVIDER", "REGION", "NAME")
+		for _, region := range regions {
+			t.AddRow(region.Provider, region.Region, region.Name)
 		}
+		t.Print()
 
-		fmt.Printf("Available regions:\n%s\n", string(output))
 		return nil
 	},
 }
