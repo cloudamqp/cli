@@ -183,7 +183,7 @@ var upgradeVersionsCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		versions, err := c.GetUpgradeVersions(idFlag)
 		if err != nil {
@@ -214,7 +214,7 @@ func performNodeAction(cmd *cobra.Command, action string) error {
 		return fmt.Errorf("failed to get API key: %w", err)
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	nodesStr, _ := cmd.Flags().GetString("nodes")
 	var nodes []string
@@ -258,7 +258,7 @@ func performClusterAction(cmd *cobra.Command, action string) error {
 		return fmt.Errorf("failed to get API key: %w", err)
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	switch action {
 	case "restart-cluster":
@@ -292,7 +292,7 @@ func performUpgradeAction(cmd *cobra.Command, action, version string) error {
 		return fmt.Errorf("failed to get API key: %w", err)
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	switch action {
 	case "upgrade-erlang":
@@ -326,7 +326,7 @@ func performToggleAction(cmd *cobra.Command, action string) error {
 		return fmt.Errorf("failed to get API key: %w", err)
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	enable, _ := cmd.Flags().GetBool("enable")
 

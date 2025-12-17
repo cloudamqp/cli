@@ -32,7 +32,7 @@ func TestListVPCs(t *testing.T) {
 	defer server.Close()
 
 	// Test
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	vpcs, err := client.ListVPCs()
 
@@ -65,7 +65,7 @@ func TestGetVPC(t *testing.T) {
 	defer server.Close()
 
 	// Test
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	vpc, err := client.GetVPC(5678)
 
@@ -100,7 +100,7 @@ func TestCreateVPC(t *testing.T) {
 	defer server.Close()
 
 	// Test
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	req := &VPCCreateRequest{
 		Name:   "test-vpc",
@@ -131,7 +131,7 @@ func TestCreateVPC_WithTags(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	req := &VPCCreateRequest{
 		Name:   "test-vpc",
@@ -162,7 +162,7 @@ func TestUpdateVPC(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	req := &VPCUpdateRequest{
 		Name: "updated-vpc-name",
@@ -182,7 +182,7 @@ func TestDeleteVPC(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	err := client.DeleteVPC(5678)
 	assert.NoError(t, err)
@@ -195,7 +195,7 @@ func TestVPCError_NotFound(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	_, err := client.GetVPC(9999)
 

@@ -35,7 +35,7 @@ var rotatePasswordCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		err = c.RotatePassword(idFlag)
 		if err != nil {
@@ -65,7 +65,7 @@ var rotateInstanceAPIKeyCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		err = c.RotateInstanceAPIKey(idFlag)
 		if err != nil {

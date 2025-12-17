@@ -56,7 +56,7 @@ WARNING: This action cannot be undone. All instances in the VPC must be deleted 
 			}
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		err = c.DeleteVPC(vpcID)
 		if err != nil {

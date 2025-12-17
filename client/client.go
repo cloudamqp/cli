@@ -17,9 +17,10 @@ type Client struct {
 	apiKey     string
 	baseURL    string
 	httpClient *http.Client
+	version    string
 }
 
-func New(apiKey string) *Client {
+func New(apiKey, version string) *Client {
 	baseURL := "https://customer.cloudamqp.com/api"
 	if envURL := os.Getenv("CLOUDAMQP_URL"); envURL != "" {
 		baseURL = envURL
@@ -28,24 +29,27 @@ func New(apiKey string) *Client {
 		apiKey:     apiKey,
 		baseURL:    baseURL,
 		httpClient: &http.Client{},
+		version:    version,
 	}
 }
 
-func NewWithBaseURL(apiKey, baseURL string) *Client {
+func NewWithBaseURL(apiKey, baseURL, version string) *Client {
 	return &Client{
 		apiKey:     apiKey,
 		baseURL:    baseURL,
 		httpClient: &http.Client{},
+		version:    version,
 	}
 }
 
 // NewWithHTTPClient creates a new client with a custom HTTP client.
 // This is useful for testing with tools like go-vcr.
-func NewWithHTTPClient(apiKey, baseURL string, httpClient *http.Client) *Client {
+func NewWithHTTPClient(apiKey, baseURL, version string, httpClient *http.Client) *Client {
 	return &Client{
 		apiKey:     apiKey,
 		baseURL:    baseURL,
 		httpClient: httpClient,
+		version:    version,
 	}
 }
 
@@ -77,7 +81,7 @@ func (c *Client) makeRequest(method, endpoint string, body any) ([]byte, error) 
 	if contentType != "" {
 		req.Header.Set("Content-Type", contentType)
 	}
-	req.Header.Set("User-Agent", "cloudamqp-cli")
+	req.Header.Set("User-Agent", fmt.Sprintf("cloudamqp-cli/%s", c.version))
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {

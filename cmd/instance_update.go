@@ -44,7 +44,7 @@ You can update the following fields:
 			return fmt.Errorf("invalid instance ID: %v", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		req := &client.InstanceUpdateRequest{
 			Name: updateInstanceName,

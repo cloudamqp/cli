@@ -83,7 +83,7 @@ func TestCreateInstanceVCR(t *testing.T) {
 	httpClient := &http.Client{Transport: r}
 
 	// Create client with VCR HTTP client
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	// Create instance request
 	req := &InstanceCreateRequest{

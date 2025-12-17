@@ -32,7 +32,7 @@ func TestListVPCsVCR(t *testing.T) {
 	}
 
 	httpClient := &http.Client{Transport: r}
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	vpcs, err := client.ListVPCs()
 
@@ -62,7 +62,7 @@ func TestVPCLifecycleVCR(t *testing.T) {
 	}
 
 	httpClient := &http.Client{Transport: r}
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	// Step 1: Create VPC
 	t.Log("Step 1: Creating VPC")

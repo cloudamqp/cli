@@ -22,7 +22,7 @@ var teamListCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		members, err := c.ListTeamMembers()
 		if err != nil {

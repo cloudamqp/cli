@@ -12,7 +12,7 @@ import (
 
 func TestNew(t *testing.T) {
 	apiKey := "test-api-key"
-	client := New(apiKey)
+	client := New(apiKey, "test")
 
 	assert.NotNil(t, client)
 	assert.Equal(t, apiKey, client.apiKey)
@@ -29,7 +29,7 @@ func TestNew_WithEnvironmentVariable(t *testing.T) {
 	os.Setenv("CLOUDAMQP_URL", customURL)
 
 	apiKey := "test-api-key"
-	client := New(apiKey)
+	client := New(apiKey, "test")
 
 	assert.NotNil(t, client)
 	assert.Equal(t, apiKey, client.apiKey)
@@ -38,7 +38,7 @@ func TestNew_WithEnvironmentVariable(t *testing.T) {
 
 	// Test with empty environment variable (should use default)
 	os.Setenv("CLOUDAMQP_URL", "")
-	client = New(apiKey)
+	client = New(apiKey, "test")
 
 	assert.NotNil(t, client)
 	assert.Equal(t, "https://customer.cloudamqp.com/api", client.baseURL)
@@ -64,7 +64,7 @@ func TestMakeRequest_GET_Success(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	// Test request
 	resp, err := client.makeRequest("GET", "/test", nil)
@@ -92,7 +92,7 @@ func TestMakeRequest_POST_FormData(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	// Test request with form data
 	formData := url.Values{}
@@ -123,7 +123,7 @@ func TestMakeRequest_POST_JSON(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	// Test request with JSON data
 	jsonData := map[string]string{"test": "value"}
@@ -143,7 +143,7 @@ func TestMakeRequest_APIError_JSON(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	// Test request
 	_, err := client.makeRequest("GET", "/test", nil)
@@ -161,7 +161,7 @@ func TestMakeRequest_APIError_Plain(t *testing.T) {
 	defer server.Close()
 
 	// Create client with test server URL
-	client := NewWithBaseURL("test-api-key", server.URL)
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
 
 	// Test request
 	_, err := client.makeRequest("GET", "/test", nil)
@@ -172,7 +172,7 @@ func TestMakeRequest_APIError_Plain(t *testing.T) {
 
 func TestMakeRequest_NetworkError(t *testing.T) {
 	// Create client with invalid URL
-	client := NewWithBaseURL("test-api-key", "http://invalid-url-that-does-not-exist")
+	client := NewWithBaseURL("test-api-key", "http://invalid-url-that-does-not-exist", "test")
 
 	// Test request
 	_, err := client.makeRequest("GET", "/test", nil)
@@ -182,7 +182,7 @@ func TestMakeRequest_NetworkError(t *testing.T) {
 }
 
 func TestMakeRequest_InvalidJSON(t *testing.T) {
-	client := New("test-api-key")
+	client := New("test-api-key", "test")
 
 	// Test with invalid JSON data
 	invalidData := make(chan int) // channels can't be marshaled to JSON

@@ -37,7 +37,7 @@ var instanceConfigListCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		config, err := c.GetRabbitMQConfig(idFlag)
 		if err != nil {
@@ -87,7 +87,7 @@ var instanceConfigGetCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		config, err := c.GetRabbitMQConfig(idFlag)
 		if err != nil {
@@ -127,7 +127,7 @@ var instanceConfigSetCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		// Convert string value to appropriate type
 		var value interface{}

@@ -32,7 +32,7 @@ func completeInstances(cmd *cobra.Command, args []string, toComplete string) ([]
 		return nil, cobra.ShellCompDirectiveNoFileComp
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	// Try to get from cache
 	var instances []client.Instance
@@ -67,7 +67,7 @@ func completePlans(cmd *cobra.Command, args []string, toComplete string) ([]stri
 		return nil, cobra.ShellCompDirectiveNoFileComp
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	// Try to get from cache
 	var plans []client.Plan
@@ -102,7 +102,7 @@ func completeRegions(cmd *cobra.Command, args []string, toComplete string) ([]st
 		return nil, cobra.ShellCompDirectiveNoFileComp
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	// Try to get from cache
 	var regions []client.Region
@@ -138,7 +138,7 @@ func completeVPCs(cmd *cobra.Command, args []string, toComplete string) ([]strin
 		return nil, cobra.ShellCompDirectiveNoFileComp
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	// Try to get from cache
 	var vpcs []client.VPC
@@ -190,7 +190,7 @@ func completeVPCIDFlag(cmd *cobra.Command, args []string, toComplete string) ([]
 		return nil, cobra.ShellCompDirectiveNoFileComp
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	// Try to get from cache
 	var vpcs []client.VPC
@@ -225,7 +225,7 @@ func completeCopyFromIDFlag(cmd *cobra.Command, args []string, toComplete string
 		return nil, cobra.ShellCompDirectiveNoFileComp
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	// Try to get from cache
 	var instances []client.Instance
@@ -260,7 +260,7 @@ func completeVPCArgs(cmd *cobra.Command, args []string, toComplete string) ([]st
 		return nil, cobra.ShellCompDirectiveNoFileComp
 	}
 
-	c := client.New(apiKey)
+	c := client.New(apiKey, Version)
 
 	// Try to get from cache
 	var vpcs []client.VPC

@@ -31,7 +31,7 @@ var vpcGetCmd = &cobra.Command{
 			return fmt.Errorf("invalid VPC ID: %v", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		vpc, err := c.GetVPC(vpcID)
 		if err != nil {

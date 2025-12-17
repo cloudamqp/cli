@@ -57,7 +57,7 @@ Available disk sizes: 0, 25, 50, 100, 250, 500, 1000, 2000 GB`,
 			return fmt.Errorf("invalid disk size. Valid sizes are: 0, 25, 50, 100, 250, 500, 1000, 2000 GB")
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		req := &client.DiskResizeRequest{
 			ExtraDiskSize: diskSize,

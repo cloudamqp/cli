@@ -33,7 +33,7 @@ func TestListInstancesVCR(t *testing.T) {
 	}
 
 	httpClient := &http.Client{Transport: r}
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	instances, err := client.ListInstances()
 
@@ -64,7 +64,7 @@ func TestGetInstanceVCR(t *testing.T) {
 	}
 
 	httpClient := &http.Client{Transport: r}
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	// Use an existing instance ID (should match cassette)
 	instanceID := 359563
@@ -98,7 +98,7 @@ func TestListRegionsVCR(t *testing.T) {
 	}
 
 	httpClient := &http.Client{Transport: r}
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	regions, err := client.ListRegions("")
 
@@ -135,7 +135,7 @@ func TestListPlansVCR(t *testing.T) {
 	}
 
 	httpClient := &http.Client{Transport: r}
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	plans, err := client.ListPlans("")
 

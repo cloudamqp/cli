@@ -31,7 +31,7 @@ var instanceGetCmd = &cobra.Command{
 			return fmt.Errorf("invalid instance ID: %v", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		instance, err := c.GetInstance(instanceID)
 		if err != nil {

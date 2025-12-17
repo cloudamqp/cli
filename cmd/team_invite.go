@@ -30,7 +30,7 @@ Default role: member`,
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		req := &client.TeamInviteRequest{
 			Email: inviteEmail,

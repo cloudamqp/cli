@@ -36,7 +36,7 @@ Optional flags:
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		req := &client.VPCCreateRequest{
 			Name:   vpcName,

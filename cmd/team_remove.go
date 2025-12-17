@@ -22,7 +22,7 @@ var teamRemoveCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		resp, err := c.RemoveTeamMember(removeEmail)
 		if err != nil {

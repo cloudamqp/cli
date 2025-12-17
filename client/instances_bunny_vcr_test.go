@@ -37,7 +37,7 @@ func TestCreateInstanceBunny1(t *testing.T) {
 	}
 
 	httpClient := &http.Client{Transport: r}
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	// Create instance with bunny-1 plan
 	req := &InstanceCreateRequest{
@@ -84,7 +84,7 @@ func TestUpdateInstanceBunny1ToHare1(t *testing.T) {
 	}
 
 	httpClient := &http.Client{Transport: r}
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	// Use a real instance ID from a bunny-1 instance
 	// This should be an instance that is already created and fully configured
@@ -138,7 +138,7 @@ func TestDeleteInstanceBunny1(t *testing.T) {
 	}
 
 	httpClient := &http.Client{Transport: r}
-	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", httpClient)
+	client := NewWithHTTPClient(apiKey, "https://customer.cloudamqp.com/api", "test", httpClient)
 
 	// Use an instance ID that exists (from a previous test or manual creation)
 	instanceID := 359559

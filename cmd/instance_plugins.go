@@ -37,7 +37,7 @@ var instancePluginsListCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		plugins, err := c.ListPlugins(idFlag)
 		if err != nil {
@@ -84,7 +84,7 @@ var instancePluginsEnableCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		err = c.EnablePlugin(idFlag, pluginName)
 		if err != nil {
@@ -116,7 +116,7 @@ var instancePluginsDisableCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		err = c.DisablePlugin(idFlag, pluginName)
 		if err != nil {

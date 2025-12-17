@@ -29,7 +29,7 @@ Available roles: admin, devops, member, monitor, billing manager`,
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		req := &client.TeamUpdateRequest{
 			Role: updateRole,

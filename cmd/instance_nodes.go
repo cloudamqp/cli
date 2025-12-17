@@ -37,7 +37,7 @@ var instanceNodesListCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		nodes, err := c.ListNodes(idFlag)
 		if err != nil {
@@ -93,7 +93,7 @@ var instanceNodesVersionsCmd = &cobra.Command{
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		versions, err := c.GetAvailableVersions(idFlag)
 		if err != nil {

@@ -56,7 +56,7 @@ WARNING: This action cannot be undone. All data will be lost.`,
 			}
 		}
 
-		c := client.New(apiKey)
+		c := client.New(apiKey, Version)
 
 		err = c.DeleteInstance(instanceID)
 		if err != nil {
