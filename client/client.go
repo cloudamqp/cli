@@ -77,6 +77,7 @@ func (c *Client) makeRequest(method, endpoint string, body any) ([]byte, error) 
 	if contentType != "" {
 		req.Header.Set("Content-Type", contentType)
 	}
+	req.Header.Set("User-Agent", "cloudamqp-cli")
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
