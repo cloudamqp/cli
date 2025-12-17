@@ -165,6 +165,51 @@ func TestEnvironmentVariablePrecedence(t *testing.T) {
 	assert.Equal(t, "env-key", apiKey)
 }
 
+func TestCompletionAPIKeyPrecedence(t *testing.T) {
+	// Create temp directory
+	tempDir, err := os.MkdirTemp("", "cloudamqp-test")
+	assert.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+
+	// Override home directory for test
+	originalHome := os.Getenv("HOME")
+	os.Setenv("HOME", tempDir)
+	defer os.Setenv("HOME", originalHome)
+
+	// Clear any existing env var
+	originalEnvKey := os.Getenv("CLOUDAMQP_APIKEY")
+	os.Unsetenv("CLOUDAMQP_APIKEY")
+	defer func() {
+		if originalEnvKey != "" {
+			os.Setenv("CLOUDAMQP_APIKEY", originalEnvKey)
+		}
+	}()
+
+	t.Run("returns error when no key configured", func(t *testing.T) {
+		_, err := completionAPIKey()
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "API key not configured")
+	})
+
+	t.Run("returns key from config file", func(t *testing.T) {
+		err := saveMainAPIKey("file-key")
+		assert.NoError(t, err)
+
+		apiKey, err := completionAPIKey()
+		assert.NoError(t, err)
+		assert.Equal(t, "file-key", apiKey)
+	})
+
+	t.Run("env var takes precedence over config file", func(t *testing.T) {
+		os.Setenv("CLOUDAMQP_APIKEY", "env-key")
+		defer os.Unsetenv("CLOUDAMQP_APIKEY")
+
+		apiKey, err := completionAPIKey()
+		assert.NoError(t, err)
+		assert.Equal(t, "env-key", apiKey)
+	})
+}
+
 func TestInstanceActionsCommand(t *testing.T) {
 	cmd := instanceCmd
 
