@@ -3,8 +3,9 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"os"
+	"strconv"
+
 	"cloudamqp-cli/client"
 	"github.com/spf13/cobra"
 )
