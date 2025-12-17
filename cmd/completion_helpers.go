@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 
 	"cloudamqp-cli/client"
@@ -11,6 +12,12 @@ import (
 
 // completionAPIKey retrieves the API key without prompting the user
 func completionAPIKey() (string, error) {
+	// First, check environment variable
+	if apiKey := os.Getenv("CLOUDAMQP_APIKEY"); apiKey != "" {
+		return apiKey, nil
+	}
+
+	// Second, check config file
 	apiKey, err := loadAPIKey()
 	if apiKey != "" {
 		return apiKey, nil
