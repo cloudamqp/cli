@@ -214,6 +214,7 @@ type UpgradeRequest struct {
 type VersionInfo struct {
 	RabbitMQVersions []string `json:"rabbitmq_versions"`
 	ErlangVersions   []string `json:"erlang_versions"`
+	LavinMQVersions  []string `json:"lavinmq_versions"`
 }
 
 func (c *Client) ToggleHiPE(instanceID string, req *HiPERequest) error {
