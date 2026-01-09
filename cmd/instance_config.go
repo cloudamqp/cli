@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -69,8 +70,16 @@ var instanceConfigListCmd = &cobra.Command{
 		fmt.Printf("%-40s %-30s\n", "---", "-----")
 
 		// Print configuration data
-		for key, value := range config {
-			valueStr := formatValue(value)
+		// Extract and sort keys alphabetically
+		keys := make([]string, 0, len(config))
+		for key := range config {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+
+		// Print sorted configuration
+		for _, key := range keys {
+			valueStr := formatValue(config[key])
 			if len(valueStr) > 30 {
 				valueStr = valueStr[:27] + "..."
 			}
