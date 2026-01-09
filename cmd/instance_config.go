@@ -9,6 +9,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// formatValue formats a configuration value, avoiding scientific notation for numbers
+func formatValue(value interface{}) string {
+	switch v := value.(type) {
+	case float64:
+		// If it's a whole number, display as integer
+		if v == float64(int64(v)) {
+			return fmt.Sprintf("%.0f", v)
+		}
+		return fmt.Sprintf("%v", v)
+	default:
+		return fmt.Sprintf("%v", v)
+	}
+}
+
 var instanceConfigCmd = &cobra.Command{
 	Use:   "config",
 	Short: "Manage RabbitMQ configuration",
@@ -56,7 +70,7 @@ var instanceConfigListCmd = &cobra.Command{
 
 		// Print configuration data
 		for key, value := range config {
-			valueStr := fmt.Sprintf("%v", value)
+			valueStr := formatValue(value)
 			if len(valueStr) > 30 {
 				valueStr = valueStr[:27] + "..."
 			}
@@ -96,7 +110,8 @@ var instanceConfigGetCmd = &cobra.Command{
 		}
 
 		if value, exists := config[settingName]; exists {
-			fmt.Printf("%s: %v\n", settingName, value)
+			valueStr := formatValue(value)
+			fmt.Printf("%s: %s\n", settingName, valueStr)
 		} else {
 			fmt.Printf("Setting '%s' not found\n", settingName)
 		}
