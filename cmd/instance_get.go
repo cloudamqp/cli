@@ -44,6 +44,7 @@ var instanceGetCmd = &cobra.Command{
 		fmt.Printf("Plan = %s\n", instance.Plan)
 		fmt.Printf("Region = %s\n", instance.Region)
 		fmt.Printf("Tags = %s\n", strings.Join(instance.Tags, ","))
+		fmt.Printf("URL = %s\n", instance.URL)
 		fmt.Printf("Hostname = %s\n", instance.HostnameExternal)
 		ready := "No"
 		if instance.Ready {
