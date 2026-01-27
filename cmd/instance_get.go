@@ -13,28 +13,19 @@ import (
 func maskPassword(urlStr string) string {
 	parsedURL, err := url.Parse(urlStr)
 	if err != nil {
-		return urlStr // Return original if parsing fails
+		return urlStr
 	}
 
 	if parsedURL.User == nil {
-		return urlStr // No user info to mask
+		return urlStr
 	}
 
-	username := parsedURL.User.Username()
-
-	// Manually construct the URL to avoid encoding issues with asterisks
-	result := parsedURL.Scheme + "://" + username + ":****@" + parsedURL.Host
-	if parsedURL.Path != "" {
-		result += parsedURL.Path
-	}
-	if parsedURL.RawQuery != "" {
-		result += "?" + parsedURL.RawQuery
-	}
-	if parsedURL.Fragment != "" {
-		result += "#" + parsedURL.Fragment
+	password, hasPassword := parsedURL.User.Password()
+	if !hasPassword || password == "" {
+		return urlStr
 	}
 
-	return result
+	return strings.Replace(urlStr, password, "****", 1)
 }
 
 var instanceGetCmd = &cobra.Command{
