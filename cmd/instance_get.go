@@ -2,12 +2,40 @@ package cmd
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 
 	"cloudamqp-cli/client"
 	"github.com/spf13/cobra"
 )
+
+func maskPassword(urlStr string) string {
+	parsedURL, err := url.Parse(urlStr)
+	if err != nil {
+		return urlStr // Return original if parsing fails
+	}
+
+	if parsedURL.User == nil {
+		return urlStr // No user info to mask
+	}
+
+	username := parsedURL.User.Username()
+
+	// Manually construct the URL to avoid encoding issues with asterisks
+	result := parsedURL.Scheme + "://" + username + ":****@" + parsedURL.Host
+	if parsedURL.Path != "" {
+		result += parsedURL.Path
+	}
+	if parsedURL.RawQuery != "" {
+		result += "?" + parsedURL.RawQuery
+	}
+	if parsedURL.Fragment != "" {
+		result += "#" + parsedURL.Fragment
+	}
+
+	return result
+}
 
 var instanceGetCmd = &cobra.Command{
 	Use:     "get --id <id>",
@@ -44,7 +72,14 @@ var instanceGetCmd = &cobra.Command{
 		fmt.Printf("Plan = %s\n", instance.Plan)
 		fmt.Printf("Region = %s\n", instance.Region)
 		fmt.Printf("Tags = %s\n", strings.Join(instance.Tags, ","))
-		fmt.Printf("URL = %s\n", instance.URL)
+
+		showURL, _ := cmd.Flags().GetBool("show-url")
+		if showURL {
+			fmt.Printf("URL = %s\n", instance.URL)
+		} else {
+			fmt.Printf("URL = %s\n", maskPassword(instance.URL))
+		}
+
 		fmt.Printf("Hostname = %s\n", instance.HostnameExternal)
 		ready := "No"
 		if instance.Ready {
@@ -59,5 +94,6 @@ var instanceGetCmd = &cobra.Command{
 func init() {
 	instanceGetCmd.Flags().StringP("id", "", "", "Instance ID (required)")
 	instanceGetCmd.MarkFlagRequired("id")
+	instanceGetCmd.Flags().BoolP("show-url", "", false, "Show full connection URL with credentials")
 	instanceGetCmd.RegisterFlagCompletionFunc("id", completeInstanceIDFlag)
 }
