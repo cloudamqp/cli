@@ -2,12 +2,23 @@ package cmd
 
 import (
 	"fmt"
+	"net/url"
 	"strconv"
 	"strings"
 
 	"cloudamqp-cli/client"
 	"github.com/spf13/cobra"
 )
+
+func maskPassword(urlStr string) string {
+	parsedURL, err := url.Parse(urlStr)
+	if err != nil {
+		return urlStr
+	}
+
+	password, _ := parsedURL.User.Password()
+	return strings.Replace(urlStr, password, "****", 1)
+}
 
 var instanceGetCmd = &cobra.Command{
 	Use:     "get --id <id>",
@@ -44,6 +55,14 @@ var instanceGetCmd = &cobra.Command{
 		fmt.Printf("Plan = %s\n", instance.Plan)
 		fmt.Printf("Region = %s\n", instance.Region)
 		fmt.Printf("Tags = %s\n", strings.Join(instance.Tags, ","))
+
+		showURL, _ := cmd.Flags().GetBool("show-url")
+		if showURL {
+			fmt.Printf("URL = %s\n", instance.URL)
+		} else {
+			fmt.Printf("URL = %s\n", maskPassword(instance.URL))
+		}
+
 		fmt.Printf("Hostname = %s\n", instance.HostnameExternal)
 		ready := "No"
 		if instance.Ready {
@@ -58,5 +77,6 @@ var instanceGetCmd = &cobra.Command{
 func init() {
 	instanceGetCmd.Flags().StringP("id", "", "", "Instance ID (required)")
 	instanceGetCmd.MarkFlagRequired("id")
+	instanceGetCmd.Flags().BoolP("show-url", "", false, "Show full connection URL with credentials")
 	instanceGetCmd.RegisterFlagCompletionFunc("id", completeInstanceIDFlag)
 }
