@@ -16,15 +16,7 @@ func maskPassword(urlStr string) string {
 		return urlStr
 	}
 
-	if parsedURL.User == nil {
-		return urlStr
-	}
-
-	password, hasPassword := parsedURL.User.Password()
-	if !hasPassword || password == "" {
-		return urlStr
-	}
-
+	password, _ := parsedURL.User.Password()
 	return strings.Replace(urlStr, password, "****", 1)
 }
 
