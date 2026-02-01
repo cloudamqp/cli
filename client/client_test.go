@@ -21,12 +21,12 @@ func TestNew(t *testing.T) {
 
 func TestNew_WithEnvironmentVariable(t *testing.T) {
 	// Save original environment variable
-	originalURL := os.Getenv("CLOUDAMQP_URL")
-	defer os.Setenv("CLOUDAMQP_URL", originalURL)
+	originalURL := os.Getenv("CLOUDAMQP_API_URL")
+	defer os.Setenv("CLOUDAMQP_API_URL", originalURL)
 
 	// Test with custom base URL from environment variable
 	customURL := "https://custom.example.com/api"
-	os.Setenv("CLOUDAMQP_URL", customURL)
+	os.Setenv("CLOUDAMQP_API_URL", customURL)
 
 	apiKey := "test-api-key"
 	client := New(apiKey, "test")
@@ -37,7 +37,7 @@ func TestNew_WithEnvironmentVariable(t *testing.T) {
 	assert.NotNil(t, client.httpClient)
 
 	// Test with empty environment variable (should use default)
-	os.Setenv("CLOUDAMQP_URL", "")
+	os.Setenv("CLOUDAMQP_API_URL", "")
 	client = New(apiKey, "test")
 
 	assert.NotNil(t, client)
