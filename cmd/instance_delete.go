@@ -11,20 +11,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	deleteInstanceID string
-	forceDelete      bool
-)
+var forceDelete bool
 
 var instanceDeleteCmd = &cobra.Command{
-	Use:   "delete --id <id>",
+	Use:   "delete <id>",
 	Short: "Delete a CloudAMQP instance",
 	Long: `Delete a CloudAMQP instance permanently.
 
 WARNING: This action cannot be undone. All data will be lost.`,
-	Example: `  cloudamqp instance delete --id 1234
-  cloudamqp instance delete --id 1234 --force`,
-	Args: cobra.NoArgs,
+	Example: `  cloudamqp instance delete 1234
+  cloudamqp instance delete 1234 --force`,
+	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		apiKey, err = getAPIKey()
@@ -32,11 +29,7 @@ WARNING: This action cannot be undone. All data will be lost.`,
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		if deleteInstanceID == "" {
-			return fmt.Errorf("--id is required")
-		}
-
-		instanceID, err := strconv.Atoi(deleteInstanceID)
+		instanceID, err := strconv.Atoi(args[0])
 		if err != nil {
 			return fmt.Errorf("invalid instance ID: %v", err)
 		}
@@ -70,8 +63,6 @@ WARNING: This action cannot be undone. All data will be lost.`,
 }
 
 func init() {
-	instanceDeleteCmd.Flags().StringVar(&deleteInstanceID, "id", "", "Instance ID (required)")
 	instanceDeleteCmd.Flags().BoolVar(&forceDelete, "force", false, "Skip confirmation prompt")
-	instanceDeleteCmd.MarkFlagRequired("id")
-	instanceDeleteCmd.RegisterFlagCompletionFunc("id", completeInstances)
+	instanceDeleteCmd.ValidArgsFunction = completeInstances
 }
