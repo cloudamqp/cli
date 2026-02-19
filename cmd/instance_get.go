@@ -50,25 +50,35 @@ var instanceGetCmd = &cobra.Command{
 			return err
 		}
 
-		// Format output as "Name = Value"
-		fmt.Printf("Name = %s\n", instance.Name)
-		fmt.Printf("Plan = %s\n", instance.Plan)
-		fmt.Printf("Region = %s\n", instance.Region)
-		fmt.Printf("Tags = %s\n", strings.Join(instance.Tags, ","))
-
-		showURL, _ := cmd.Flags().GetBool("show-url")
-		if showURL {
-			fmt.Printf("URL = %s\n", instance.URL)
-		} else {
-			fmt.Printf("URL = %s\n", maskPassword(instance.URL))
+		p, err := getPrinter(cmd)
+		if err != nil {
+			return err
 		}
 
-		fmt.Printf("Hostname = %s\n", instance.HostnameExternal)
+		showURL, _ := cmd.Flags().GetBool("show-url")
 		ready := "No"
 		if instance.Ready {
 			ready = "Yes"
 		}
-		fmt.Printf("Ready = %s\n", ready)
+
+		urlVal := maskPassword(instance.URL)
+		if showURL {
+			urlVal = instance.URL
+		}
+
+		p.PrintRecord(
+			[]string{"ID", "NAME", "PLAN", "REGION", "TAGS", "URL", "HOSTNAME", "READY"},
+			[]string{
+				strconv.Itoa(instance.ID),
+				instance.Name,
+				instance.Plan,
+				instance.Region,
+				strings.Join(instance.Tags, ","),
+				urlVal,
+				instance.HostnameExternal,
+				ready,
+			},
+		)
 
 		return nil
 	},

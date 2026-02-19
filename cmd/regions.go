@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"cloudamqp-cli/client"
-	"cloudamqp-cli/internal/table"
 	"github.com/spf13/cobra"
 )
 
@@ -37,11 +35,17 @@ var regionsCmd = &cobra.Command{
 			return nil
 		}
 
-		t := table.New(os.Stdout, "PROVIDER", "REGION", "NAME")
-		for _, region := range regions {
-			t.AddRow(region.Provider, region.Region, region.Name)
+		p, err := getPrinter(cmd)
+		if err != nil {
+			return err
 		}
-		t.Print()
+
+		headers := []string{"PROVIDER", "REGION", "NAME"}
+		rows := make([][]string, len(regions))
+		for i, region := range regions {
+			rows[i] = []string{region.Provider, region.Region, region.Name}
+		}
+		p.PrintRecords(headers, rows)
 
 		return nil
 	},

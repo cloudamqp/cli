@@ -2,10 +2,18 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
+	"cloudamqp-cli/internal/output"
 	"github.com/spf13/cobra"
 )
+
+func getPrinter(cmd *cobra.Command) (*output.Printer, error) {
+	format, _ := cmd.Flags().GetString("output")
+	fields, _ := cmd.Flags().GetStringSlice("fields")
+	return output.New(os.Stdout, output.Format(format), fields)
+}
 
 var apiKey string
 
@@ -41,6 +49,9 @@ func Execute() error {
 func init() {
 	// Set custom version template to match gh style
 	rootCmd.SetVersionTemplate("cloudamqp version {{.Version}}\n")
+
+	rootCmd.PersistentFlags().StringP("output", "o", "table", "Output format: table or json")
+	rootCmd.PersistentFlags().StringSlice("fields", nil, "Fields to include in output (comma-separated)")
 
 	rootCmd.AddCommand(instanceCmd)
 	rootCmd.AddCommand(vpcCmd)

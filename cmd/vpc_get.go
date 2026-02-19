@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"cloudamqp-cli/client"
 	"github.com/spf13/cobra"
@@ -39,12 +39,29 @@ var vpcGetCmd = &cobra.Command{
 			return err
 		}
 
-		output, err := json.MarshalIndent(vpc, "", "  ")
+		p, err := getPrinter(cmd)
 		if err != nil {
-			return fmt.Errorf("failed to format response: %v", err)
+			return err
 		}
 
-		fmt.Printf("VPC details:\n%s\n", string(output))
+		instanceIDs := make([]string, len(vpc.Instances))
+		for i, id := range vpc.Instances {
+			instanceIDs[i] = strconv.Itoa(id)
+		}
+
+		p.PrintRecord(
+			[]string{"ID", "NAME", "REGION", "SUBNET", "PLAN", "TAGS", "INSTANCES"},
+			[]string{
+				strconv.Itoa(vpc.ID),
+				vpc.Name,
+				vpc.Region,
+				vpc.Subnet,
+				vpc.Plan,
+				strings.Join(vpc.Tags, ","),
+				strings.Join(instanceIDs, ","),
+			},
+		)
+
 		return nil
 	},
 }
