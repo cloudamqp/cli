@@ -6,7 +6,7 @@ A command line interface for the CloudAMQP API that provides complete management
 
 - **Unified API**: Single API key manages all operations through the customer API
 - **Simple Configuration**: Plain text API key storage in `~/.cloudamqprc`
-- **Flag-Based Commands**: Clean command structure with `--id` flags for instance operations
+- **Positional IDs**: Clean command structure using positional IDs for instance and VPC operations
 - **Copy Settings**: Clone configuration from existing instances (metrics, firewall, alarms, etc.)
 - **Wait for Ready**: Optional `--wait` flag for long-running operations (create, resize-disk, upgrades)
 - **User-Friendly**: Clear help messages, examples, and safety confirmations
@@ -85,7 +85,7 @@ exec zsh
 After setup, you can test completion by typing:
 ```bash
 cloudamqp instance <TAB>          # Lists instance subcommands
-cloudamqp instance get --id <TAB> # Lists your instance IDs
+cloudamqp instance get <TAB>      # Lists your instance IDs
 cloudamqp instance create --plan <TAB>   # Lists available plans
 cloudamqp instance create --region <TAB> # Lists available regions
 ```
@@ -122,16 +122,16 @@ cloudamqp instance list
 cloudamqp instance list --details
 
 # Get instance details
-cloudamqp instance get --id 1234
+cloudamqp instance get 1234
 
 # Update instance properties
-cloudamqp instance update --id 1234 --name=new-name --plan=rabbit-1
+cloudamqp instance update 1234 --name=new-name --plan=rabbit-1
 
 # Resize instance disk
-cloudamqp instance resize-disk --id 1234 --disk-size=100 --allow-downtime
+cloudamqp instance resize-disk 1234 --disk-size=100 --allow-downtime
 
 # Delete instance (with confirmation)
-cloudamqp instance delete --id 1234
+cloudamqp instance delete 1234
 ```
 
 ### VPC Management
@@ -146,76 +146,76 @@ cloudamqp vpc create --name=my-vpc --region=amazon-web-services::us-east-1 --sub
 cloudamqp vpc list
 
 # Get VPC details
-cloudamqp vpc get --id 5678
+cloudamqp vpc get 5678
 
 # Update VPC
-cloudamqp vpc update --id 5678 --name=new-vpc-name
+cloudamqp vpc update 5678 --name=new-vpc-name
 
 # Delete VPC (with confirmation)
-cloudamqp vpc delete --id 5678
+cloudamqp vpc delete 5678
 ```
 
 ### Instance-Specific Management
 
-Manage specific instances using the unified API. All commands use `--id` flag to specify the instance.
+Manage specific instances using the unified API. All commands take the instance ID as a positional argument.
 
 #### Node Management
 
 ```bash
 # List nodes in an instance
-cloudamqp instance nodes list --id 1234
+cloudamqp instance nodes list 1234
 
 # Get available versions for upgrade
-cloudamqp instance nodes versions --id 1234
+cloudamqp instance nodes versions 1234
 ```
 
 #### Plugin Management
 
 ```bash
 # List available RabbitMQ plugins
-cloudamqp instance plugins list --id 1234
+cloudamqp instance plugins list 1234
 ```
 
 #### RabbitMQ Configuration
 
 ```bash
 # List all configuration settings
-cloudamqp instance config list --id 1234
+cloudamqp instance config list 1234
 
 # Get specific configuration setting
-cloudamqp instance config get --id 1234 --key tcp_listen_options
+cloudamqp instance config get 1234 tcp_listen_options
 
 # Set configuration setting
-cloudamqp instance config set --id 1234 --key tcp_listen_options --value '[{"port": 5672}]'
+cloudamqp instance config set 1234 tcp_listen_options '[{"port": 5672}]'
 ```
 
 #### Instance Actions
 
 ```bash
 # Restart RabbitMQ
-cloudamqp instance restart-rabbitmq --id 1234
-cloudamqp instance restart-rabbitmq --id 1234 --nodes=node1,node2
+cloudamqp instance restart-rabbitmq 1234
+cloudamqp instance restart-rabbitmq 1234 --nodes=node1,node2
 
 # Cluster operations
-cloudamqp instance restart-cluster --id 1234
-cloudamqp instance stop-cluster --id 1234
-cloudamqp instance start-cluster --id 1234
+cloudamqp instance restart-cluster 1234
+cloudamqp instance stop-cluster 1234
+cloudamqp instance start-cluster 1234
 
 # Instance lifecycle
-cloudamqp instance stop --id 1234
-cloudamqp instance start --id 1234
-cloudamqp instance reboot --id 1234
+cloudamqp instance stop 1234
+cloudamqp instance start 1234
+cloudamqp instance reboot 1234
 
 # Management interface
-cloudamqp instance restart-management --id 1234
+cloudamqp instance restart-management 1234
 
 # Upgrades (asynchronous operations)
-cloudamqp instance upgrade-erlang --id 1234
-cloudamqp instance upgrade-rabbitmq --id 1234 --version=3.10.7
-cloudamqp instance upgrade-all --id 1234
+cloudamqp instance upgrade-erlang 1234
+cloudamqp instance upgrade-rabbitmq 1234 --version=3.10.7
+cloudamqp instance upgrade-all 1234
 
 # Get target upgrade versions
-cloudamqp instance upgrade-versions --id 1234
+cloudamqp instance upgrade-versions 1234
 
 ```
 
@@ -264,22 +264,22 @@ cloudamqp audit --timestamp=2024-01
 cloudamqp instance create --name=production --plan=bunny-1 --region=amazon-web-services::us-east-1 --wait
 
 # 2. Get instance details
-cloudamqp instance get --id 1234
+cloudamqp instance get 1234
 
 # 3. Check instance nodes
-cloudamqp instance nodes list --id 1234
+cloudamqp instance nodes list 1234
 
 # 4. List RabbitMQ configuration
-cloudamqp instance config list --id 1234
+cloudamqp instance config list 1234
 
 # 5. Install plugins (if needed)
-cloudamqp instance plugins list --id 1234
+cloudamqp instance plugins list 1234
 
 # 6. Restart RabbitMQ
-cloudamqp instance restart-rabbitmq --id 1234
+cloudamqp instance restart-rabbitmq 1234
 
 # 7. Upgrade when needed
-cloudamqp instance upgrade-all --id 1234
+cloudamqp instance upgrade-all 1234
 ```
 
 ### Copy Settings Between Instances
@@ -371,13 +371,13 @@ RESULT=$(cloudamqp instance create --name=temp-instance --plan=lemming --region=
 INSTANCE_ID=$(echo "$RESULT" | jq -r '.id')
 
 # Get instance details
-cloudamqp instance get --id "$INSTANCE_ID"
+cloudamqp instance get "$INSTANCE_ID"
 
 # Perform operations
-cloudamqp instance restart-rabbitmq --id "$INSTANCE_ID"
+cloudamqp instance restart-rabbitmq "$INSTANCE_ID"
 
 # Cleanup
-cloudamqp instance delete --id "$INSTANCE_ID" --force
+cloudamqp instance delete "$INSTANCE_ID" --force
 ```
 
 ## Contributing
