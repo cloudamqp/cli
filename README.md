@@ -94,6 +94,9 @@ Note: Dynamic completions (instance IDs, plans, regions) require a configured AP
 
 ## Commands
 
+#### Output
+You can output either as JSON via `-o json` or Table format using `-o table`
+
 ### Instance Management
 
 Manage CloudAMQP instances using your main API key.
@@ -114,6 +117,9 @@ cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-
 
 # List all instances
 cloudamqp instance list
+
+# List all instances with more details
+cloudamqp instance list --details
 
 # Get instance details
 cloudamqp instance get --id 1234
