@@ -2,11 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 
 	"cloudamqp-cli/client"
-	"cloudamqp-cli/internal/table"
 	"github.com/spf13/cobra"
 )
 
@@ -35,17 +33,22 @@ var vpcListCmd = &cobra.Command{
 			return nil
 		}
 
-		// Create table and populate data
-		t := table.New(os.Stdout, "ID", "NAME", "SUBNET", "REGION")
-		for _, vpc := range vpcs {
-			t.AddRow(
+		p, err := getPrinter(cmd)
+		if err != nil {
+			return err
+		}
+
+		headers := []string{"ID", "NAME", "SUBNET", "REGION"}
+		rows := make([][]string, len(vpcs))
+		for i, vpc := range vpcs {
+			rows[i] = []string{
 				strconv.Itoa(vpc.ID),
 				vpc.Name,
 				vpc.Subnet,
 				vpc.Region,
-			)
+			}
 		}
-		t.Print()
+		p.PrintRecords(headers, rows)
 
 		return nil
 	},

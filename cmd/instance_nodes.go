@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"cloudamqp-cli/client"
-	"cloudamqp-cli/internal/table"
 	"github.com/spf13/cobra"
 )
 
@@ -50,9 +48,14 @@ var instanceNodesListCmd = &cobra.Command{
 			return nil
 		}
 
-		// Create table and populate data
-		t := table.New(os.Stdout, "NAME", "CONFIGURED", "RUNNING", "DISK_SIZE", "RABBITMQ_VERSION")
-		for _, node := range nodes {
+		p, err := getPrinter(cmd)
+		if err != nil {
+			return err
+		}
+
+		headers := []string{"NAME", "CONFIGURED", "RUNNING", "DISK_SIZE", "RABBITMQ_VERSION"}
+		rows := make([][]string, len(nodes))
+		for i, node := range nodes {
 			configured := "No"
 			if node.Configured {
 				configured = "Yes"
@@ -62,15 +65,15 @@ var instanceNodesListCmd = &cobra.Command{
 				running = "Yes"
 			}
 			totalDisk := node.DiskSize + node.AdditionalDiskSize
-			t.AddRow(
+			rows[i] = []string{
 				node.Name,
 				configured,
 				running,
 				fmt.Sprintf("%d GB", totalDisk),
 				node.RabbitMQVersion,
-			)
+			}
 		}
-		t.Print()
+		p.PrintRecords(headers, rows)
 
 		return nil
 	},

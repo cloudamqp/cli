@@ -50,18 +50,17 @@ var instanceConfigListCmd = &cobra.Command{
 			return nil
 		}
 
-		// Print table header
-		fmt.Printf("%-40s %-30s\n", "KEY", "VALUE")
-		fmt.Printf("%-40s %-30s\n", "---", "-----")
-
-		// Print configuration data
-		for key, value := range config {
-			valueStr := fmt.Sprintf("%v", value)
-			if len(valueStr) > 30 {
-				valueStr = valueStr[:27] + "..."
-			}
-			fmt.Printf("%-40s %-30s\n", key, valueStr)
+		p, err := getPrinter(cmd)
+		if err != nil {
+			return err
 		}
+
+		headers := []string{"KEY", "VALUE"}
+		rows := make([][]string, 0, len(config))
+		for key, value := range config {
+			rows = append(rows, []string{key, fmt.Sprintf("%v", value)})
+		}
+		p.PrintRecords(headers, rows)
 
 		return nil
 	},

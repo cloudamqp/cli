@@ -2,11 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"cloudamqp-cli/client"
-	"cloudamqp-cli/internal/table"
 	"github.com/spf13/cobra"
 )
 
@@ -35,9 +33,14 @@ var teamListCmd = &cobra.Command{
 			return nil
 		}
 
-		// Create table and populate data
-		t := table.New(os.Stdout, "EMAIL", "ROLES", "2FA")
-		for _, member := range members {
+		p, err := getPrinter(cmd)
+		if err != nil {
+			return err
+		}
+
+		headers := []string{"EMAIL", "ROLES", "2FA"}
+		rows := make([][]string, len(members))
+		for i, member := range members {
 			roles := strings.Join(member.Roles, ", ")
 			if roles == "" {
 				roles = "-"
@@ -46,9 +49,9 @@ var teamListCmd = &cobra.Command{
 			if member.TFAAuthEnabled {
 				tfa = "Yes"
 			}
-			t.AddRow(member.Email, roles, tfa)
+			rows[i] = []string{member.Email, roles, tfa}
 		}
-		t.Print()
+		p.PrintRecords(headers, rows)
 
 		return nil
 	},
