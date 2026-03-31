@@ -1,7 +1,7 @@
 ---
 name: cloudamqp-cli
-description: Manage CloudAMQP instances, VPCs, teams, and RabbitMQ/LavinMQ configuration from the command line. Use when the user needs to create, configure, monitor, upgrade, or troubleshoot CloudAMQP message broker instances.
-allowed-tools: Bash(cloudamqp:*)
+description: Manage CloudAMQP instances, VPCs, teams, and RabbitMQ/LavinMQ configuration using the cloudamqp CLI. Use this skill whenever the user wants to create, list, inspect, update, delete, upgrade, restart, or troubleshoot CloudAMQP instances — even if they just say "spin up a RabbitMQ", "check my instances", or "upgrade my broker". Also use it for VPC setup, team management, and RabbitMQ config changes.
+allowed-tools: Bash(cloudamqp:*), Bash(jq:*), Bash(cat:*), Bash(echo:*), Bash(chmod:*), Bash(grep:*), Bash(sleep:*)
 ---
 
 # CloudAMQP CLI
@@ -9,46 +9,33 @@ allowed-tools: Bash(cloudamqp:*)
 ## Quick start
 
 ```bash
-# list all instances
 cloudamqp instance list
-
-# get instance details (includes connection URL and API key)
-cloudamqp instance get --id 1234
-
-# create an instance and wait for it to be ready
-cloudamqp instance create --name=my-instance --plan=bunny-1 --region=amazon-web-services::us-east-1 --wait
-
-# restart RabbitMQ on an instance
-cloudamqp instance restart-rabbitmq --id 1234
-
-# delete an instance
-cloudamqp instance delete --id 1234
+cloudamqp instance get --id <id>
+cloudamqp instance create --name=<name> --plan=<plan> --region=<region> --wait
+cloudamqp instance restart-rabbitmq --id <id>
+cloudamqp instance delete --id <id> --force
 ```
 
 ## Authentication
 
-Before running any commands, check that auth is configured — the CLI won't work without it and can't prompt interactively when run by an agent.
+Check auth before running anything — interactive prompts don't work in agent context:
 
 ```bash
-# check if already configured
 cat ~/.cloudamqprc 2>/dev/null || echo "not configured"
+```
 
-# if not set up, ask the user for their API key, then write it:
-echo "YOUR_API_KEY" > ~/.cloudamqprc
+If not configured, ask the user for their API key (from https://customer.cloudamqp.com/apikeys), then:
+
+```bash
+echo "<api-key>" > ~/.cloudamqprc
 chmod 600 ~/.cloudamqprc
 ```
 
-The CLI checks in this order:
-
-1. `CLOUDAMQP_APIKEY` environment variable
-2. `~/.cloudamqprc` file (plain text, just the key)
-3. Interactive prompt (won't work in agent context — use one of the above)
-
-Base URL defaults to `https://customer.cloudamqp.com/api` (override with `CLOUDAMQP_URL`).
+Alternatively, set `CLOUDAMQP_APIKEY` in the environment. If neither is set, all commands will fail.
 
 ## Output
 
-All commands support `-o json` for machine-readable output and `-o table` (default) for human-readable output. Use `-fields` to select specific columns.
+Use `-o json` for parsing, `-o table` (default) for display. Use `--fields` to select columns.
 
 ## Commands
 
@@ -63,25 +50,18 @@ cloudamqp instance delete --id <id> [--force]
 cloudamqp instance resize-disk --id <id> --disk-size=<gb> [--allow-downtime]
 ```
 
-### Copy settings between instances
+### Copy settings between instances (dedicated only)
 
 ```bash
-cloudamqp instance create --name=staging --plan=bunny-1 --region=amazon-web-services::us-east-1 \
-  --copy-from-id=1234 --copy-settings=metrics,firewall,config,alarms,logs,definitions,plugins --wait
+cloudamqp instance create --name=staging --plan=<plan> --region=<region> \
+  --copy-from-id=<id> --copy-settings=metrics,firewall,config,alarms,logs,definitions,plugins --wait
 ```
 
-Only works between dedicated instances (not shared plans).
-
-### Node management
+### Node and plugin management
 
 ```bash
 cloudamqp instance nodes list --id <id>
 cloudamqp instance nodes versions --id <id>
-```
-
-### Plugin management
-
-```bash
 cloudamqp instance plugins list --id <id>
 ```
 
@@ -96,19 +76,19 @@ cloudamqp instance config set --id <id> --key <key> --value <value>
 ### Instance actions
 
 ```bash
-# restart
+# restarts (rolling for HA clusters)
 cloudamqp instance restart-rabbitmq --id <id> [--nodes=node1,node2]
-cloudamqp instance restart-cluster --id <id>
-cloudamqp instance restart-management --id <id> [--nodes=node1,node2]
+cloudamqp instance restart-cluster --id <id>          # full restart, causes downtime
+cloudamqp instance restart-management --id <id>
 
 # start/stop
-cloudamqp instance start --id <id> [--nodes=node1,node2]
-cloudamqp instance stop --id <id> [--nodes=node1,node2]
-cloudamqp instance reboot --id <id> [--nodes=node1,node2]
+cloudamqp instance start --id <id>
+cloudamqp instance stop --id <id>
+cloudamqp instance reboot --id <id>
 cloudamqp instance start-cluster --id <id>
 cloudamqp instance stop-cluster --id <id>
 
-# upgrades (async, return immediately)
+# upgrades — async, return immediately, poll until ready
 cloudamqp instance upgrade-erlang --id <id>
 cloudamqp instance upgrade-rabbitmq --id <id> --version=<version>
 cloudamqp instance upgrade-all --id <id>
@@ -118,7 +98,7 @@ cloudamqp instance upgrade-versions --id <id>
 ### VPC management
 
 ```bash
-cloudamqp vpc create --name=<name> --region=<region> --subnet=<cidr> [--tags=<tag>]
+cloudamqp vpc create --name=<name> --region=<region> --subnet=<cidr>
 cloudamqp vpc list
 cloudamqp vpc get --id <id>
 cloudamqp vpc update --id <id> --name=<name>
@@ -134,36 +114,26 @@ cloudamqp team update --user-id=<id> --role=<role>
 cloudamqp team remove --email=<email>
 ```
 
-### Audit log
+### Plans, regions, audit
 
 ```bash
+cloudamqp plans [--backend=rabbitmq|lavinmq]   # always fetch, never guess
+cloudamqp regions [--provider=<provider>]       # always fetch, never guess
 cloudamqp audit [--timestamp=2024-01]
-```
-
-### API key rotation
-
-```bash
 cloudamqp rotate-key
 ```
 
-## Important behavior
+## Key behaviors
 
-- **Async operations**: Instance creation, disk resizes, and upgrades are async. Use `--wait` on create, or poll with `instance get --id <id>` until `ready: true`.
-- **Destructive commands** (delete, stop) prompt for confirmation. Use `--force` to skip in scripts.
-- **Multiple tags**: Use `--tags` multiple times: `--tags=prod --tags=web`.
-- **Shell completion**: Run `source <(cloudamqp completion zsh)` for tab completion of commands, instance IDs, plans, and regions.
+- **Async**: creation, resizes, upgrades return immediately. Use `--wait` on create, or poll `instance get --id <id> -o json | jq -r '.ready'` until `"true"`.
+- **Destructive commands** prompt for confirmation — use `--force` to skip.
+- **Multiple tags**: repeat the flag: `--tags=prod --tags=web`.
+- **Plan/region names**: always run `cloudamqp plans` / `cloudamqp regions` first — never hardcode them.
 
-## Plans and regions
+## Reference guides
 
-Always fetch live data — don't guess plan names or regions:
+Read these before tackling the relevant task:
 
-```bash
-cloudamqp plans [--backend=rabbitmq|lavinmq]
-cloudamqp regions [--provider=amazon-web-services]
-```
-
-## Specific tasks
-
-* **Scripting and automation** [references/scripting.md](references/scripting.md)
-* **Instance upgrades and maintenance** [references/upgrades.md](references/upgrades.md)
-* **VPC and network setup** [references/vpc-setup.md](references/vpc-setup.md)
+- **Scripting, JSON parsing, batch ops** → [references/scripting.md](references/scripting.md)
+- **Upgrades, restarts, maintenance workflows** → [references/upgrades.md](references/upgrades.md)
+- **VPC creation and network setup** → [references/vpc-setup.md](references/vpc-setup.md)

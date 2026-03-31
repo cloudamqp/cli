@@ -2,34 +2,36 @@
 
 ## JSON output for parsing
 
-All commands support `-o json` for structured output. Combine with `jq` for extraction:
+All commands support `-o json`. Combine with `jq`:
 
 ```bash
 # get connection URL for an instance
-cloudamqp instance get --id 1234 -o json | jq -r '.url'
+cloudamqp instance get --id <id> -o json | jq -r '.url'
 
-# list instance IDs matching a tag
-cloudamqp instance list -o json | jq -r '.[] | select(.tags[]? == "production") | .id'
+# find instances that aren't ready
+cloudamqp instance list -o json | jq -r '.[] | select(.ready == false) | "\(.id) \(.name)"'
 
-# get all instance names and plans
-cloudamqp instance list -o json | jq -r '.[] | "\(.id) \(.name) \(.plan)"'
+# get IDs matching a tag
+cloudamqp instance list -o json | jq -r '.[] | select(.tags[]? == "staging") | .id'
 ```
 
 ## Create and capture instance ID
 
 ```bash
-RESULT=$(cloudamqp instance create --name=temp --plan=lemming --region=amazon-web-services::us-east-1 -o json)
+# fetch a valid plan and region first
+PLAN=$(cloudamqp plans --backend=rabbitmq -o json | jq -r '.[0].name')
+REGION=$(cloudamqp regions -o json | jq -r '.[0].id')
+
+RESULT=$(cloudamqp instance create --name=temp --plan="$PLAN" --region="$REGION" -o json)
 INSTANCE_ID=$(echo "$RESULT" | jq -r '.id')
-echo "Created instance: $INSTANCE_ID"
 ```
 
 ## Wait for instance readiness
 
-Use the built-in `--wait` flag (default timeout: 15 minutes):
+Prefer the built-in flag:
 
 ```bash
-cloudamqp instance create --name=my-instance --plan=bunny-1 \
-  --region=amazon-web-services::us-east-1 --wait --wait-timeout=20m
+cloudamqp instance create --name=my-instance --plan=<plan> --region=<region> --wait --wait-timeout=20m
 ```
 
 Or poll manually:
@@ -42,19 +44,11 @@ while true; do
 done
 ```
 
-## Skip confirmations
-
-Use `--force` on destructive commands:
+## Skip confirmations in scripts
 
 ```bash
-cloudamqp instance delete --id 1234 --force
-```
-
-## Environment-based configuration
-
-```bash
-export CLOUDAMQP_APIKEY="your-api-key"
-cloudamqp instance list  # no prompts
+cloudamqp instance delete --id <id> --force
+cloudamqp vpc delete --id <id> --force
 ```
 
 ## Batch operations
@@ -62,7 +56,6 @@ cloudamqp instance list  # no prompts
 ```bash
 # restart all instances tagged "staging"
 for ID in $(cloudamqp instance list -o json | jq -r '.[] | select(.tags[]? == "staging") | .id'); do
-  echo "Restarting instance $ID"
   cloudamqp instance restart-rabbitmq --id "$ID"
 done
 ```
@@ -72,9 +65,11 @@ done
 ```bash
 cloudamqp instance create \
   --name=staging-copy \
-  --plan=bunny-1 \
-  --region=amazon-web-services::us-east-1 \
-  --copy-from-id=1234 \
+  --plan=<plan> \
+  --region=<region> \
+  --copy-from-id=<source-id> \
   --copy-settings=alarms,metrics,logs,firewall,config,definitions,plugins \
   --wait
 ```
+
+Only works between dedicated instances (not shared plans).
