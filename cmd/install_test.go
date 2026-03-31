@@ -4,7 +4,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -24,5 +23,6 @@ func TestInstallSkillsCmd(t *testing.T) {
 }
 
 func TestInstallSkillsCmd_NoArgs(t *testing.T) {
-	assert.Equal(t, installSkillsCmd.Args, cobra.NoArgs)
+	err := installSkillsCmd.Args(installSkillsCmd, []string{"unexpected"})
+	assert.Error(t, err)
 }
