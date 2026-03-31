@@ -41,7 +41,7 @@ Or poll manually:
 ```bash
 while true; do
   STATUS=$(cloudamqp instance get --id "$INSTANCE_ID" -o json | jq -r '.ready')
-  [ "$STATUS" = "true" ] && break
+  [ "$STATUS" = "Yes" ] && break
   sleep 30
 done
 ```
@@ -56,8 +56,8 @@ cloudamqp vpc delete --id <id> --force
 ## Batch operations
 
 ```bash
-# restart all instances tagged "staging"
-for ID in $(cloudamqp instance list -o json | jq -r '.[] | select(.tags[]? == "staging") | .id'); do
+# restart all instances tagged "staging" (--details required for tags field)
+for ID in $(cloudamqp instance list --details -o json | jq -r '.[] | select(.tags | split(",") | map(ltrimstr(" ")) | contains(["staging"])) | .id'); do
   cloudamqp instance restart-rabbitmq --id "$ID"
 done
 ```

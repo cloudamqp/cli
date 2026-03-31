@@ -125,7 +125,7 @@ cloudamqp rotate-key
 
 ## Key behaviors
 
-- **Async**: creation, resizes, upgrades return immediately. Use `--wait` on create, or poll `instance get --id <id> -o json | jq -r '.ready'` until `"true"`.
+- **Async**: creation, resizes, upgrades return immediately. Use `--wait` on create, or poll `instance get --id <id> -o json | jq -r '.ready'` until `"Yes"`.
 - **Destructive commands** prompt for confirmation — use `--force` to skip.
 - **Multiple tags**: repeat the flag: `--tags=prod --tags=web`.
 - **Plan/region names**: always run `cloudamqp plans` / `cloudamqp regions` first — never hardcode them.
