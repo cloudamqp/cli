@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -21,6 +22,7 @@ var installCmd = &cobra.Command{
 var installSkillsCmd = &cobra.Command{
 	Use:   "skills",
 	Short: "Install Claude Code skills to ~/.claude/skills/",
+	Args:  cobra.NoArgs,
 	Long: `Install the CloudAMQP CLI skills for Claude Code.
 
 Skills teach Claude how to use the cloudamqp CLI. After installation,
@@ -34,16 +36,15 @@ Skills are installed to: ~/.claude/skills/cloudamqp-cli/`,
 		}
 		dest := filepath.Join(home, ".claude", "skills", "cloudamqp-cli")
 
-		err = fs.WalkDir(skillsFS, "skills/cloudamqp-cli", func(path string, d fs.DirEntry, err error) error {
+		const embedPrefix = "skills/cloudamqp-cli"
+		err = fs.WalkDir(skillsFS, embedPrefix, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
-			// path relative to dest: strip "skills/cloudamqp-cli" prefix
-			rel, err := filepath.Rel("skills/cloudamqp-cli", path)
-			if err != nil {
-				return err
-			}
-			target := filepath.Join(dest, rel)
+			// Embedded paths always use forward slashes. Use strings.TrimPrefix
+			// then filepath.FromSlash so this works correctly on Windows too.
+			rel := strings.TrimPrefix(strings.TrimPrefix(path, embedPrefix), "/")
+			target := filepath.Join(dest, filepath.FromSlash(rel))
 			if d.IsDir() {
 				return os.MkdirAll(target, 0755)
 			}

@@ -35,7 +35,7 @@ Alternatively, set `CLOUDAMQP_APIKEY` in the environment. If neither is set, all
 
 ## Output
 
-Use `-o json` for parsing, `-o table` (default) for display. Use `--fields` to select columns.
+Read commands (`list`, `get`) support `-o json` for machine-readable output and `-o table` (default) for display. Use `--fields` to select columns. Write commands (`create`, `update`, `invite`, etc.) print plain text — they don't support `-o json`.
 
 ## Commands
 

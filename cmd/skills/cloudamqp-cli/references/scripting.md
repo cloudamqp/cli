@@ -2,27 +2,29 @@
 
 ## JSON output for parsing
 
-All commands support `-o json`. Combine with `jq`:
+Read commands (`list`, `get`, `plans`, `regions`) support `-o json`. All values come out as strings.
 
 ```bash
-# get connection URL for an instance
+# get connection URL for an instance (masked; add --show-url for full URL)
 cloudamqp instance get --id <id> -o json | jq -r '.url'
 
-# find instances that aren't ready
-cloudamqp instance list -o json | jq -r '.[] | select(.ready == false) | "\(.id) \(.name)"'
+# find instances that aren't ready (requires --details; ready is "Yes"/"No" string)
+cloudamqp instance list --details -o json | jq -r '.[] | select(.ready == "No") | "\(.id) \(.name)"'
 
-# get IDs matching a tag
-cloudamqp instance list -o json | jq -r '.[] | select(.tags[]? == "staging") | .id'
+# get IDs matching a tag (requires --details; tags is a comma-joined string)
+cloudamqp instance list --details -o json | jq -r '.[] | select(.tags | split(",") | map(ltrimstr(" ")) | contains(["staging"])) | .id'
 ```
 
 ## Create and capture instance ID
+
+`instance create` prints a human-readable prefix before the JSON, so pipe through `tail -n +2`:
 
 ```bash
 # fetch a valid plan and region first
 PLAN=$(cloudamqp plans --backend=rabbitmq -o json | jq -r '.[0].name')
 REGION=$(cloudamqp regions -o json | jq -r '.[0].id')
 
-RESULT=$(cloudamqp instance create --name=temp --plan="$PLAN" --region="$REGION" -o json)
+RESULT=$(cloudamqp instance create --name=temp --plan="$PLAN" --region="$REGION" | tail -n +2)
 INSTANCE_ID=$(echo "$RESULT" | jq -r '.id')
 ```
 
