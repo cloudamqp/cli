@@ -12,6 +12,16 @@ A command line interface for the CloudAMQP API that provides complete management
 - **User-Friendly**: Clear help messages, examples, and safety confirmations
 - **Error Handling**: Proper API error extraction and display
 
+## Claude Code
+
+Install skills to let Claude Code manage CloudAMQP instances on your behalf:
+
+```bash
+cloudamqp install skills
+```
+
+This copies skills to `~/.claude/skills/cloudamqp-cli/`. Claude Code discovers them automatically.
+
 ## Installation
 
 ### Pre-built binaries
