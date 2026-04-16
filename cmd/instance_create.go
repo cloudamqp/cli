@@ -14,6 +14,7 @@ var (
 	instanceName         string
 	instancePlan         string
 	instanceRegion       string
+	instanceRMQVersion   string
 	instanceTags         []string
 	instanceVPCSubnet    string
 	instanceVPCID        string
@@ -34,6 +35,7 @@ Required flags:
   --region: Region identifier (e.g., amazon-web-services::us-east-1)
 
 Optional flags:
+  --rmq-version: RabbitMQ version (e.g., 4.0.5) - only for rabbitmq plans
   --tags: Instance tags (can be specified multiple times)
   --vpc-subnet: VPC subnet for dedicated VPC
   --vpc-id: ID of existing VPC to add instance to
@@ -59,6 +61,22 @@ Optional flags:
 			Plan:   instancePlan,
 			Region: instanceRegion,
 			Tags:   instanceTags,
+		}
+
+		if instanceRMQVersion != "" {
+			plans, err := c.ListPlans("")
+			if err != nil {
+				return fmt.Errorf("failed to verify plan backend: %w", err)
+			}
+			for _, p := range plans {
+				if p.Name == instancePlan {
+					if p.Backend != "rabbitmq" {
+						return fmt.Errorf("--rmq-version can only be used with rabbitmq plans, but %q has backend %q", instancePlan, p.Backend)
+					}
+					break
+				}
+			}
+			req.Version = instanceRMQVersion
 		}
 
 		if instanceVPCSubnet != "" {
@@ -118,6 +136,7 @@ func init() {
 	instanceCreateCmd.Flags().StringVar(&instanceName, "name", "", "Name of the instance (required)")
 	instanceCreateCmd.Flags().StringVar(&instancePlan, "plan", "", "Subscription plan (required)")
 	instanceCreateCmd.Flags().StringVar(&instanceRegion, "region", "", "Region identifier (required)")
+	instanceCreateCmd.Flags().StringVar(&instanceRMQVersion, "rmq-version", "", "RabbitMQ version (e.g., 4.0.5)")
 	instanceCreateCmd.Flags().StringSliceVar(&instanceTags, "tags", []string{}, "Instance tags")
 	instanceCreateCmd.Flags().StringVar(&instanceVPCSubnet, "vpc-subnet", "", "VPC subnet")
 	instanceCreateCmd.Flags().StringVar(&instanceVPCID, "vpc-id", "", "VPC ID")
@@ -130,6 +149,7 @@ func init() {
 	instanceCreateCmd.MarkFlagRequired("plan")
 	instanceCreateCmd.MarkFlagRequired("region")
 
+	instanceCreateCmd.RegisterFlagCompletionFunc("rmq-version", completeVersions)
 	instanceCreateCmd.RegisterFlagCompletionFunc("plan", completePlans)
 	instanceCreateCmd.RegisterFlagCompletionFunc("region", completeRegions)
 	instanceCreateCmd.RegisterFlagCompletionFunc("vpc-id", completeVPCIDFlag)

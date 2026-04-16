@@ -107,6 +107,33 @@ func (c *Client) makeRequest(method, endpoint string, body any) ([]byte, error) 
 	return respBody, nil
 }
 
+func (c *Client) makeExternalRequest(method, url string) ([]byte, error) {
+	req, err := http.NewRequest(method, url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.SetBasicAuth("", c.apiKey)
+	req.Header.Set("User-Agent", fmt.Sprintf("cloudamqp-cli/%s", c.version))
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response: %w", err)
+	}
+
+	if resp.StatusCode >= 400 {
+		return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, string(respBody))
+	}
+
+	return respBody, nil
+}
+
 // Instance-specific operations using /instances/{id}/ endpoints
 
 // Node management
