@@ -57,26 +57,11 @@ Optional flags:
 		c := client.New(apiKey, Version)
 
 		req := &client.InstanceCreateRequest{
-			Name:   instanceName,
-			Plan:   instancePlan,
-			Region: instanceRegion,
-			Tags:   instanceTags,
-		}
-
-		if instanceRMQVersion != "" {
-			plans, err := c.ListPlans("")
-			if err != nil {
-				return fmt.Errorf("failed to verify plan backend: %w", err)
-			}
-			for _, p := range plans {
-				if p.Name == instancePlan {
-					if p.Backend != "rabbitmq" {
-						return fmt.Errorf("--rmq-version can only be used with rabbitmq plans, but %q has backend %q", instancePlan, p.Backend)
-					}
-					break
-				}
-			}
-			req.Version = instanceRMQVersion
+			Name:    instanceName,
+			Plan:    instancePlan,
+			Region:  instanceRegion,
+			Version: instanceRMQVersion,
+			Tags:    instanceTags,
 		}
 
 		if instanceVPCSubnet != "" {
