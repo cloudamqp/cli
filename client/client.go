@@ -113,7 +113,6 @@ func (c *Client) makeExternalRequest(method, url string) ([]byte, error) {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	req.SetBasicAuth("", c.apiKey)
 	req.Header.Set("User-Agent", fmt.Sprintf("cloudamqp-cli/%s", c.version))
 
 	resp, err := c.httpClient.Do(req)
