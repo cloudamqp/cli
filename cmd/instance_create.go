@@ -57,11 +57,11 @@ Optional flags:
 		c := client.New(apiKey, Version)
 
 		req := &client.InstanceCreateRequest{
-			Name:    instanceName,
-			Plan:    instancePlan,
-			Region:  instanceRegion,
-			Version: instanceRMQVersion,
-			Tags:    instanceTags,
+			Name:       instanceName,
+			Plan:       instancePlan,
+			Region:     instanceRegion,
+			RMQVersion: instanceRMQVersion,
+			Tags:       instanceTags,
 		}
 
 		if instanceVPCSubnet != "" {
@@ -121,7 +121,7 @@ func init() {
 	instanceCreateCmd.Flags().StringVar(&instanceName, "name", "", "Name of the instance (required)")
 	instanceCreateCmd.Flags().StringVar(&instancePlan, "plan", "", "Subscription plan (required)")
 	instanceCreateCmd.Flags().StringVar(&instanceRegion, "region", "", "Region identifier (required)")
-	instanceCreateCmd.Flags().StringVar(&instanceRMQVersion, "rmq-version", "", "RabbitMQ version (e.g., 4.0.5)")
+	instanceCreateCmd.Flags().StringVar(&instanceRMQVersion, "rmq-version", "", "RabbitMQ version (e.g., 4.0.5); only applies to rabbitmq plans, ignored otherwise")
 	instanceCreateCmd.Flags().StringSliceVar(&instanceTags, "tags", []string{}, "Instance tags")
 	instanceCreateCmd.Flags().StringVar(&instanceVPCSubnet, "vpc-subnet", "", "VPC subnet")
 	instanceCreateCmd.Flags().StringVar(&instanceVPCID, "vpc-id", "", "VPC ID")

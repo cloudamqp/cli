@@ -31,7 +31,7 @@ type InstanceCreateRequest struct {
 	Name         string        `json:"name"`
 	Plan         string        `json:"plan"`
 	Region       string        `json:"region"`
-	Version      string        `json:"rmq_version,omitempty"`
+	RMQVersion   string        `json:"rmq_version,omitempty"`
 	Tags         []string      `json:"tags,omitempty"`
 	VPCSubnet    string        `json:"vpc_subnet,omitempty"`
 	VPCID        *int          `json:"vpc_id,omitempty"`
@@ -98,8 +98,8 @@ func (c *Client) CreateInstance(req *InstanceCreateRequest) (*InstanceCreateResp
 			}
 		}
 
-		if req.Version != "" {
-			formData.Set("rmq_version", req.Version)
+		if req.RMQVersion != "" {
+			formData.Set("rmq_version", req.RMQVersion)
 		}
 
 		if req.VPCSubnet != "" {

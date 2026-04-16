@@ -107,8 +107,8 @@ func (c *Client) makeRequest(method, endpoint string, body any) ([]byte, error) 
 	return respBody, nil
 }
 
-func (c *Client) makeExternalRequest(method, url string) ([]byte, error) {
-	req, err := http.NewRequest(method, url, nil)
+func (c *Client) makeExternalRequest(method, requestURL string) ([]byte, error) {
+	req, err := http.NewRequest(method, requestURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

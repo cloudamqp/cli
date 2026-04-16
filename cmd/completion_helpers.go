@@ -167,7 +167,7 @@ formatOutput:
 }
 
 // completeVersions returns available RabbitMQ versions for completion.
-// Only suggests versions when the selected plan has a rabbitmq backend.
+// Only suggests versions when the selected plan is positively identified as a rabbitmq plan.
 func completeVersions(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	apiKey, err := completionAPIKey()
 	if err != nil {
@@ -176,24 +176,34 @@ func completeVersions(cmd *cobra.Command, args []string, toComplete string) ([]s
 
 	c := client.New(apiKey, Version)
 
-	// Check if the selected plan is a rabbitmq plan
 	planName, _ := cmd.Flags().GetString("plan")
-	if planName != "" {
-		var plans []client.Plan
-		if cachedData, ok := getCachedData("plans", plansCacheTTL); ok {
-			json.Unmarshal(cachedData, &plans)
+	if planName == "" {
+		return nil, cobra.ShellCompDirectiveNoFileComp
+	}
+
+	var plans []client.Plan
+	if cachedData, ok := getCachedData("plans", plansCacheTTL); ok {
+		_ = json.Unmarshal(cachedData, &plans)
+	}
+	if len(plans) == 0 {
+		plans, err = c.ListPlans("")
+		if err != nil {
+			return nil, cobra.ShellCompDirectiveNoFileComp
 		}
-		if len(plans) == 0 {
-			plans, _ = c.ListPlans("")
-			if len(plans) > 0 {
-				setCachedData("plans", plansCacheTTL, plans)
-			}
+		if len(plans) > 0 {
+			setCachedData("plans", plansCacheTTL, plans)
 		}
-		for _, p := range plans {
-			if p.Name == planName && p.Backend != "rabbitmq" {
-				return nil, cobra.ShellCompDirectiveNoFileComp
-			}
+	}
+
+	isRabbitMQPlan := false
+	for _, p := range plans {
+		if p.Name == planName {
+			isRabbitMQPlan = p.Backend == "rabbitmq"
+			break
 		}
+	}
+	if !isRabbitMQPlan {
+		return nil, cobra.ShellCompDirectiveNoFileComp
 	}
 
 	var versions []string
