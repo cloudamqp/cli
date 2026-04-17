@@ -13,6 +13,8 @@ import (
 
 var BaseURL = "https://customer.cloudamqp.com/api"
 
+var MetadataURL = "https://api.cloudamqp.com/api"
+
 type Client struct {
 	apiKey     string
 	baseURL    string
@@ -101,6 +103,32 @@ func (c *Client) makeRequest(method, endpoint string, body any) ([]byte, error) 
 		if err := json.Unmarshal(respBody, &errorResp); err == nil && errorResp.Error != "" {
 			return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, errorResp.Error)
 		}
+		return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, string(respBody))
+	}
+
+	return respBody, nil
+}
+
+func (c *Client) makeExternalRequest(method, requestURL string) ([]byte, error) {
+	req, err := http.NewRequest(method, requestURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header.Set("User-Agent", fmt.Sprintf("cloudamqp-cli/%s", c.version))
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response: %w", err)
+	}
+
+	if resp.StatusCode >= 400 {
 		return nil, fmt.Errorf("API error (%d): %s", resp.StatusCode, string(respBody))
 	}
 
