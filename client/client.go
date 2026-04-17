@@ -13,6 +13,8 @@ import (
 
 var BaseURL = "https://customer.cloudamqp.com/api"
 
+var MetadataURL = "https://api.cloudamqp.com/api"
+
 type Client struct {
 	apiKey     string
 	baseURL    string

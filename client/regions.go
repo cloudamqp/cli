@@ -38,7 +38,7 @@ func (c *Client) ListRegions(provider string) ([]Region, error) {
 }
 
 func (c *Client) ListVersions() ([]string, error) {
-	respBody, err := c.makeExternalRequest("GET", "https://api.cloudamqp.com/api/metadata/rabbitmq-versions")
+	respBody, err := c.makeExternalRequest("GET", MetadataURL+"/metadata/rabbitmq-versions")
 	if err != nil {
 		return nil, err
 	}
