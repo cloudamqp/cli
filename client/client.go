@@ -24,7 +24,7 @@ type Client struct {
 
 func New(apiKey, version string) *Client {
 	baseURL := "https://customer.cloudamqp.com/api"
-	if envURL := os.Getenv("CLOUDAMQP_URL"); envURL != "" {
+	if envURL := os.Getenv("CLOUDAMQP_API_URL"); envURL != "" {
 		baseURL = envURL
 	}
 	return &Client{
