@@ -21,23 +21,19 @@ func maskPassword(urlStr string) string {
 }
 
 var instanceGetCmd = &cobra.Command{
-	Use:     "get --id <id>",
+	Use:     "get <id>",
 	Short:   "Get details of a specific CloudAMQP instance",
 	Long:    `Retrieves and displays detailed information about a specific CloudAMQP instance.`,
-	Example: `  cloudamqp instance get --id 1234`,
+	Example: `  cloudamqp instance get 1234`,
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
-
 		var err error
 		apiKey, err = getAPIKey()
 		if err != nil {
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		instanceID, err := strconv.Atoi(idFlag)
+		instanceID, err := strconv.Atoi(args[0])
 		if err != nil {
 			return fmt.Errorf("invalid instance ID: %v", err)
 		}
@@ -85,8 +81,6 @@ var instanceGetCmd = &cobra.Command{
 }
 
 func init() {
-	instanceGetCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	instanceGetCmd.MarkFlagRequired("id")
 	instanceGetCmd.Flags().BoolP("show-url", "", false, "Show full connection URL with credentials")
-	instanceGetCmd.RegisterFlagCompletionFunc("id", completeInstanceIDFlag)
+	instanceGetCmd.ValidArgsFunction = completeInstances
 }

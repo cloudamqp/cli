@@ -19,16 +19,12 @@ var instancePluginsCmd = &cobra.Command{
 }
 
 var instancePluginsListCmd = &cobra.Command{
-	Use:     "list --id <instance_id>",
+	Use:     "list <instance_id>",
 	Short:   "List plugins",
 	Long:    `Retrieves all available RabbitMQ plugins.`,
-	Example: `  cloudamqp instance plugins list --id 1234`,
+	Example: `  cloudamqp instance plugins list 1234`,
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
-
 		var err error
 		apiKey, err := getAPIKey()
 		if err != nil {
@@ -37,7 +33,7 @@ var instancePluginsListCmd = &cobra.Command{
 
 		c := client.New(apiKey, Version)
 
-		plugins, err := c.ListPlugins(idFlag)
+		plugins, err := c.ListPlugins(args[0])
 		if err != nil {
 			fmt.Printf("Error listing plugins: %v\n", err)
 			return err
@@ -69,17 +65,14 @@ var instancePluginsListCmd = &cobra.Command{
 }
 
 var instancePluginsEnableCmd = &cobra.Command{
-	Use:     "enable <plugin_name> --id <instance_id>",
+	Use:     "enable <instance_id> <plugin_name>",
 	Short:   "Enable a plugin",
 	Long:    `Enables a RabbitMQ plugin on the instance.`,
-	Args:    cobra.ExactArgs(1),
-	Example: `  cloudamqp instance plugins enable rabbitmq_top --id 1234`,
+	Args:    cobra.ExactArgs(2),
+	Example: `  cloudamqp instance plugins enable 1234 rabbitmq_top`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		pluginName := args[0]
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
+		instanceID := args[0]
+		pluginName := args[1]
 
 		var err error
 		apiKey, err := getAPIKey()
@@ -89,7 +82,7 @@ var instancePluginsEnableCmd = &cobra.Command{
 
 		c := client.New(apiKey, Version)
 
-		err = c.EnablePlugin(idFlag, pluginName)
+		err = c.EnablePlugin(instanceID, pluginName)
 		if err != nil {
 			fmt.Printf("Error enabling plugin '%s': %v\n", pluginName, err)
 			return err
@@ -101,17 +94,14 @@ var instancePluginsEnableCmd = &cobra.Command{
 }
 
 var instancePluginsDisableCmd = &cobra.Command{
-	Use:     "disable <plugin_name> --id <instance_id>",
+	Use:     "disable <instance_id> <plugin_name>",
 	Short:   "Disable a plugin",
 	Long:    `Disables a RabbitMQ plugin on the instance.`,
-	Args:    cobra.ExactArgs(1),
-	Example: `  cloudamqp instance plugins disable rabbitmq_top --id 1234`,
+	Args:    cobra.ExactArgs(2),
+	Example: `  cloudamqp instance plugins disable 1234 rabbitmq_top`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		pluginName := args[0]
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
+		instanceID := args[0]
+		pluginName := args[1]
 
 		var err error
 		apiKey, err := getAPIKey()
@@ -121,7 +111,7 @@ var instancePluginsDisableCmd = &cobra.Command{
 
 		c := client.New(apiKey, Version)
 
-		err = c.DisablePlugin(idFlag, pluginName)
+		err = c.DisablePlugin(instanceID, pluginName)
 		if err != nil {
 			fmt.Printf("Error disabling plugin '%s': %v\n", pluginName, err)
 			return err
@@ -133,15 +123,9 @@ var instancePluginsDisableCmd = &cobra.Command{
 }
 
 func init() {
-	// Add --id flag to all plugins commands
-	instancePluginsListCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	instancePluginsListCmd.MarkFlagRequired("id")
-
-	instancePluginsEnableCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	instancePluginsEnableCmd.MarkFlagRequired("id")
-
-	instancePluginsDisableCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	instancePluginsDisableCmd.MarkFlagRequired("id")
+	instancePluginsListCmd.ValidArgsFunction = completeInstances
+	instancePluginsEnableCmd.ValidArgsFunction = completeInstances
+	instancePluginsDisableCmd.ValidArgsFunction = completeInstances
 
 	// Add all commands to plugins
 	instancePluginsCmd.AddCommand(instancePluginsListCmd)
