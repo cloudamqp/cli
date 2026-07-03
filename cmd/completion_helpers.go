@@ -166,6 +166,63 @@ formatOutput:
 	return suggestions, cobra.ShellCompDirectiveNoFileComp
 }
 
+// completeVersions returns available RabbitMQ versions for completion.
+// Only suggests versions when the selected plan is positively identified as a rabbitmq plan.
+func completeVersions(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	apiKey, err := completionAPIKey()
+	if err != nil {
+		return nil, cobra.ShellCompDirectiveNoFileComp
+	}
+
+	c := client.New(apiKey, Version)
+
+	planName, _ := cmd.Flags().GetString("plan")
+	if planName == "" {
+		return nil, cobra.ShellCompDirectiveNoFileComp
+	}
+
+	var plans []client.Plan
+	if cachedData, ok := getCachedData("plans", plansCacheTTL); ok {
+		_ = json.Unmarshal(cachedData, &plans)
+	}
+	if len(plans) == 0 {
+		plans, err = c.ListPlans("")
+		if err != nil {
+			return nil, cobra.ShellCompDirectiveNoFileComp
+		}
+		if len(plans) > 0 {
+			setCachedData("plans", plansCacheTTL, plans)
+		}
+	}
+
+	isRabbitMQPlan := false
+	for _, p := range plans {
+		if p.Name == planName {
+			isRabbitMQPlan = p.Backend == "rabbitmq"
+			break
+		}
+	}
+	if !isRabbitMQPlan {
+		return nil, cobra.ShellCompDirectiveNoFileComp
+	}
+
+	var versions []string
+	if cachedData, ok := getCachedData("versions", versionsCacheTTL); ok {
+		if err := json.Unmarshal(cachedData, &versions); err == nil {
+			return versions, cobra.ShellCompDirectiveNoFileComp
+		}
+	}
+
+	versions, err = c.ListVersions()
+	if err != nil {
+		return nil, cobra.ShellCompDirectiveNoFileComp
+	}
+
+	setCachedData("versions", versionsCacheTTL, versions)
+
+	return versions, cobra.ShellCompDirectiveNoFileComp
+}
+
 // completeCopySettings returns the valid copy-settings options
 func completeCopySettings(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	settings := []string{

@@ -141,6 +141,31 @@ func TestCreateInstance_WithTags(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestCreateInstance_WithRMQVersion(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseForm()
+		assert.NoError(t, err)
+
+		assert.Equal(t, "4.0.5", r.FormValue("rmq_version"))
+
+		response := InstanceCreateResponse{ID: 1234}
+		json.NewEncoder(w).Encode(response)
+	}))
+	defer server.Close()
+
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
+
+	req := &InstanceCreateRequest{
+		Name:       "test-instance",
+		Plan:       "bunny-1",
+		Region:     "amazon-web-services::us-east-1",
+		RMQVersion: "4.0.5",
+	}
+
+	_, err := client.CreateInstance(req)
+	assert.NoError(t, err)
+}
+
 func TestCreateInstance_WithVPC(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()

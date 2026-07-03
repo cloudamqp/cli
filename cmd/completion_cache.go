@@ -106,6 +106,7 @@ func setCachedData(key string, ttl time.Duration, data interface{}) error {
 const (
 	plansCacheTTL     = 1 * time.Hour   // Plans rarely change
 	regionsCacheTTL   = 1 * time.Hour   // Regions rarely change
+	versionsCacheTTL  = 1 * time.Hour   // Versions rarely change
 	instancesCacheTTL = 1 * time.Minute // Instances change frequently
 	vpcsCacheTTL      = 1 * time.Minute // VPCs change frequently
 )

@@ -37,6 +37,20 @@ func (c *Client) ListRegions(provider string) ([]Region, error) {
 	return regions, nil
 }
 
+func (c *Client) ListVersions() ([]string, error) {
+	respBody, err := c.makeExternalRequest("GET", MetadataURL+"/metadata/rabbitmq-versions")
+	if err != nil {
+		return nil, err
+	}
+
+	var versions []string
+	if err := json.Unmarshal(respBody, &versions); err != nil {
+		return nil, err
+	}
+
+	return versions, nil
+}
+
 func (c *Client) ListPlans(backend string) ([]Plan, error) {
 	endpoint := "/plans"
 	if backend != "" {
