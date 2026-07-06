@@ -32,10 +32,10 @@ func TestInstanceCommand(t *testing.T) {
 
 	assert.Contains(t, commandNames, "create")
 	assert.Contains(t, commandNames, "list")
-	assert.Contains(t, commandNames, "get --id <id>")
-	assert.Contains(t, commandNames, "update --id <id>")
-	assert.Contains(t, commandNames, "delete --id <id>")
-	assert.Contains(t, commandNames, "resize-disk --id <id>")
+	assert.Contains(t, commandNames, "get <id>")
+	assert.Contains(t, commandNames, "update <id>")
+	assert.Contains(t, commandNames, "delete <id>")
+	assert.Contains(t, commandNames, "resize-disk <id>")
 }
 
 func TestVPCCommand(t *testing.T) {
@@ -53,9 +53,9 @@ func TestVPCCommand(t *testing.T) {
 
 	assert.Contains(t, commandNames, "create")
 	assert.Contains(t, commandNames, "list")
-	assert.Contains(t, commandNames, "get --id <id>")
-	assert.Contains(t, commandNames, "update --id <id>")
-	assert.Contains(t, commandNames, "delete --id <id>")
+	assert.Contains(t, commandNames, "get <id>")
+	assert.Contains(t, commandNames, "update <id>")
+	assert.Contains(t, commandNames, "delete <id>")
 }
 
 func TestInstanceCreateCommand_Validation(t *testing.T) {
@@ -221,18 +221,18 @@ func TestInstanceActionsCommand(t *testing.T) {
 	}
 
 	expectedActions := []string{
-		"restart-rabbitmq --id <instance_id>",
-		"restart-cluster --id <instance_id>",
-		"restart-management --id <instance_id>",
-		"stop --id <instance_id>",
-		"start --id <instance_id>",
-		"reboot --id <instance_id>",
-		"stop-cluster --id <instance_id>",
-		"start-cluster --id <instance_id>",
-		"upgrade-erlang --id <instance_id>",
-		"upgrade-rabbitmq --id <instance_id>",
-		"upgrade-all --id <instance_id>",
-		"upgrade-versions --id <instance_id>",
+		"restart-rabbitmq <instance_id>",
+		"restart-cluster <instance_id>",
+		"restart-management <instance_id>",
+		"stop <instance_id>",
+		"start <instance_id>",
+		"reboot <instance_id>",
+		"stop-cluster <instance_id>",
+		"start-cluster <instance_id>",
+		"upgrade-erlang <instance_id>",
+		"upgrade-rabbitmq <instance_id>",
+		"upgrade-all <instance_id>",
+		"upgrade-versions <instance_id>",
 	}
 
 	for _, action := range expectedActions {

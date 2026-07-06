@@ -19,16 +19,12 @@ var instanceAccountCmd = &cobra.Command{
 }
 
 var rotatePasswordCmd = &cobra.Command{
-	Use:     "rotate-password --id <instance_id>",
+	Use:     "rotate-password <instance_id>",
 	Short:   "Rotate password",
 	Long:    `Initiate rotation of the user password on your instance.`,
-	Example: `  cloudamqp instance account rotate-password --id 1234`,
+	Example: `  cloudamqp instance account rotate-password 1234`,
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
-
 		var err error
 		apiKey, err := getAPIKey()
 		if err != nil {
@@ -37,7 +33,7 @@ var rotatePasswordCmd = &cobra.Command{
 
 		c := client.New(apiKey, Version)
 
-		err = c.RotatePassword(idFlag)
+		err = c.RotatePassword(args[0])
 		if err != nil {
 			fmt.Printf("Error rotating password: %v\n", err)
 			return err
@@ -49,16 +45,12 @@ var rotatePasswordCmd = &cobra.Command{
 }
 
 var rotateInstanceAPIKeyCmd = &cobra.Command{
-	Use:     "rotate-apikey --id <instance_id>",
+	Use:     "rotate-apikey <instance_id>",
 	Short:   "Rotate Instance API key",
 	Long:    `Rotate the Instance API key.`,
-	Example: `  cloudamqp instance account rotate-apikey --id 1234`,
+	Example: `  cloudamqp instance account rotate-apikey 1234`,
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
-
 		var err error
 		apiKey, err := getAPIKey()
 		if err != nil {
@@ -67,26 +59,22 @@ var rotateInstanceAPIKeyCmd = &cobra.Command{
 
 		c := client.New(apiKey, Version)
 
-		err = c.RotateInstanceAPIKey(idFlag)
+		err = c.RotateInstanceAPIKey(args[0])
 		if err != nil {
 			fmt.Printf("Error rotating instance API key: %v\n", err)
 			return err
 		}
 
 		fmt.Println("Instance API key rotation initiated successfully.")
-		fmt.Printf("Warning: The local config for instance %s will need to be updated.\n", idFlag)
-		fmt.Printf("Run 'cloudamqp instance get --id %s' to retrieve and save the new API key.\n", idFlag)
+		fmt.Printf("Warning: The local config for instance %s will need to be updated.\n", args[0])
+		fmt.Printf("Run 'cloudamqp instance get %s' to retrieve and save the new API key.\n", args[0])
 		return nil
 	},
 }
 
 func init() {
-	// Add --id flag to both account commands
-	rotatePasswordCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	rotatePasswordCmd.MarkFlagRequired("id")
-
-	rotateInstanceAPIKeyCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	rotateInstanceAPIKeyCmd.MarkFlagRequired("id")
+	rotatePasswordCmd.ValidArgsFunction = completeInstances
+	rotateInstanceAPIKeyCmd.ValidArgsFunction = completeInstances
 
 	instanceAccountCmd.AddCommand(rotatePasswordCmd)
 	instanceAccountCmd.AddCommand(rotateInstanceAPIKeyCmd)

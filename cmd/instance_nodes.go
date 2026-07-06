@@ -19,16 +19,12 @@ var instanceNodesCmd = &cobra.Command{
 }
 
 var instanceNodesListCmd = &cobra.Command{
-	Use:     "list --id <instance_id>",
+	Use:     "list <instance_id>",
 	Short:   "List nodes in the instance",
 	Long:    `Retrieves all nodes in the instance.`,
-	Example: `  cloudamqp instance nodes list --id 1234`,
+	Example: `  cloudamqp instance nodes list 1234`,
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
-
 		var err error
 		apiKey, err := getAPIKey()
 		if err != nil {
@@ -37,7 +33,7 @@ var instanceNodesListCmd = &cobra.Command{
 
 		c := client.New(apiKey, Version)
 
-		nodes, err := c.ListNodes(idFlag)
+		nodes, err := c.ListNodes(args[0])
 		if err != nil {
 			fmt.Printf("Error listing nodes: %v\n", err)
 			return err
@@ -80,16 +76,12 @@ var instanceNodesListCmd = &cobra.Command{
 }
 
 var instanceNodesVersionsCmd = &cobra.Command{
-	Use:     "versions --id <instance_id>",
+	Use:     "versions <instance_id>",
 	Short:   "Get available versions",
 	Long:    `Lists available versions to which the instance can be upgraded. For RabbitMQ instances, shows RabbitMQ and Erlang versions. For LavinMQ instances, shows LavinMQ versions.`,
-	Example: `  cloudamqp instance nodes versions --id 1234`,
+	Example: `  cloudamqp instance nodes versions 1234`,
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
-
 		var err error
 		apiKey, err := getAPIKey()
 		if err != nil {
@@ -98,7 +90,7 @@ var instanceNodesVersionsCmd = &cobra.Command{
 
 		c := client.New(apiKey, Version)
 
-		versions, err := c.GetAvailableVersions(idFlag)
+		versions, err := c.GetAvailableVersions(args[0])
 		if err != nil {
 			fmt.Printf("Error getting available versions: %v\n", err)
 			return err
@@ -116,12 +108,8 @@ var instanceNodesVersionsCmd = &cobra.Command{
 }
 
 func init() {
-	// Add --id flag to all subcommands
-	instanceNodesListCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	instanceNodesListCmd.MarkFlagRequired("id")
-
-	instanceNodesVersionsCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	instanceNodesVersionsCmd.MarkFlagRequired("id")
+	instanceNodesListCmd.ValidArgsFunction = completeInstances
+	instanceNodesVersionsCmd.ValidArgsFunction = completeInstances
 
 	instanceNodesCmd.AddCommand(instanceNodesListCmd)
 	instanceNodesCmd.AddCommand(instanceNodesVersionsCmd)
