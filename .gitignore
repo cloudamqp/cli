@@ -1,3 +1,5 @@
 /cloudamqp
 /cloudamqp-cli
 /.claude
+/bin/
+/tmp/
