@@ -21,16 +21,12 @@ var instanceConfigCmd = &cobra.Command{
 }
 
 var instanceConfigListCmd = &cobra.Command{
-	Use:     "list --id <instance_id>",
+	Use:     "list <instance_id>",
 	Short:   "List all configuration settings",
 	Long:    `Retrieve and display all current RabbitMQ configuration settings.`,
-	Example: `  cloudamqp instance config list --id 1234`,
+	Example: `  cloudamqp instance config list 1234`,
+	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
-
 		var err error
 		apiKey, err := getAPIKey()
 		if err != nil {
@@ -39,7 +35,7 @@ var instanceConfigListCmd = &cobra.Command{
 
 		c := client.New(apiKey, Version)
 
-		config, err := c.GetRabbitMQConfig(idFlag)
+		config, err := c.GetRabbitMQConfig(args[0])
 		if err != nil {
 			fmt.Printf("Error getting configuration: %v\n", err)
 			return err
@@ -50,36 +46,30 @@ var instanceConfigListCmd = &cobra.Command{
 			return nil
 		}
 
-		// Print table header
-		fmt.Printf("%-40s %-30s\n", "KEY", "VALUE")
-		fmt.Printf("%-40s %-30s\n", "---", "-----")
-
-		// Print configuration data
-		for key, value := range config {
-			valueStr := fmt.Sprintf("%v", value)
-			if len(valueStr) > 30 {
-				valueStr = valueStr[:27] + "..."
-			}
-			fmt.Printf("%-40s %-30s\n", key, valueStr)
+		p, err := getPrinter(cmd)
+		if err != nil {
+			return err
 		}
+
+		headers := []string{"KEY", "VALUE"}
+		rows := make([][]string, 0, len(config))
+		for key, value := range config {
+			rows = append(rows, []string{key, fmt.Sprintf("%v", value)})
+		}
+		p.PrintRecords(headers, rows)
 
 		return nil
 	},
 }
 
 var instanceConfigGetCmd = &cobra.Command{
-	Use:     "get --id <instance_id> <setting>",
+	Use:     "get <instance_id> <setting>",
 	Short:   "Get a specific configuration setting",
 	Long:    `Retrieve a specific RabbitMQ configuration setting by name.`,
-	Example: `  cloudamqp instance config get --id 1234 rabbit.heartbeat`,
-	Args:    cobra.ExactArgs(1),
+	Example: `  cloudamqp instance config get 1234 rabbit.heartbeat`,
+	Args:    cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
-
-		settingName := args[0]
+		settingName := args[1]
 
 		var err error
 		apiKey, err := getAPIKey()
@@ -89,7 +79,7 @@ var instanceConfigGetCmd = &cobra.Command{
 
 		c := client.New(apiKey, Version)
 
-		config, err := c.GetRabbitMQConfig(idFlag)
+		config, err := c.GetRabbitMQConfig(args[0])
 		if err != nil {
 			fmt.Printf("Error getting configuration: %v\n", err)
 			return err
@@ -106,20 +96,15 @@ var instanceConfigGetCmd = &cobra.Command{
 }
 
 var instanceConfigSetCmd = &cobra.Command{
-	Use:   "set --id <instance_id> <setting> <value>",
+	Use:   "set <instance_id> <setting> <value>",
 	Short: "Set a configuration setting",
 	Long:  `Update a RabbitMQ configuration setting. The value will be automatically converted to the appropriate type.`,
-	Example: `  cloudamqp instance config set --id 1234 rabbit.heartbeat 120
-  cloudamqp instance config set --id 1234 rabbit.vm_memory_high_watermark 0.8`,
-	Args: cobra.ExactArgs(2),
+	Example: `  cloudamqp instance config set 1234 rabbit.heartbeat 120
+  cloudamqp instance config set 1234 rabbit.vm_memory_high_watermark 0.8`,
+	Args: cobra.ExactArgs(3),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		idFlag, _ := cmd.Flags().GetString("id")
-		if idFlag == "" {
-			return fmt.Errorf("instance ID is required. Use --id flag")
-		}
-
-		settingName := args[0]
-		settingValue := args[1]
+		settingName := args[1]
+		settingValue := args[2]
 
 		var err error
 		apiKey, err := getAPIKey()
@@ -149,7 +134,7 @@ var instanceConfigSetCmd = &cobra.Command{
 			settingName: value,
 		}
 
-		err = c.UpdateRabbitMQConfig(idFlag, config)
+		err = c.UpdateRabbitMQConfig(args[0], config)
 		if err != nil {
 			fmt.Printf("Error updating configuration: %v\n", err)
 			return err
@@ -161,15 +146,9 @@ var instanceConfigSetCmd = &cobra.Command{
 }
 
 func init() {
-	// Add --id flag to all subcommands
-	instanceConfigListCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	instanceConfigListCmd.MarkFlagRequired("id")
-
-	instanceConfigGetCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	instanceConfigGetCmd.MarkFlagRequired("id")
-
-	instanceConfigSetCmd.Flags().StringP("id", "", "", "Instance ID (required)")
-	instanceConfigSetCmd.MarkFlagRequired("id")
+	instanceConfigListCmd.ValidArgsFunction = completeInstances
+	instanceConfigGetCmd.ValidArgsFunction = completeInstances
+	instanceConfigSetCmd.ValidArgsFunction = completeInstances
 
 	instanceConfigCmd.AddCommand(instanceConfigListCmd)
 	instanceConfigCmd.AddCommand(instanceConfigGetCmd)

@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"cloudamqp-cli/client"
-	"cloudamqp-cli/internal/table"
 	"github.com/spf13/cobra"
 )
 
@@ -37,9 +35,14 @@ var plansCmd = &cobra.Command{
 			return nil
 		}
 
-		// Create table and populate data
-		t := table.New(os.Stdout, "NAME", "PRICE", "BACKEND", "SHARED")
-		for _, plan := range plans {
+		p, err := getPrinter(cmd)
+		if err != nil {
+			return err
+		}
+
+		headers := []string{"NAME", "PRICE", "BACKEND", "SHARED"}
+		rows := make([][]string, len(plans))
+		for i, plan := range plans {
 			shared := "No"
 			if plan.Shared {
 				shared = "Yes"
@@ -48,14 +51,10 @@ var plansCmd = &cobra.Command{
 			if plan.Price == 0 {
 				price = "Free"
 			}
-			t.AddRow(
-				plan.Name,
-				price,
-				plan.Backend,
-				shared,
-			)
+			rows[i] = []string{plan.Name, price, plan.Backend, shared}
 		}
-		t.Print()
+		p.PrintRecords(headers, rows)
+
 		return nil
 	},
 }

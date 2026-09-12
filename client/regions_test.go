@@ -133,3 +133,28 @@ func TestListPlans_WithBackend(t *testing.T) {
 	assert.Len(t, plans, 1)
 	assert.Equal(t, "rabbitmq", plans[0].Backend)
 }
+
+func TestListVersions(t *testing.T) {
+	expectedVersions := []string{"3.13.7", "4.0.5", "4.1.0"}
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "GET", r.Method)
+		assert.Equal(t, "/metadata/rabbitmq-versions", r.URL.Path)
+		assert.Empty(t, r.Header.Get("Authorization"), "metadata endpoint should be called without auth")
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(expectedVersions)
+	}))
+	defer server.Close()
+
+	originalMetadataURL := MetadataURL
+	MetadataURL = server.URL
+	defer func() { MetadataURL = originalMetadataURL }()
+
+	client := NewWithBaseURL("test-api-key", server.URL, "test")
+
+	versions, err := client.ListVersions()
+
+	assert.NoError(t, err)
+	assert.Equal(t, expectedVersions, versions)
+}

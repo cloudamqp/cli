@@ -9,22 +9,21 @@ import (
 )
 
 var (
-	updateVPCID   string
 	updateVPCName string
 	updateVPCTags []string
 )
 
 var vpcUpdateCmd = &cobra.Command{
-	Use:   "update --id <id>",
+	Use:   "update <id>",
 	Short: "Update a CloudAMQP VPC",
 	Long: `Update an existing CloudAMQP VPC with new configuration.
 
 You can update the following fields:
   --name: VPC name
   --tags: VPC tags (replaces existing tags)`,
-	Example: `  cloudamqp vpc update --id 5678 --name=new-vpc-name
-  cloudamqp vpc update --id 5678 --tags=production --tags=updated`,
-	Args: cobra.NoArgs,
+	Example: `  cloudamqp vpc update 5678 --name=new-vpc-name
+  cloudamqp vpc update 5678 --tags=production --tags=updated`,
+	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		apiKey, err = getAPIKey()
@@ -32,11 +31,7 @@ You can update the following fields:
 			return fmt.Errorf("failed to get API key: %w", err)
 		}
 
-		if updateVPCID == "" {
-			return fmt.Errorf("--id is required")
-		}
-
-		vpcID, err := strconv.Atoi(updateVPCID)
+		vpcID, err := strconv.Atoi(args[0])
 		if err != nil {
 			return fmt.Errorf("invalid VPC ID: %v", err)
 		}
@@ -64,9 +59,7 @@ You can update the following fields:
 }
 
 func init() {
-	vpcUpdateCmd.Flags().StringVar(&updateVPCID, "id", "", "VPC ID (required)")
 	vpcUpdateCmd.Flags().StringVar(&updateVPCName, "name", "", "New VPC name")
 	vpcUpdateCmd.Flags().StringSliceVar(&updateVPCTags, "tags", []string{}, "New VPC tags")
-	vpcUpdateCmd.MarkFlagRequired("id")
-	vpcUpdateCmd.RegisterFlagCompletionFunc("id", completeVPCArgs)
+	vpcUpdateCmd.ValidArgsFunction = completeVPCArgs
 }

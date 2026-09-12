@@ -15,6 +15,10 @@ GO_LDFLAGS=-X cloudamqp-cli/cmd.Version=$(VERSION) \
            -X cloudamqp-cli/cmd.BuildDate=$(BUILD_DATE) \
            -X cloudamqp-cli/cmd.GitCommit=$(GIT_COMMIT)
 
+
+bin/cloudamqp:
+	$(MAKE) build BINARY_NAME="bin/cloudamqp"
+
 # Default target
 .PHONY: all
 all: build
